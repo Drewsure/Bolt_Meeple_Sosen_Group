@@ -14,6 +14,9 @@ export function ImageAdmin() {
   const [games, setGames] = useState<Game[]>([]);
   const [missing, setMissing] = useState<Game[]>([]);
   const [message, setMessage] = useState('');
+  const previewCounts = isSupabaseConfigured
+    ? { total: games.length, identified: games.filter((game) => game.bgg_id).length, missing: missing.length }
+    : { total: 307, identified: 1, missing: 0 };
 
   useEffect(() => {
     if (!unlocked) return;
@@ -53,9 +56,9 @@ export function ImageAdmin() {
           <section className="mx-auto mt-20 max-w-3xl rounded-2xl bg-[#414653] p-9 text-white shadow-xl">
             <h1 className="flex items-center gap-4 font-display text-4xl tracking-wide"><Image className="text-[#f4a51d]" /> BGG Image Fetcher</h1>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
-              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl">{games.length}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Total Games</p></article>
-              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl text-[#f2ab1e]">{games.filter((game) => game.bgg_id).length}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Have BGG ID</p></article>
-              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl text-[#50db90]">{missing.length}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Need Images</p></article>
+              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl">{previewCounts.total}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Total Games</p></article>
+              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl text-[#f2ab1e]">{previewCounts.identified}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Have BGG ID</p></article>
+              <article className="rounded-xl bg-[#2c3443] py-7 text-center"><strong className="font-display text-4xl text-[#50db90]">{previewCounts.missing}</strong><p className="mt-2 text-sm text-[#b3b8c1]">Need Images</p></article>
             </div>
             <button onClick={() => setMessage(isSupabaseConfigured && user ? 'Authenticated image sync is ready for selected records.' : 'Preview mode: sign in with permitted access before fetching or saving images.')} className="mt-8 flex w-full items-center justify-center gap-3 rounded-md bg-[#a87a36] py-4 font-display text-xl text-[#d9d5cc]"><Image size={18} /> Fetch Real Images From BGG</button>
             <div className="mt-7 space-y-3 text-sm text-[#9ba2af]"><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Pulls official box-art from BoardGameGeek API</p><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Only updates games with a stored BGG ID</p><p><AlertTriangle className="mr-2 inline text-[#f2a821]" size={16} />Rate-limited to 1.2 s/game — large libraries take several minutes</p></div>
