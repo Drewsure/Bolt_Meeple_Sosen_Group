@@ -1,4 +1,4 @@
-import { ArrowRight, Brain, CheckCircle2, Clock3, Globe2, Heart, MapPin, Phone, Quote, Smile, Users } from 'lucide-react';
+import { ArrowRight, Brain, CheckCircle2, Clock3, Heart, Mail, MapPin, Phone, Quote, Smile, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Section } from '../App';
 import { getSilverCircleGames } from '../lib/games';
@@ -25,7 +25,7 @@ const effects = [
   ['Smile', '安心して学べる場所', 'ゲームの中だから、間違えることも笑いになる。'],
 ];
 
-const faqs = ['英語が全くわからなくても大丈夫ですか？', 'ゲームが初めてでも大丈夫ですか？', '一人でも参加できますか？', 'どんな服装で来れば良いですか？'];
+const faqs = ['英語が全くわからなくても大丈夫ですか？', 'ゲームが初めてでも大丈夫ですか？', '一人でも参加できますか？', 'どんな服装で来れば良いですか？', '途中でやめても大丈夫ですか？', '認知症の家族を連れて来ても良いですか？'];
 
 export function SilverCircle({ onNavigate }: { onNavigate: (section: Section) => void }) {
   const [games, setGames] = useState<Game[]>([]);
@@ -151,10 +151,30 @@ export function SilverCircle({ onNavigate }: { onNavigate: (section: Section) =>
           {faqs.map((question) => <div key={question} className="rounded-xl border border-[#f7b4c2] bg-white px-7 py-5 font-bold">{question}<span className="float-right text-[#f43b64]">⌄</span></div>)}
         </div>
       </section>
-      <footer className="bg-[#f43b64] p-12 text-center text-white">
-        <Globe2 className="mx-auto" />
-        <h2 className="mt-5 text-3xl font-bold">無料体験から始めましょう</h2>
-        <p className="mt-4">お友達紹介で次回セッション無料 ・ Silver Circle by Meeple Sosen Group</p>
+      <section className="bg-[#fff0df] py-16 text-center">
+        <p className="text-3xl text-[#ef8f1f]">☼</p>
+        <h2 className="silver-title mt-4 text-4xl">まずは、無料体験から。</h2>
+        <p className="mt-4 leading-7 text-[#685e5c]">申し込みは30秒。電話でも、メールでも、お気軽にどうぞ。<br />あなたのご参加を、心よりお待ちしています。</p>
+        <button className="mt-8 rounded-full bg-[#f43b64] px-9 py-4 font-bold text-white">無料体験を申し込む <ArrowRight className="ml-2 inline" size={15} /></button>
+        <p className="mt-5 text-sm text-[#756c69]"><Mail className="mr-2 inline" size={14} />ministarenglish@mail.com</p>
+      </section>
+      <section className="bg-[#ef4164] text-white">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-7 px-5 py-12 md:flex-row md:items-center md:px-8">
+          <div>
+            <p className="text-sm font-bold">友人・ご家族に伝えてください</p>
+            <h2 className="mt-3 text-4xl font-bold">あなたの大切な方に、ぜひ。</h2>
+            <p className="mt-3 text-lg">退職後の親御さん、ご近所の友人へ。シルバーサークルをご紹介ください。</p>
+          </div>
+          <div className="flex gap-3"><button className="rounded-full bg-white px-7 py-3 font-bold text-[#ef4164]"><Mail className="mr-2 inline" size={16} />メールで紹介する</button><button className="h-12 w-28 rounded-full bg-white" aria-label="Share" /></div>
+        </div>
+      </section>
+      <footer className="bg-[#201d1d] text-[#dad3d0]">
+        <div className="mx-auto grid max-w-6xl gap-9 px-5 py-14 md:grid-cols-3 md:px-8">
+          <div><h2 className="text-xl font-bold text-white"><span className="text-[#ff7190]">✿</span> Silver Circle</h2><p className="mt-5 leading-7">シルバーサークルは、ミープル創戦グループによる地域貢献プログラムです。英語のアナログボードゲームを通じて、西区の高齢者の皆さまの脳活・社会参加・生きがいづくりを支援しています。</p></div>
+          <div><h2 className="text-xl font-bold text-white">ミープル創戦グループについて</h2><p className="mt-5 leading-7">福岡市西区を拠点に、英語×ボードゲームを通じた学習コミュニティを運営。シルバーサークルは、その地域連携プログラムとして2024年にスタートしました。</p></div>
+          <div><h2 className="text-xl font-bold text-white">お問い合わせ</h2><p className="mt-5 leading-8"><Mail className="mr-2 inline text-[#ff718e]" size={16} />ministarenglish@mail.com<br /><MapPin className="mr-2 inline text-[#ff718e]" size={16} />福岡市西区<br /><Clock3 className="mr-2 inline text-[#ff718e]" size={16} />第1・第3 木曜日 午後2時〜4時</p></div>
+        </div>
+        <p className="mx-auto max-w-6xl border-t border-[#443f3d] px-5 py-7 text-center text-sm text-[#8d8784] md:px-8">© 2026 Meeple Sosen Group — Silver Circle Program, Nishi-ku, Fukuoka</p>
       </footer>
     </main>
   );
