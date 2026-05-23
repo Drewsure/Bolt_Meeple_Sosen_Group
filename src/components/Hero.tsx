@@ -1,7 +1,6 @@
 import { Swords, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getTranslation } from '../lib/i18n';
 
 interface HeroProps {
   onInitialize: () => void;
