@@ -1,4 +1,4 @@
-import { Trophy, TrendingUp, Zap } from 'lucide-react';
+import { Trophy, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase, LeaderboardEntry } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';

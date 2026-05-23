@@ -1,6 +1,5 @@
 import { Globe } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import type { Language } from '../lib/i18n';
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useAuth();

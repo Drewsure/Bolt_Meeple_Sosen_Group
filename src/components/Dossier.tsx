@@ -1,6 +1,5 @@
 import { Award, BookOpen, Globe } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getTranslation } from '../lib/i18n';
 
 export function Dossier() {
   const { language } = useAuth();
