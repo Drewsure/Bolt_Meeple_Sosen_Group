@@ -16,6 +16,24 @@ export interface GameData {
   mechanics?: string[];
 }
 
+const getBGGImageUrl = (bggRank: number): string => {
+  // BGG doesn't provide a direct API for images, so we use Pexels for board game themed images
+  // This ensures real photos while maintaining consistency
+  const imageOptions = [
+    'https://images.pexels.com/photos/3837422/pexels-photo-3837422.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3970330/pexels-photo-3970330.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/2950285/pexels-photo-2950285.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3307517/pexels-photo-3307517.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3597906/pexels-photo-3597906.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3808426/pexels-photo-3808426.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3935702/pexels-photo-3935702.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3932558/pexels-photo-3932558.jpeg?auto=compress&cs=tinysrgb&w=600',
+    'https://images.pexels.com/photos/3927369/pexels-photo-3927369.jpeg?auto=compress&cs=tinysrgb&w=600',
+  ];
+  return imageOptions[bggRank % imageOptions.length];
+};
+
 export const GAMES: GameData[] = [
   {
     id: '10-days-usa',

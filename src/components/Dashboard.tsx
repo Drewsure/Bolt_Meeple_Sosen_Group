@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Trophy, Calendar, Target, TrendingUp, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Session } from '../lib/supabase';
+import { getTranslation } from '../lib/i18n';
 
 export function Dashboard() {
   const { profile, signOut, language } = useAuth();

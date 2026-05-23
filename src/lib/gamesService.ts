@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import { PUBLIC_GAME_COLUMNS } from './games';
 
 export interface Game {
   id: string;
@@ -17,7 +16,7 @@ export interface Game {
 export const getAllGames = async (): Promise<Game[]> => {
   const { data, error } = await supabase
     .from('games')
-    .select(PUBLIC_GAME_COLUMNS)
+    .select('*')
     .eq('item_type', 'standalone')
     .order('title', { ascending: true });
 
@@ -32,10 +31,10 @@ export const getAllGames = async (): Promise<Game[]> => {
 export const getGamesByComplexity = async (complexity: string): Promise<Game[]> => {
   const { data, error } = await supabase
     .from('games')
-    .select(PUBLIC_GAME_COLUMNS)
+    .select('*')
     .eq('complexity_level', complexity)
     .eq('item_type', 'standalone')
-    .order('bgg_rank', { ascending: true, nullsFirst: false });
+    .order('bgg_rank', { ascending: true, nullsLast: true });
 
   if (error) {
     console.error('Error fetching games by complexity:', error);
@@ -48,10 +47,10 @@ export const getGamesByComplexity = async (complexity: string): Promise<Game[]> 
 export const searchGames = async (query: string): Promise<Game[]> => {
   const { data, error } = await supabase
     .from('games')
-    .select(PUBLIC_GAME_COLUMNS)
+    .select('*')
     .eq('item_type', 'standalone')
     .ilike('title', `%${query}%`)
-    .order('bgg_rank', { ascending: true, nullsFirst: false });
+    .order('bgg_rank', { ascending: true, nullsLast: true });
 
   if (error) {
     console.error('Error searching games:', error);
@@ -64,7 +63,7 @@ export const searchGames = async (query: string): Promise<Game[]> => {
 export const getArmoryGames = async (): Promise<Record<string, Game[]>> => {
   const { data, error } = await supabase
     .from('games')
-    .select(PUBLIC_GAME_COLUMNS)
+    .select('*')
     .eq('item_type', 'standalone')
     .not('bgg_rank', 'is', null)
     .lte('bgg_rank', 1000)

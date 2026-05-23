@@ -1,4 +1,5 @@
 import { Shield, Brain, Zap, Target } from 'lucide-react';
+import { getTranslation } from '../lib/i18n';
 import { useAuth } from '../contexts/AuthContext';
 
 interface SituationRoomProps {
