@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase, MemberProfile } from '../lib/supabase';
+import { isSupabaseConfigured, supabase, MemberProfile } from '../lib/supabase';
 import type { Language } from '../lib/i18n';
 
 interface AuthContextType {
@@ -45,6 +45,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       (async () => {
         setSession(session);
@@ -78,6 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase authentication is not configured for this preview.') };
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -90,6 +99,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, displayName: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase authentication is not configured for this preview.') };
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,

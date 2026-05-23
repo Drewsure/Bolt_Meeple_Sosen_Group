@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useEffect, useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SituationRoom } from './components/SituationRoom';
@@ -7,62 +7,68 @@ import { Armory } from './components/Armory';
 import { Reserves } from './components/Reserves';
 import { Dossier } from './components/Dossier';
 import { Leaderboard } from './components/Leaderboard';
-import { LOKVault } from './components/LOKVault';
 import { Dashboard } from './components/Dashboard';
+import { GuildChallenges } from './components/GuildChallenges';
+import { SilverCircle } from './components/SilverCircle';
+import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
 
-type Section = 'home' | 'situation' | 'armory' | 'reserves' | 'dossier' | 'leaderboard' | 'lok' | 'dashboard';
+export type Section =
+  | 'home'
+  | 'situation'
+  | 'armory'
+  | 'games'
+  | 'dossier'
+  | 'challenges'
+  | 'ranking'
+  | 'profile'
+  | 'silver-circle'
+  | 'admin-images';
+
+const sectionFromHash = (): Section => {
+  const hash = window.location.hash.replace('#', '') as Section;
+  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'dossier', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  return valid.includes(hash) ? hash : 'home';
+};
 
 function AppContent() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState<Section>('home');
-  const { user, loading } = useAuth();
+  const [section, setSection] = useState<Section>(sectionFromHash);
 
-  const handleNavigate = (section: Section) => {
-    setCurrentSection(section);
+  useEffect(() => {
+    const syncHash = () => setSection(sectionFromHash());
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
+
+  const navigate = (next: Section) => {
+    window.location.hash = next;
+    setSection(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleInitialize = () => {
-    if (user) {
-      setCurrentSection('dashboard');
-    } else {
-      setAuthModalOpen(true);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white font-bebas text-3xl tracking-widest">INITIALIZING...</div>
-      </div>
-    );
-  }
-
   return (
     <div>
-      <Header onAuthClick={() => setAuthModalOpen(true)} onNavigate={handleNavigate} />
-
-      {currentSection === 'home' && <Hero onInitialize={handleInitialize} />}
-      {currentSection === 'situation' && <SituationRoom onInitialize={handleInitialize} />}
-      {currentSection === 'armory' && <Armory />}
-      {currentSection === 'reserves' && <Reserves />}
-      {currentSection === 'dossier' && <Dossier />}
-      {currentSection === 'leaderboard' && <Leaderboard />}
-      {currentSection === 'lok' && user && <LOKVault />}
-      {currentSection === 'dashboard' && user && <Dashboard />}
-
+      <Header onAuthClick={() => setAuthModalOpen(true)} onNavigate={navigate} currentSection={section} />
+      {section === 'home' && <Hero onNavigate={navigate} />}
+      {section === 'situation' && <SituationRoom onNavigate={navigate} />}
+      {section === 'armory' && <Armory />}
+      {section === 'games' && <Reserves />}
+      {section === 'dossier' && <Dossier />}
+      {section === 'challenges' && <GuildChallenges onNavigate={navigate} />}
+      {section === 'ranking' && <Leaderboard onNavigate={navigate} />}
+      {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} />}
+      {section === 'silver-circle' && <SilverCircle onNavigate={navigate} />}
+      {section === 'admin-images' && <ImageAdmin />}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
       <AppContent />
     </AuthProvider>
   );
 }
-
-export default App;

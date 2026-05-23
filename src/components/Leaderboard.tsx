@@ -1,134 +1,42 @@
-import { Trophy, Zap } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase, LeaderboardEntry } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
+import { Award, Crown, Medal, Users } from 'lucide-react';
+import type { Section } from '../App';
 
-export function Leaderboard() {
-  const { language } = useAuth();
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'xp' | 'victories' | 'deployment'>('xp');
-
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      const { data, error } = await supabase
-        .from('leaderboard_entries')
-        .select('*')
-        .order(sortBy === 'xp' ? 'total_xp' : sortBy === 'victories' ? 'game_victories' : 'linguistic_deployment_score', {
-          ascending: false,
-        });
-
-      if (!error && data) {
-        setEntries(data as LeaderboardEntry[]);
-      }
-      setLoading(false);
-    };
-
-    fetchLeaderboard();
-  }, [sortBy]);
-
+export function Leaderboard({ onNavigate }: { onNavigate: (section: Section) => void }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-32 pb-24">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <Trophy className="w-16 h-16 text-amber-500 mx-auto mb-6" />
-          <h1 className="text-6xl md:text-7xl font-bebas text-white mb-4 tracking-wide">
-            {language === 'ja' ? 'グローバルリーダーボード' : 'GLOBAL LEADERBOARD'}
-          </h1>
-          <p className="text-slate-300">
-            {language === 'ja' ? '匿名で競争します。ランクを上昇させます。ギルドを支配します。' : 'Compete anonymously. Rise through the ranks. Dominate the Guild.'}
-          </p>
-        </div>
-
-        <div className="flex gap-4 justify-center mb-12">
-          <button
-            onClick={() => setSortBy('xp')}
-            className={`px-6 py-3 font-bebas tracking-widest transition-all ${
-              sortBy === 'xp'
-                ? 'bg-amber-600 text-slate-900 border border-amber-500'
-                : 'bg-slate-800/50 text-amber-500 border border-slate-700 hover:border-amber-500'
-            }`}
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            {language === 'ja' ? '合計 XP' : 'TOTAL XP'}
-          </button>
-          <button
-            onClick={() => setSortBy('victories')}
-            className={`px-6 py-3 font-bebas tracking-widest transition-all ${
-              sortBy === 'victories'
-                ? 'bg-amber-600 text-slate-900 border border-amber-500'
-                : 'bg-slate-800/50 text-amber-500 border border-slate-700 hover:border-amber-500'
-            }`}
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            {language === 'ja' ? '勝利' : 'VICTORIES'}
-          </button>
-          <button
-            onClick={() => setSortBy('deployment')}
-            className={`px-6 py-3 font-bebas tracking-widest transition-all ${
-              sortBy === 'deployment'
-                ? 'bg-amber-600 text-slate-900 border border-amber-500'
-                : 'bg-slate-800/50 text-amber-500 border border-slate-700 hover:border-amber-500'
-            }`}
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            {language === 'ja' ? 'デプロイメント' : 'DEPLOYMENT'}
-          </button>
-        </div>
-
-        {loading ? (
-          <div className="text-center text-slate-400 py-12">{language === 'ja' ? 'リーダーボードを読み込み中...' : 'Loading leaderboard...'}</div>
-        ) : entries.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-slate-400">{language === 'ja' ? 'リーダーボードが入力されています。ギルドに参加する最初の人になります。' : 'The leaderboard is being populated. Be the first to join the Guild.'}</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {entries.map((entry, index) => {
-              let medalIcon: string;
-              if (index === 0) medalIcon = '🥇';
-              else if (index === 1) medalIcon = '🥈';
-              else if (index === 2) medalIcon = '🥉';
-              else medalIcon = '';
-
-              return (
-                <div
-                  key={entry.id}
-                  className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg hover:border-amber-500/50 transition-all flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-6 flex-1">
-                    <div className="text-4xl font-bebas text-amber-500 w-12 text-center">
-                      {medalIcon || `#${index + 1}`}
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bebas text-white tracking-wide">{entry.rank_title}</div>
-                      <p className="text-sm text-slate-400">{language === 'ja' ? '戦略家' : 'Strategist'}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-12 text-right">
-                    <div>
-                      <div className="text-amber-500 font-bebas text-2xl">{entry.total_xp.toLocaleString()}</div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wide">{language === 'ja' ? '合計XP' : 'Total XP'}</p>
-                    </div>
-                    <div>
-                      <div className="text-amber-500 font-bebas text-2xl">{entry.game_victories}</div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wide">{language === 'ja' ? '勝利' : 'Victories'}</p>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <div className="flex items-center gap-1 text-amber-500 font-bebas text-lg">
-                        <Zap className="w-4 h-4" />
-                        {entry.linguistic_deployment_score}
-                      </div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wide">{language === 'ja' ? 'デプロイメント' : 'Deployment'}</p>
-                    </div>
-                  </div>
+    <main className="page-shell">
+      <div className="container-shell">
+        <p className="eyebrow">Ranking / Leaderboard</p>
+        <h1 className="display-title mt-5 text-7xl sm:text-8xl">Guild Standing</h1>
+        <div className="mt-9 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="paper-panel min-h-[360px] p-7">
+            <div className="flex items-center justify-between border-b border-[#eadfce] pb-5">
+              <h2 className="font-display text-3xl tracking-wider">Season Rankings</h2>
+              <span className="line-label">Season Opens Soon</span>
+            </div>
+            <div className="flex min-h-[250px] flex-col items-center justify-center text-center">
+              <Crown className="text-[#cf612d]" size={37} strokeWidth={1.3} />
+              <h3 className="font-editorial mt-6 text-2xl">No rankings recorded yet</h3>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-[#776d62]">Complete a guild challenge or hosted session to establish the first table standings.</p>
+              <button onClick={() => onNavigate('challenges')} className="rule-button mt-7">Browse Challenges</button>
+            </div>
+          </section>
+          <div className="grid gap-4">
+            {[
+              { icon: Medal, title: 'Badges Issued', value: '0', caption: 'Recognition awaiting first missions' },
+              { icon: Award, title: 'XP Recorded', value: '0', caption: 'A clear field for founding members' },
+              { icon: Users, title: 'Guild Tables', value: '0', caption: 'Reserve your opening session' },
+            ].map(({ icon: Icon, title, value, caption }) => (
+              <article key={title} className="paper-panel flex items-center justify-between p-6">
+                <div className="flex items-center gap-4">
+                  <Icon className="text-[#cf612d]" size={23} />
+                  <div><p className="line-label">{title}</p><p className="mt-1 text-sm text-[#776d62]">{caption}</p></div>
                 </div>
-              );
-            })}
+                <p className="metric">{value}</p>
+              </article>
+            ))}
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
