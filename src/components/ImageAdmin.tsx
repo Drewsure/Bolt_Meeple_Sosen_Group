@@ -14,9 +14,11 @@ export function ImageAdmin() {
   const [games, setGames] = useState<Game[]>([]);
   const [missing, setMissing] = useState<Game[]>([]);
   const [message, setMessage] = useState('');
-  const previewCounts = isSupabaseConfigured
-    ? { total: games.length, identified: games.filter((game) => game.bgg_id).length, missing: missing.length }
-    : { total: 307, identified: 1, missing: 0 };
+  const previewCounts = {
+    total: games.length,
+    identified: games.filter((game) => game.bgg_id).length,
+    missing: missing.length,
+  };
 
   useEffect(() => {
     if (!unlocked) return;

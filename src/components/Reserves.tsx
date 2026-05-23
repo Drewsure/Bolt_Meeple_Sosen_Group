@@ -44,17 +44,17 @@ export function Reserves() {
           {filtered.map((game) => (
             <article key={game.id} className="tactical-card overflow-hidden">
               <div className="relative h-32 bg-[#fff0ce]">
-                {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center font-display text-3xl text-[#ae6d3f]">{game.title}</div>}
+                {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center px-4 text-center font-display text-3xl text-[#ae6d3f]">{game.title}</div>}
                 <span className="pill pill-blue absolute left-2 top-2">{game.complexity_level || 'Beginner'}</span>
               </div>
               <div className="p-4">
                 <h2 className="font-display text-lg tracking-wide text-[#3d332b]">{game.title}</h2>
                 <p className="mt-3 line-clamp-2 text-[11px] leading-5 text-[#70665b]">{game.description || 'A carefully selected strategy title for table conversation and confident play.'}</p>
-                <div className="mt-4 flex justify-between text-[10px] text-[#936f46]">
-                  <span>♟ {game.min_players}-{game.max_players}</span>
-                  <span>◷ {game.duration_minutes}m</span>
-                  <span>⚖ {game.weight?.toFixed(1) ?? '-'}</span>
-                  <span>🏆 {game.bgg_rank ? `#${game.bgg_rank}` : '-'}</span>
+                <div className="mt-4 flex justify-between gap-2 text-[10px] text-[#936f46]">
+                  <span>{game.min_players ?? '-'}-{game.max_players ?? '-'} players</span>
+                  <span>{game.duration_minutes ?? '-'}m</span>
+                  <span>{game.weight?.toFixed(1) ?? '-'} wt</span>
+                  <span>{game.bgg_rank ? `#${game.bgg_rank}` : '-'}</span>
                 </div>
               </div>
             </article>

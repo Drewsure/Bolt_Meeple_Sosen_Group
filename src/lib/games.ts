@@ -67,18 +67,36 @@ const fallbackGames: Game[] = localGames.map((game, index) => ({
   updated_at: '',
 }));
 
+let localCollectionPromise: Promise<Game[]> | null = null;
+
+async function getFallbackGames(): Promise<Game[]> {
+  if (!localCollectionPromise) {
+    localCollectionPromise = fetch('/data/collection-preview.json')
+      .then(async (response) => {
+        if (!response.ok) {
+          return fallbackGames;
+        }
+        const games = await response.json() as Game[];
+        return games.length ? games : fallbackGames;
+      })
+      .catch(() => fallbackGames);
+  }
+
+  return localCollectionPromise;
+}
+
 async function queryGames(query: () => PromiseLike<{ data: unknown[] | null; error: { message: string } | null }>): Promise<Game[]> {
   if (!isSupabaseConfigured) {
-    return fallbackGames;
+    return getFallbackGames();
   }
 
   try {
     const { data, error } = await query();
     throwIfError(error);
     const games = (data ?? []) as Game[];
-    return games.length ? games : fallbackGames;
+    return games.length ? games : getFallbackGames();
   } catch {
-    return fallbackGames;
+    return getFallbackGames();
   }
 }
 
@@ -106,7 +124,8 @@ export async function searchGames(query: string): Promise<Game[]> {
 
 export async function getGameByBggId(bggId: number): Promise<Game | null> {
   if (!isSupabaseConfigured) {
-    return fallbackGames.find((game) => game.bgg_id === bggId) ?? null;
+    const games = await getFallbackGames();
+    return games.find((game) => game.bgg_id === bggId) ?? null;
   }
 
   const { data, error } = await supabase
@@ -116,7 +135,8 @@ export async function getGameByBggId(bggId: number): Promise<Game | null> {
     .maybeSingle();
 
   if (error || !data) {
-    return fallbackGames.find((game) => game.bgg_id === bggId) ?? null;
+    const games = await getFallbackGames();
+    return games.find((game) => game.bgg_id === bggId) ?? null;
   }
 
   return data as Game;
@@ -142,7 +162,8 @@ export async function getSilverCircleGames(): Promise<Game[]> {
 
 export async function getGamesNeedingImages(): Promise<Game[]> {
   if (!isSupabaseConfigured) {
-    return fallbackGames.slice(0, 5).map((game) => ({ ...game, cover_image_url: null }));
+    const games = await getFallbackGames();
+    return games.filter((game) => !game.cover_image_url);
   }
 
   const { data, error } = await supabase
