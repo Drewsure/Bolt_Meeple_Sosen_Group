@@ -1,17 +1,25 @@
 import { ArrowRight, Brain, Gamepad2, Sparkles, Trophy, TrendingUp, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { Section } from '../App';
+import { getGames } from '../lib/games';
 
 interface HeroProps {
   onNavigate: (section: Section) => void;
 }
 
-const benefits = [
-  { icon: Brain, number: '01', title: 'Strategic Immersion', copy: 'Negotiate, auction, and alliance-build in English.' },
-  { icon: TrendingUp, number: '02', title: 'Cognitive Mastery', copy: 'Engage your brain with deep Euro-game mechanics.' },
-  { icon: Users, number: '03', title: '289 Games', copy: 'BGG Top 100 collection.' },
-];
-
 export function Hero({ onNavigate }: HeroProps) {
+  const [gameCount, setGameCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    getGames().then((games) => setGameCount(games.length));
+  }, []);
+
+  const benefits = [
+    { icon: Brain, number: '01', title: 'Strategic Immersion', copy: 'Negotiate, auction, and alliance-build in English.' },
+    { icon: TrendingUp, number: '02', title: 'Cognitive Mastery', copy: 'Engage your brain with deep Euro-game mechanics.' },
+    { icon: Users, number: '03', title: `${gameCount ?? '...'} Games`, copy: 'Personal strategy collection.' },
+  ];
+
   return (
     <main className="page-shell relative overflow-hidden">
       <span className="absolute left-[7%] top-40 h-2 w-2 rounded-full bg-[#eaa23e]" />

@@ -12,6 +12,7 @@ import { GuildChallenges } from './components/GuildChallenges';
 import { SilverCircle } from './components/SilverCircle';
 import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
+import { Board } from './components/Board';
 
 export type Section =
   | 'home'
@@ -19,6 +20,7 @@ export type Section =
   | 'armory'
   | 'games'
   | 'dossier'
+  | 'board'
   | 'challenges'
   | 'ranking'
   | 'profile'
@@ -27,7 +29,7 @@ export type Section =
 
 const sectionFromHash = (): Section => {
   const hash = window.location.hash.replace('#', '') as Section;
-  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'dossier', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
   return valid.includes(hash) ? hash : 'home';
 };
 
@@ -55,6 +57,7 @@ function AppContent() {
       {section === 'armory' && <Armory />}
       {section === 'games' && <Reserves />}
       {section === 'dossier' && <Dossier />}
+      {section === 'board' && <Board onNavigate={navigate} />}
       {section === 'challenges' && <GuildChallenges onNavigate={navigate} />}
       {section === 'ranking' && <Leaderboard onNavigate={navigate} />}
       {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} />}

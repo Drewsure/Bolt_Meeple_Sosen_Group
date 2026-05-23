@@ -14,7 +14,7 @@ const navigation: Array<{ label: string; section: Section }> = [
   { label: 'Armory', section: 'armory' },
   { label: 'Reserves - Database', section: 'games' },
   { label: 'Dossier', section: 'dossier' },
-  { label: 'Board', section: 'profile' },
+  { label: 'Board', section: 'board' },
   { label: 'Guild Challenges', section: 'challenges' },
   { label: 'Ranking', section: 'ranking' },
   { label: 'Silver Circle', section: 'silver-circle' },

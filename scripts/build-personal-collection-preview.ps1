@@ -158,7 +158,7 @@ foreach ($row in $rows) {
     min_playtime_minutes = Convert-ToInteger $row.minplaytime
     max_playtime_minutes = Convert-ToInteger $row.maxplaytime
     year_published = Convert-ToInteger $row.yearpublished
-    language_dependence = $null
+    language_dependence = if ([string]::IsNullOrWhiteSpace($row.bgglanguagedependence)) { $null } else { $row.bgglanguagedependence }
     image_id = $null
     cover_image_url = $coverUrl
     source_collection = 'personal-preview'
