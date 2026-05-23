@@ -50,12 +50,12 @@
   }
 
   .page-shell {
-    @apply min-h-screen pt-28 pb-16;
+    @apply min-h-screen pt-[66px] pb-16;
     background: var(--paper);
   }
 
   .container-shell {
-    @apply mx-auto w-full max-w-7xl px-5 md:px-8;
+    @apply mx-auto w-full max-w-6xl px-5 md:px-8;
   }
 
   .eyebrow {
@@ -68,10 +68,54 @@
     color: var(--orange);
   }
 
+  .compact-title {
+    @apply font-display uppercase leading-none tracking-[0.045em];
+    color: var(--orange);
+    font-size: clamp(2.65rem, 5vw, 3.7rem);
+  }
+
   .paper-panel {
     background: var(--paper-strong);
     border: 1px solid var(--line);
     box-shadow: 0 1px 0 rgba(45, 41, 35, 0.03);
+  }
+
+  .reference-panel {
+    background: rgba(255, 253, 248, 0.94);
+    border: 1px solid #efc779;
+    border-radius: 0.55rem;
+  }
+
+  .tactical-banner {
+    border-bottom: 1px solid #efc779;
+    background:
+      linear-gradient(90deg, rgba(250, 242, 228, 0.9), rgba(255, 251, 244, 0.88)),
+      radial-gradient(circle at 85% 35%, rgba(207, 97, 45, 0.17), transparent 24%);
+  }
+
+  .tactical-card {
+    background: #fffdfa;
+    border: 1px solid #efcc83;
+    border-radius: 0.5rem;
+  }
+
+  .pill {
+    @apply inline-flex items-center rounded border px-2 py-0.5 text-[10px] font-bold;
+    border-color: #d7bcff;
+    color: #8056b8;
+    background: #faf7ff;
+  }
+
+  .pill-green {
+    border-color: #8fe2a9;
+    color: #148a4a;
+    background: #effcf3;
+  }
+
+  .pill-blue {
+    border-color: #a8cdfc;
+    color: #3479ce;
+    background: #f2f8ff;
   }
 
   .rule-button {
@@ -98,12 +142,22 @@
   }
 
   .silver-page {
-    background: var(--pink-paper);
-    color: #493c3a;
+    background: #fffaf6;
+    color: #211c1b;
   }
 
   .silver-card {
-    background: #fffaf8;
-    border: 1px solid #efd7d4;
+    background: #fff;
+    border: 1px solid #f2dadd;
+    box-shadow: 0 1px 2px rgba(56, 34, 32, 0.05);
+  }
+
+  .silver-title {
+    font-family: 'Noto Sans JP', Arial, sans-serif;
+    @apply font-bold tracking-tight text-[#201b1c];
+  }
+
+  .silver-section {
+    @apply mx-auto w-full max-w-6xl px-5 py-16 md:px-8 md:py-20;
   }
 }

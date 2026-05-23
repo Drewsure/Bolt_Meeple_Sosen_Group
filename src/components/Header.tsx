@@ -1,7 +1,6 @@
-import { Menu, Shield, UserRound, X } from 'lucide-react';
+import { Gamepad2, Languages, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Section } from '../App';
-import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   currentSection: Section;
@@ -10,18 +9,21 @@ interface HeaderProps {
 }
 
 const navigation: Array<{ label: string; section: Section }> = [
-  { label: 'Situation Room', section: 'situation' },
+  { label: 'Home', section: 'home' },
+  { label: 'Situation', section: 'situation' },
   { label: 'Armory', section: 'armory' },
-  { label: 'Game Database', section: 'games' },
+  { label: 'Reserves - Database', section: 'games' },
   { label: 'Dossier', section: 'dossier' },
+  { label: 'Board', section: 'profile' },
   { label: 'Guild Challenges', section: 'challenges' },
   { label: 'Ranking', section: 'ranking' },
   { label: 'Silver Circle', section: 'silver-circle' },
+  { label: 'Update Images', section: 'admin-images' },
+  { label: 'Profile', section: 'profile' },
 ];
 
 export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps) {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
 
   const select = (section: Section) => {
     onNavigate(section);
@@ -29,31 +31,26 @@ export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps)
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 bg-[#fbf7ef]/95 backdrop-blur border-b border-[#dccfbe]">
-      <div className="border-b border-[#eadfce] bg-[#f5edde]">
-        <div className="container-shell flex h-8 items-center justify-between text-[10px] font-bold uppercase tracking-[0.22em] text-[#776d62]">
-          <span>Tokyo Tabletop Language Guild</span>
-          <span className="hidden sm:block">Strategic English through play</span>
-        </div>
-      </div>
-      <div className="container-shell flex h-[72px] items-center justify-between gap-5">
-        <button onClick={() => select('home')} className="flex items-center gap-3 text-left">
-          <span className="flex h-11 w-11 items-center justify-center border border-[#cf612d] text-[#cf612d]">
-            <Shield size={23} strokeWidth={1.5} />
-          </span>
-          <span>
-            <span className="font-display block text-[25px] leading-5 tracking-[0.09em] text-[#2d2923]">Meeple Sosen</span>
-            <span className="line-label">Group / Founder Standard</span>
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-[#efc779] bg-[#fffdfa]/95 backdrop-blur">
+      <div className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between gap-4 px-5 md:px-8">
+        <button onClick={() => select('home')} className="flex shrink-0 items-center gap-2 text-left">
+          <Gamepad2 size={20} className="text-[#db771e]" />
+          <span className="font-display text-[17px] leading-[0.95] tracking-[0.065em] text-[#ae4f1f]">
+            Meeple Sosen
+            <br />
+            Group
           </span>
         </button>
 
-        <nav className="hidden items-center gap-5 xl:flex">
+        <nav className="hidden flex-1 items-center justify-end gap-3 md:flex">
           {navigation.map(({ label, section }) => (
             <button
-              key={section}
+              key={`${section}-${label}`}
               onClick={() => select(section)}
-              className={`text-[11px] font-bold uppercase tracking-[0.16em] transition-colors ${
-                currentSection === section ? 'text-[#cf612d]' : 'text-[#5d574d] hover:text-[#cf612d]'
+              className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.07em] transition-colors xl:text-[9px] ${
+                currentSection === section && section === 'silver-circle'
+                  ? 'rounded border border-[#ff99b0] px-3 py-2 text-[#ef3d66]'
+                  : currentSection === section ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
               }`}
             >
               {label}
@@ -61,34 +58,21 @@ export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps)
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <button onClick={() => select('profile')} className="rule-button py-2.5">
-            <UserRound size={14} />
-            {user ? 'Profile' : 'Member Login'}
-          </button>
-          <button onClick={onAuthClick} className="rule-button rule-button-primary py-2.5">
-            Join Guild
-          </button>
-        </div>
-
-        <button onClick={() => setOpen(!open)} className="text-[#cf612d] xl:hidden" aria-label="Toggle navigation">
+        <button onClick={onAuthClick} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
+          <Languages size={12} />
+          日本語
+        </button>
+        <button onClick={() => setOpen(!open)} className="text-[#cf612d] md:hidden" aria-label="Toggle navigation">
           {open ? <X /> : <Menu />}
         </button>
       </div>
-
       {open && (
-        <nav className="border-t border-[#dccfbe] bg-[#fffdf8] px-5 pb-5 pt-3 xl:hidden">
-          <div className="mx-auto grid max-w-7xl gap-1 md:grid-cols-2">
-            {navigation.concat([{ label: 'Profile', section: 'profile' }]).map(({ label, section }) => (
-              <button
-                key={section}
-                onClick={() => select(section)}
-                className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.16em] text-[#5d574d]"
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <nav className="grid gap-1 border-t border-[#efc779] bg-[#fffdf8] p-5 sm:grid-cols-2 md:hidden">
+          {navigation.map(({ label, section }) => (
+            <button key={`${section}-${label}`} onClick={() => select(section)} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#5d574d]">
+              {label}
+            </button>
+          ))}
         </nav>
       )}
     </header>

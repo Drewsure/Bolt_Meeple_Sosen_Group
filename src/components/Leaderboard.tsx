@@ -1,41 +1,32 @@
-import { Award, Crown, Medal, Users } from 'lucide-react';
+import { Target, Trophy, Zap } from 'lucide-react';
 import type { Section } from '../App';
 
-export function Leaderboard({ onNavigate }: { onNavigate: (section: Section) => void }) {
+export function Leaderboard(_props: { onNavigate: (section: Section) => void }) {
   return (
     <main className="page-shell">
-      <div className="container-shell">
-        <p className="eyebrow">Ranking / Leaderboard</p>
-        <h1 className="display-title mt-5 text-7xl sm:text-8xl">Guild Standing</h1>
-        <div className="mt-9 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <section className="paper-panel min-h-[360px] p-7">
-            <div className="flex items-center justify-between border-b border-[#eadfce] pb-5">
-              <h2 className="font-display text-3xl tracking-wider">Season Rankings</h2>
-              <span className="line-label">Season Opens Soon</span>
-            </div>
-            <div className="flex min-h-[250px] flex-col items-center justify-center text-center">
-              <Crown className="text-[#cf612d]" size={37} strokeWidth={1.3} />
-              <h3 className="font-editorial mt-6 text-2xl">No rankings recorded yet</h3>
-              <p className="mt-3 max-w-sm text-sm leading-6 text-[#776d62]">Complete a guild challenge or hosted session to establish the first table standings.</p>
-              <button onClick={() => onNavigate('challenges')} className="rule-button mt-7">Browse Challenges</button>
-            </div>
-          </section>
-          <div className="grid gap-4">
-            {[
-              { icon: Medal, title: 'Badges Issued', value: '0', caption: 'Recognition awaiting first missions' },
-              { icon: Award, title: 'XP Recorded', value: '0', caption: 'A clear field for founding members' },
-              { icon: Users, title: 'Guild Tables', value: '0', caption: 'Reserve your opening session' },
-            ].map(({ icon: Icon, title, value, caption }) => (
-              <article key={title} className="paper-panel flex items-center justify-between p-6">
-                <div className="flex items-center gap-4">
-                  <Icon className="text-[#cf612d]" size={23} />
-                  <div><p className="line-label">{title}</p><p className="mt-1 text-sm text-[#776d62]">{caption}</p></div>
-                </div>
-                <p className="metric">{value}</p>
-              </article>
-            ))}
-          </div>
+      <header className="tactical-banner py-11 text-center">
+        <h1 className="compact-title">Global Leaderboard</h1>
+        <p className="mt-4 text-xs text-[#71685d]">Compete anonymously. Rise through the ranks. Dominate the Guild.</p>
+      </header>
+      <div className="mx-auto max-w-3xl px-5 py-9">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[{ icon: Trophy, label: 'Total XP', color: 'text-[#e88d15] border-[#efc779]' }, { icon: Zap, label: 'Victories', color: 'text-[#27b764] border-[#aae4c1]' }, { icon: Target, label: 'Deployment', color: 'text-[#407fe7] border-[#accefc]' }].map(({ icon: Icon, label, color }) => (
+            <article key={label} className={`rounded-lg border bg-white/80 p-7 text-center ${color.split(' ')[1]}`}><Icon className={`mx-auto ${color.split(' ')[0]}`} /><p className="font-display mt-4 text-lg">{label}</p><span className="text-xl">–</span></article>
+          ))}
         </div>
+        <section className="reference-panel mt-8 overflow-hidden">
+          <div className="grid grid-cols-5 bg-[#f9e4c8] px-5 py-3 font-display text-xs text-[#ab531c]"><span>Rank</span><span>Agent</span><span>XP</span><span>Wins</span><span>Games</span></div>
+          <div className="flex min-h-52 flex-col items-center justify-center text-center">
+            <Trophy className="text-[#ecaf38]" size={40} />
+            <h2 className="font-display mt-4 text-lg">The Leaderboard Is Being Populated.</h2>
+            <p className="mt-2 text-xs text-[#84796e]">Be the first to join the Guild.</p>
+          </div>
+        </section>
+        <section className="mt-8 rounded-lg border border-[#edb444] bg-[#fff2cb] p-8 text-center">
+          <h2 className="font-display text-2xl">Rise To The Top</h2>
+          <p className="mt-3 text-xs text-[#766a5d]">Play games, earn victories, and become a leader in the Guild.</p>
+          <div className="mt-5 flex justify-center gap-2 text-[10px]"><span className="rounded border border-[#edba55] p-2">Game Played<br /><b>+10 XP</b></span><span className="rounded border border-[#9ce1ba] p-2">Victory<br /><b>+50 XP</b></span><span className="rounded border border-[#c2aff8] p-2">Master Level<br /><b>+100 XP</b></span></div>
+        </section>
       </div>
     </main>
   );

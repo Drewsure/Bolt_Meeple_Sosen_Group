@@ -1,90 +1,71 @@
-import { ArrowRight, BookOpen, Crown, Database, Swords, Trophy } from 'lucide-react';
+import { ArrowRight, Brain, Gamepad2, Sparkles, Trophy, TrendingUp, Users } from 'lucide-react';
 import type { Section } from '../App';
 
 interface HeroProps {
   onNavigate: (section: Section) => void;
 }
 
-const briefs = [
-  { label: 'Active Catalogue', value: '549', detail: 'BGG records prepared' },
-  { label: 'Training Routes', value: '04', detail: 'Foundation to Master' },
-  { label: 'Open Challenges', value: '03', detail: 'Guild operations' },
+const benefits = [
+  { icon: Brain, number: '01', title: 'Strategic Immersion', copy: 'Negotiate, auction, and alliance-build in English.' },
+  { icon: TrendingUp, number: '02', title: 'Cognitive Mastery', copy: 'Engage your brain with deep Euro-game mechanics.' },
+  { icon: Users, number: '03', title: '289 Games', copy: 'BGG Top 100 collection.' },
 ];
 
 export function Hero({ onNavigate }: HeroProps) {
   return (
-    <main className="page-shell">
-      <section className="container-shell grid gap-8 pt-8 lg:grid-cols-[1.12fr_0.88fr]">
-        <div className="border-l-2 border-[#cf612d] py-7 pl-6 md:pl-10">
-          <p className="eyebrow mb-5">Board Dashboard / Season 01</p>
-          <h1 className="display-title text-7xl sm:text-8xl lg:text-[7.6rem]">
-            Play Well.
-            <br />
-            Speak Boldly.
-          </h1>
-          <p className="font-editorial mt-7 max-w-xl text-xl leading-relaxed text-[#5a5046]">
-            Strategic board games become a living English laboratory: negotiate, calculate,
-            persuade and build your guild record one table at a time.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary">
-              Explore Games <ArrowRight size={15} />
-            </button>
-            <button onClick={() => onNavigate('challenges')} className="rule-button">
-              Enter Challenge
-            </button>
-          </div>
+    <main className="page-shell relative overflow-hidden">
+      <span className="absolute left-[7%] top-40 h-2 w-2 rounded-full bg-[#eaa23e]" />
+      <span className="absolute right-[9%] top-72 h-4 w-4 rounded-full bg-[#edaf4c] blur-[1px]" />
+      <section className="container-shell flex flex-col items-center pb-9 pt-11 text-center">
+        <h1 className="compact-title">The Meeple Sosen Group</h1>
+        <Gamepad2 className="mt-5 text-[#e58921]" size={31} />
+        <p className="font-display mt-5 text-xl tracking-wide text-[#443d37]">Master the Game, Command the Language</p>
+        <p className="mt-6 text-sm font-semibold text-[#c45a25]">Are you tired of “Thin Soup” English lessons?</p>
+        <div className="mt-4 max-w-xl space-y-4 text-xs leading-6 text-[#675c50]">
+          <p>Traditional language learning lacks substance. It lacks stakes. It lacks the “weight” of real world decision-making.</p>
+          <p>At The Meeple Sosen Group (MSG), we believe the best way to master a language is to use it as a weapon of strategy.</p>
+          <p>We combine sophisticated board games with a high-level English curriculum designed for Authors of the Simulation.</p>
         </div>
-
-        <div className="paper-panel relative overflow-hidden p-5 md:p-7">
-          <div className="absolute right-0 top-0 h-24 w-24 bg-[#cf612d]" />
-          <p className="line-label mb-6">Command Board / Live Preview</p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <article className="border border-[#dccfbe] bg-[#f7efe2] p-5 sm:col-span-2">
-              <Swords className="mb-6 text-[#cf612d]" size={31} strokeWidth={1.4} />
-              <p className="font-display text-4xl tracking-wider text-[#2d2923]">Founder's Table</p>
-              <p className="mt-2 text-sm text-[#776d62]">Tonight / Brass: Birmingham / Negotiation intensive</p>
-            </article>
-            <article className="border border-[#dccfbe] bg-white p-4">
-              <Trophy className="mb-5 text-[#cf612d]" size={20} />
-              <p className="line-label">Next Badge</p>
-              <p className="mt-2 font-bold">Table Diplomat</p>
-              <div className="mt-4 h-1 bg-[#eadfce]"><div className="h-full w-2/3 bg-[#cf612d]" /></div>
-            </article>
-            <article className="border border-[#dccfbe] bg-white p-4">
-              <BookOpen className="mb-5 text-[#cf612d]" size={20} />
-              <p className="line-label">Vocabulary</p>
-              <p className="mt-2 font-bold">Auction & Alliance</p>
-              <p className="mt-4 text-xs text-[#776d62]">18 phrases ready</p>
-            </article>
-          </div>
-        </div>
+        <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary mt-7 px-8 py-3">
+          <Sparkles size={13} /> Explore Game Database <ArrowRight size={13} />
+        </button>
       </section>
 
-      <section className="container-shell mt-10 grid gap-4 md:grid-cols-3">
-        {briefs.map((brief) => (
-          <div key={brief.label} className="paper-panel flex items-center justify-between p-6">
-            <div>
-              <p className="line-label">{brief.label}</p>
-              <p className="mt-1 text-sm text-[#776d62]">{brief.detail}</p>
+      <section className="container-shell grid gap-4 md:grid-cols-3">
+        {benefits.map(({ icon: Icon, number, title, copy }) => (
+          <article key={number} className="reference-panel relative p-6">
+            <Icon className="text-[#d56821]" size={28} />
+            <span className="font-display absolute right-5 top-4 text-4xl text-[#f3d28b]">{number}</span>
+            <h2 className="font-display mt-6 text-lg tracking-wide">{title}</h2>
+            <p className="mt-2 text-xs text-[#655c52]">{copy}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="container-shell mt-10 grid max-w-3xl gap-4 md:grid-cols-2">
+        <article className="reference-panel overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#f1d8a5] px-5 py-3">
+            <p className="font-display text-base tracking-wide text-[#9c4b22]">Recommended For You</p>
+            <button onClick={() => onNavigate('games')} className="text-[10px] font-bold text-[#c86123]">View All ›</button>
+          </div>
+          {['The Coal Crisis Negotiation', 'The Catan Diplomatic Alliance', 'The Pandemic Emergency Brief'].map((title, index) => (
+            <div key={title} className="flex items-center gap-3 border-b border-[#f3e2c2] px-5 py-3 text-xs last:border-0">
+              <span className={`pill ${index === 1 ? 'pill-green' : 'pill-blue'}`}>{index === 1 ? 'Foundation' : 'Intermediate'}</span>
+              <span className="font-bold">{title}</span>
             </div>
-            <span className="metric">{brief.value}</span>
+          ))}
+        </article>
+        <article className="reference-panel min-h-52">
+          <div className="flex items-center justify-between border-b border-[#f1d8a5] px-5 py-3">
+            <p className="font-display text-base tracking-wide text-[#9c4b22]">Recent Guild Activity</p>
+            <span className="text-[10px] font-bold text-[#37ac66]">● LIVE</span>
           </div>
-        ))}
+          <p className="py-16 text-center text-xs text-[#9b9389]">No activity yet. Be the first to complete a challenge!</p>
+        </article>
       </section>
-
-      <section className="container-shell mt-10 grid gap-4 lg:grid-cols-3">
-        {[
-          { icon: Database, title: 'Game Database', body: 'Search the imported BGG catalogue with player count, depth and image coverage.', section: 'games' as Section },
-          { icon: Crown, title: 'Guild Challenges', body: 'Complete table missions and build conversational confidence under pressure.', section: 'challenges' as Section },
-          { icon: Trophy, title: 'Ranking Board', body: 'Badges and contribution ranks wait for the guild launch roster.', section: 'ranking' as Section },
-        ].map((card) => (
-          <button key={card.title} onClick={() => onNavigate(card.section)} className="paper-panel p-6 text-left transition hover:border-[#cf612d]">
-            <card.icon className="mb-8 text-[#cf612d]" size={25} strokeWidth={1.5} />
-            <h2 className="font-display text-3xl tracking-wider text-[#cf612d]">{card.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-[#665d52]">{card.body}</p>
-          </button>
-        ))}
+      <section className="reference-panel mx-auto mt-5 max-w-md overflow-hidden">
+        <div className="bg-[#e98b18] px-5 py-3 text-white"><Trophy className="mr-2 inline" size={14} /> <span className="font-display tracking-wide">Guild Leaderboard</span></div>
+        <p className="py-9 text-center text-xs text-[#948878]">No data yet</p>
       </section>
     </main>
   );
