@@ -15,11 +15,11 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
   { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
 ];
 
-const missionFlow: Array<{ label: string; title: string; copy: string; section: Section }> = [
-  { label: '01', title: 'Select The Table', copy: 'Start from Reserves or Armory and choose a game with the right weight, time, and language demands.', section: 'games' },
-  { label: '02', title: 'Assign The Objective', copy: 'Convert the game into a challenge: negotiation, briefing, auction, alliance, or strategic report.', section: 'challenges' },
-  { label: '03', title: 'Deploy English', copy: 'Use table decisions as language prompts: justify, persuade, forecast, compare, and summarize.', section: 'situation' },
-  { label: '04', title: 'Record Progress', copy: 'Route outcomes into profile badges, ranking, and future mission planning.', section: 'profile' },
+const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string }> = [
+  { label: '01', title: 'Choose The Board', verb: 'Browse Reserves', copy: 'Pick a game by time, weight, player count, theme, and language load.', section: 'games', icon: Database, visual: 'Reserve Base' },
+  { label: '02', title: 'Arm The Mission', verb: 'Open Armory', copy: 'Turn the game into a field dossier with a mission statement and skill focus.', section: 'armory', icon: Target, visual: 'Armory Tier' },
+  { label: '03', title: 'Run The Challenge', verb: 'Deploy Challenge', copy: 'Make the table produce English: brief, negotiate, justify, persuade, summarize.', section: 'challenges', icon: Shield, visual: 'Guild Task' },
+  { label: '04', title: 'Log The Result', verb: 'Record Progress', copy: 'Convert the session into XP, badges, ranking movement, and next drills.', section: 'profile', icon: Trophy, visual: 'After Action' },
 ];
 
 function pickRecommended(games: Game[]) {
@@ -45,15 +45,16 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   }, []);
 
   const recommended = useMemo(() => pickRecommended(games), [games]);
+  const heroImages = recommended.slice(0, 4);
   const readyImages = Math.max(games.length - missingImages.length, 0);
   const strategicTitles = games.filter((game) => (game.weight ?? 0) >= 2.5).length;
   const gatewayTitles = games.filter((game) => (game.weight ?? 99) <= 1.8 && (game.duration_minutes ?? 999) <= 45).length;
 
   const operationStats: Array<[string, string, typeof Database, string]> = [
-    ['Available Titles', games.length ? games.length.toString() : '...', Database, 'Total reserve base'],
-    ['Ready Covers', games.length ? `${readyImages}/${games.length}` : '...', Image, 'Visible card image coverage'],
-    ['Strategic Titles', games.length ? strategicTitles.toString() : '...', Target, 'Advanced planning candidates'],
-    ['Gateway Tables', games.length ? gatewayTitles.toString() : '...', Users, 'Fast onboarding candidates'],
+    ['Available Titles', games.length ? games.length.toString() : '...', Database, 'Reserve base'],
+    ['Ready Covers', games.length ? `${readyImages}/${games.length}` : '...', Image, 'Visual readiness'],
+    ['Strategic Titles', games.length ? strategicTitles.toString() : '...', Target, 'Advanced candidates'],
+    ['Gateway Tables', games.length ? gatewayTitles.toString() : '...', Users, 'Fast onboarding'],
   ];
 
   return (
@@ -65,43 +66,40 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
       </header>
 
       <div className="container-shell py-10">
-        <section className="grid gap-4 md:grid-cols-4">
-          {operationStats.map(([label, value, Icon, note]) => (
-            <article key={String(label)} className="reference-panel p-6 text-center">
-              <Icon className="mx-auto text-[#d56d22]" size={25} />
-              <p className="font-display mt-3 text-4xl text-[#d06122]">{value}</p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-wide text-[#776d62]">{label}</p>
-              <p className="mt-1 text-[10px] text-[#948a7e]">{note}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+        <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
           <article className="reference-panel overflow-hidden">
-            <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-4">
-              <p className="eyebrow">Mission Sequence</p>
-              <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">Today&apos;s Deployment Path</h2>
-            </div>
-            <div className="grid gap-3 p-5 md:grid-cols-2">
-              {missionFlow.map((step) => (
-                <button key={step.label} onClick={() => onNavigate(step.section)} className="rounded-xl border border-[#efd39d] bg-white p-5 text-left transition hover:-translate-y-0.5 hover:shadow-md">
-                  <span className="font-display text-3xl text-[#efbd72]">{step.label}</span>
-                  <h3 className="font-display mt-2 text-xl tracking-wide text-[#3d332b]">{step.title}</h3>
-                  <p className="mt-2 text-xs leading-5 text-[#70665b]">{step.copy}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">Open station <ChevronRight size={12} /></span>
-                </button>
-              ))}
+            <div className="relative min-h-80 bg-[#261d17] p-7 text-white">
+              <div className="absolute inset-0 opacity-35">
+                <div className="grid h-full grid-cols-2">
+                  {heroImages.map((game) => (
+                    <div key={game.id} className="overflow-hidden">
+                      {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#24180f] via-[#24180f]/80 to-[#e98b18]/50" />
+              <div className="relative z-10 max-w-xl">
+                <p className="eyebrow text-[#ffd08a]">Operational Process</p>
+                <h2 className="font-display mt-3 text-5xl tracking-wide">Board To Language Pipeline</h2>
+                <p className="mt-5 text-sm leading-7 text-[#ffe8c8]">A mission begins with a game, but it only matters when the table creates useful English: decisions, pressure, persuasion, explanation, and reflection.</p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Start With Reserves</button>
+                  <button onClick={() => onNavigate('armory')} className="rounded border border-[#ffd08a] bg-white/10 px-5 py-3 text-xs font-bold uppercase text-white backdrop-blur hover:bg-white/20">Open Armory</button>
+                </div>
+              </div>
             </div>
           </article>
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-4">
-              <p className="eyebrow">Signal</p>
-              <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">Commander&apos;s Brief</h2>
+              <p className="eyebrow">Commander&apos;s Brief</p>
+              <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">What Happens Here</h2>
             </div>
             <div className="space-y-4 p-5 text-sm leading-7 text-[#6f655a]">
-              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />Choose one game, one language objective, and one visible output. A mission is not “play a game.” A mission is a strategic situation that forces useful English to appear.</p>
-              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />Best starting pattern: one short briefing before play, three required phrases during play, one after-action summary at the end.</p>
+              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />The board is the situation engine. The mission statement gives the table a reason to speak.</p>
+              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />Process rule: choose the game, arm the language objective, run the challenge, then log the result.</p>
+              <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />Every phase below is clickable. Use it as the live control route through the site.</p>
               <button onClick={() => onNavigate('challenges')} className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
                 <Sparkles size={14} /> Initialize Challenge Route
               </button>
@@ -109,7 +107,49 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </article>
         </section>
 
-        <h2 className="compact-title mt-12 text-center text-3xl">Operations</h2>
+        <section className="mt-8 grid gap-4 md:grid-cols-4">
+          {operationStats.map(([label, value, Icon, note]) => (
+            <article key={String(label)} className="reference-panel p-5 text-center">
+              <Icon className="mx-auto text-[#d56d22]" size={23} />
+              <p className="font-display mt-3 text-3xl text-[#d06122]">{value}</p>
+              <p className="mt-2 text-xs font-bold uppercase tracking-wide text-[#776d62]">{label}</p>
+              <p className="mt-1 text-[10px] text-[#948a7e]">{note}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-10">
+          <div className="mb-5 text-center">
+            <p className="eyebrow justify-center">Phase Map</p>
+            <h2 className="compact-title mt-2 text-3xl">Mission Route</h2>
+            <p className="mt-2 text-xs text-[#746b60]">Follow the orange line from selection to after-action learning.</p>
+          </div>
+          <div className="relative grid gap-4 lg:grid-cols-4">
+            <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
+            {missionFlow.map((step) => {
+              const Icon = step.icon;
+              const phaseImage = step.label === '01' ? heroImages[0]?.cover_image_url : step.label === '02' ? heroImages[1]?.cover_image_url : step.label === '03' ? heroImages[2]?.cover_image_url : heroImages[3]?.cover_image_url;
+              return (
+                <button key={step.label} onClick={() => onNavigate(step.section)} className="reference-panel relative overflow-hidden text-left transition hover:-translate-y-1 hover:shadow-xl">
+                  <div className="relative h-32 bg-[#fff0ce]">
+                    {phaseImage ? <img src={phaseImage} alt="" className="h-full w-full object-cover" /> : null}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b2119]/80 to-transparent" />
+                    <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
+                    <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
+                  </div>
+                  <div className="p-5">
+                    <Icon className="text-[#dc791d]" size={24} />
+                    <h3 className="font-display mt-3 text-xl tracking-wide text-[#3d332b]">{step.title}</h3>
+                    <p className="mt-2 text-xs leading-5 text-[#70665b]">{step.copy}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">{step.verb} <ChevronRight size={12} /></span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <h2 className="compact-title mt-12 text-center text-3xl">Navigation Stations</h2>
         <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-2 lg:grid-cols-3">
           {commands.map(({ icon: Icon, label, copy, section, tone }) => (
             <button key={label} onClick={() => onNavigate(section)} className={`rounded-xl border p-6 text-left transition-transform hover:-translate-y-0.5 hover:shadow-md ${tone}`}>
