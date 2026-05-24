@@ -71,6 +71,17 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
     setPublishing(true);
     setMessage('');
     try {
+      if (!isSupabaseConfigured || !user) {
+        const updated = {
+          ...selectedGame,
+          cover_image_url: previewUrl ?? selectedGame.cover_image_url,
+          description: description.trim() || selectedGame.description,
+        };
+        onUpdated(updated);
+        setMessage(`Preview staged for ${updated.title}. Note: ${requirement}`);
+        return;
+      }
+
       const updated = await publishManualGameUpdate(selectedGame, imageFile, description);
       onUpdated(updated);
       setImageFile(null);
@@ -83,7 +94,9 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
     }
   };
 
-  const canPublish = isSupabaseConfigured && Boolean(user) && Boolean(selectedGame) && (Boolean(imageFile) || description.trim() !== (selectedGame?.description ?? '')) && !publishing;
+  const changed = Boolean(imageFile) || Boolean(requirement.trim()) || description.trim() !== (selectedGame?.description ?? '');
+  const canPublish = Boolean(selectedGame) && changed && !publishing;
+  const buttonLabel = isSupabaseConfigured && user ? 'Publish Manual Update' : 'Stage Preview Update';
 
   return (
     <section className="reference-panel mx-auto mt-8 max-w-5xl overflow-hidden bg-[#fffdf9]">
@@ -156,7 +169,7 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
 
           <button type="button" disabled={!canPublish} onClick={publish} className="rule-button rule-button-primary mt-5 w-full disabled:cursor-not-allowed disabled:border-[#cfbea3] disabled:bg-[#e7ded0] disabled:text-[#80766a]">
             {publishing ? <Loader2 size={15} className="animate-spin" /> : imageFile ? <ImagePlus size={15} /> : <Check size={15} />}
-            Publish Manual Update
+            {buttonLabel}
           </button>
           <p className="mt-3 text-[11px] leading-5 text-[#766b60]">
             {isSupabaseConfigured && user
