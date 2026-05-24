@@ -28,6 +28,30 @@ CREATE POLICY "Admins can repair catalogue cards"
   USING ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
   WITH CHECK ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
+CREATE TABLE IF NOT EXISTS game_admin_update_notes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  game_id uuid NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+  requirement_note text NOT NULL,
+  changed_cover_image boolean NOT NULL DEFAULT false,
+  changed_description boolean NOT NULL DEFAULT false,
+  created_by uuid REFERENCES auth.users(id) ON DELETE SET NULL DEFAULT auth.uid(),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE game_admin_update_notes ENABLE ROW LEVEL SECURITY;
+
+GRANT SELECT, INSERT ON game_admin_update_notes TO authenticated;
+
+DROP POLICY IF EXISTS "Admins can read game update notes" ON game_admin_update_notes;
+CREATE POLICY "Admins can read game update notes"
+  ON game_admin_update_notes FOR SELECT TO authenticated
+  USING ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+DROP POLICY IF EXISTS "Admins can record game update notes" ON game_admin_update_notes;
+CREATE POLICY "Admins can record game update notes"
+  ON game_admin_update_notes FOR INSERT TO authenticated
+  WITH CHECK ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('game-covers', 'game-covers', true)
 ON CONFLICT (id) DO UPDATE SET public = EXCLUDED.public;

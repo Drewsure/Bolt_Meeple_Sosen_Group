@@ -11,7 +11,7 @@ function fileExtension(file: File) {
   return extension && /^[a-z0-9]+$/.test(extension) ? extension : 'jpg';
 }
 
-export async function publishManualGameUpdate(game: Game, imageFile: File | null, description: string) {
+export async function publishManualGameUpdate(game: Game, imageFile: File | null, description: string, requirement: string) {
   if (!isSupabaseConfigured) {
     throw new Error('Supabase is not configured for permanent manual updates.');
   }
@@ -51,6 +51,22 @@ export async function publishManualGameUpdate(game: Game, imageFile: File | null
 
   if (error) {
     throw new Error(`Manual update was not saved: ${error.message}`);
+  }
+
+  const note = requirement.trim();
+  if (note) {
+    const { error: noteError } = await supabase
+      .from('game_admin_update_notes')
+      .insert({
+        game_id: game.id,
+        requirement_note: note,
+        changed_cover_image: Boolean(imageFile),
+        changed_description: Boolean(description.trim()),
+      });
+
+    if (noteError) {
+      throw new Error(`The card update was saved, but the requirement note was not recorded: ${noteError.message}`);
+    }
   }
 
   return data as Game;

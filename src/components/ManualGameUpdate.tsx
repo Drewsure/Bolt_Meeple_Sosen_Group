@@ -99,11 +99,11 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
         return;
       }
 
-      const updated = await publishManualGameUpdate(selectedGame, imageFile, description);
+      const updated = await publishManualGameUpdate(selectedGame, imageFile, description, requirement);
       onUpdated(updated);
       setImageFile(null);
       setPreviewUrl(null);
-      setMessage(`Saved update for ${updated.title}. Note: ${requirement}`);
+      setMessage(`Permanent update saved for ${updated.title}. Requirement note recorded: ${requirement}`);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Manual update could not be saved.');
     } finally {
@@ -113,7 +113,7 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
 
   const changed = Boolean(imageFile) || Boolean(requirement.trim()) || description.trim() !== (selectedGame?.description ?? '');
   const canPublish = Boolean(selectedGame) && changed && !publishing;
-  const buttonLabel = isSupabaseConfigured && user ? 'Publish Manual Update' : 'Stage Preview Update';
+  const buttonLabel = isSupabaseConfigured && user ? 'Save Permanent Update' : 'Stage Local Preview Only';
 
   return (
     <section className="reference-panel mx-auto mt-8 max-w-5xl overflow-hidden bg-[#fffdf9]">
@@ -190,8 +190,8 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
           </button>
           <p className="mt-3 text-[11px] leading-5 text-[#766b60]">
             {isSupabaseConfigured && user
-              ? 'Manual updates are saved through admin-only database and storage rules.'
-              : 'Preview mode: choose the image and write the note now; permanent publishing requires a signed-in approved administrator.'}
+              ? 'Permanent mode: image, card brief, and requirement note are saved through admin-only Supabase rules.'
+              : 'Local preview only: this is stored in this browser for testing. Permanent saving requires Supabase plus a signed-in approved administrator.'}
           </p>
           {message && <p className="mt-4 rounded border border-[#e7c987] bg-[#fff9ed] p-3 text-sm text-[#665c50]">{message}</p>}
         </div>
