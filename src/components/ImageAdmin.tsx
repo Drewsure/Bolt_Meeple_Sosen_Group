@@ -53,6 +53,11 @@ export function ImageAdmin() {
     setMissing((current) => current.filter((game) => game.id !== updated.id));
   };
 
+  const acceptDeletedGame = (deleted: Game) => {
+    setGames((current) => current.filter((game) => game.id !== deleted.id));
+    setMissing((current) => current.filter((game) => game.id !== deleted.id));
+  };
+
   return (
     <main className="page-shell min-h-screen bg-[radial-gradient(circle_at_center,#fff7e7,#fbf7ef)]">
       {!unlocked ? (
@@ -111,7 +116,7 @@ export function ImageAdmin() {
               <div className="mt-5 rounded border border-[#dbe9d4] bg-[#f6fff4] p-5 text-sm text-[#4d6948]">All visible catalogue cards currently have images.</div>
             )}
           </section>
-          <ManualGameUpdate games={games} onUpdated={acceptUpdatedGame} focusTitle={repairFocus} onFocusHandled={() => setRepairFocus('')} />
+          <ManualGameUpdate games={games} onUpdated={acceptUpdatedGame} onDeleted={acceptDeletedGame} focusTitle={repairFocus} onFocusHandled={() => setRepairFocus('')} />
           <GameIntake games={games} onPublished={acceptPublishedGames} />
           <footer className="mt-12 flex justify-between border-t border-[#f1d392] bg-[#fffdfa] px-5 py-8 text-sm text-[#6f6458]"><span><strong className="font-display text-[#b85422]">Meeple Sosen Group</strong><br />Nishi-ku, Fukuoka, Japan</span><span className="text-right">Contact<br /><b className="text-[#c75b22]">ministarenglish@mail.com</b></span></footer>
         </>

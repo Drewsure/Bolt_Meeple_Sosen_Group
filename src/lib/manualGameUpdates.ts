@@ -71,3 +71,20 @@ export async function publishManualGameUpdate(game: Game, imageFile: File | null
 
   return data as Game;
 }
+
+export async function deleteManualGame(game: Game) {
+  if (!isSupabaseConfigured) {
+    throw new Error('Supabase is not configured for permanent catalogue deletion.');
+  }
+
+  const { error } = await supabase
+    .from('games')
+    .delete()
+    .eq('id', game.id);
+
+  if (error) {
+    throw new Error(`The game was not deleted: ${error.message}`);
+  }
+
+  return game;
+}

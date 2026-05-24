@@ -1,8 +1,8 @@
 import { ChangeEvent, DragEvent, useEffect, useMemo, useState } from 'react';
-import { Check, ImagePlus, Loader2, Search, UploadCloud } from 'lucide-react';
+import { Check, ImagePlus, Loader2, Search, Trash2, UploadCloud } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { buildGameBrief } from '../lib/gameBriefs';
-import { publishManualGameUpdate } from '../lib/manualGameUpdates';
+import { deleteManualGame, publishManualGameUpdate } from '../lib/manualGameUpdates';
 import { clearPreviewGameUpdate, getPreviewGameUpdate, savePreviewGameUpdate, subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { Game } from '../types/database';
@@ -10,6 +10,7 @@ import type { Game } from '../types/database';
 interface ManualGameUpdateProps {
   games: Game[];
   onUpdated: (game: Game) => void;
+  onDeleted: (game: Game) => void;
   focusTitle?: string;
   onFocusHandled?: () => void;
 }
@@ -23,7 +24,7 @@ function fileToDataUrl(file: File) {
   });
 }
 
-export function ManualGameUpdate({ games, onUpdated, focusTitle, onFocusHandled }: ManualGameUpdateProps) {
+export function ManualGameUpdate({ games, onUpdated, onDeleted, focusTitle, onFocusHandled }: ManualGameUpdateProps) {
   const { user } = useAuth();
   const [query, setQuery] = useState('Camel Up');
   const [selectedId, setSelectedId] = useState('');
@@ -33,6 +34,7 @@ export function ManualGameUpdate({ games, onUpdated, focusTitle, onFocusHandled 
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
   const [publishing, setPublishing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [draggingImage, setDraggingImage] = useState(false);
   const [previewVersion, setPreviewVersion] = useState(0);
 
@@ -136,6 +138,38 @@ export function ManualGameUpdate({ games, onUpdated, focusTitle, onFocusHandled 
     setMessage(`Local preview cleared for ${selectedGame.title}. The card is back to the saved catalogue version.`);
   };
 
+  const deleteGame = async () => {
+    if (!selectedGame) return;
+    const mode = isSupabaseConfigured && user ? 'permanently delete' : 'hide from this local preview';
+    const confirmed = window.confirm(`Are you sure you want to ${mode} "${selectedGame.title}"?`);
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setMessage('');
+    try {
+      if (!isSupabaseConfigured || !user) {
+        savePreviewGameUpdate({
+          id: selectedGame.id,
+          deleted: true,
+          requirement: requirement.trim() || `Delete requested for ${selectedGame.title}.`,
+        });
+        onDeleted(selectedGame);
+        setSelectedId('');
+        setMessage(`${selectedGame.title} is hidden from this local preview. Clear browser preview storage to restore it.`);
+        return;
+      }
+
+      await deleteManualGame(selectedGame);
+      onDeleted(selectedGame);
+      setSelectedId('');
+      setMessage(`${selectedGame.title} was permanently deleted from the catalogue.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'The game could not be deleted.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const changed = Boolean(imageFile) || Boolean(requirement.trim()) || description.trim() !== (selectedGame?.description ?? '');
   const canPublish = Boolean(selectedGame) && changed && !publishing;
   const buttonLabel = isSupabaseConfigured && user ? 'Save Permanent Update' : 'Stage Local Preview Only';
@@ -218,6 +252,10 @@ export function ManualGameUpdate({ games, onUpdated, focusTitle, onFocusHandled 
               Clear Local Preview for This Game
             </button>
           )}
+          <button type="button" disabled={!selectedGame || deleting} onClick={deleteGame} className="mt-3 flex w-full items-center justify-center gap-2 rounded border border-[#f0a0a0] bg-[#fff7f4] px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#b8322b] disabled:cursor-not-allowed disabled:border-[#d9d0c7] disabled:text-[#9a9188]">
+            {deleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+            {isSupabaseConfigured && user ? 'Delete Game Permanently' : 'Hide Game From Local Preview'}
+          </button>
           <p className="mt-3 text-[11px] leading-5 text-[#766b60]">
             {isSupabaseConfigured && user
               ? 'Permanent mode: image, card brief, and requirement note are saved through admin-only Supabase rules.'

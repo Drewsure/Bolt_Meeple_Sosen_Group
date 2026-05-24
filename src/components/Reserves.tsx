@@ -1,4 +1,4 @@
-import { RotateCcw, Search, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { BookOpen, Clock, RotateCcw, Search, SlidersHorizontal, Sparkles, Star, Trophy, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames } from '../lib/games';
@@ -160,6 +160,7 @@ export function Reserves() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   useEffect(() => {
     const loadGames = () => {
@@ -235,7 +236,7 @@ export function Reserves() {
         )}
         <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {filtered.map((game) => (
-            <article key={game.id} className="tactical-card overflow-hidden">
+            <button key={game.id} type="button" onClick={() => setSelectedGame(game)} className="tactical-card overflow-hidden text-left transition hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#e28a24]">
               <div className="relative h-32 bg-[#fff0ce]">
                 {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center px-4 text-center font-display text-3xl text-[#ae6d3f]">{game.title}</div>}
                 <span className="pill pill-blue absolute left-2 top-2">{game.complexity_level || 'Beginner'}</span>
@@ -250,10 +251,84 @@ export function Reserves() {
                   <span>{game.bgg_rank ? `#${game.bgg_rank}` : '-'}</span>
                 </div>
               </div>
-            </article>
+            </button>
           ))}
         </div>
       </div>
+
+      {selectedGame && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#2b2119]/70 px-4 py-8 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="game-detail-title">
+          <section className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#e7bd70] bg-[#fffdf8] shadow-2xl">
+            <div className="flex items-start justify-between gap-4 border-b border-[#efd49d] bg-[#fff4df] px-6 py-5">
+              <div>
+                <p className="eyebrow">Catalogue Detail Card</p>
+                <h2 id="game-detail-title" className="font-display mt-2 text-4xl tracking-wide text-[#bf5b24]">{selectedGame.title}</h2>
+                {selectedGame.original_name && selectedGame.original_name !== selectedGame.title && <p className="mt-1 text-sm text-[#7b7065]">Original title: {selectedGame.original_name}</p>}
+              </div>
+              <button type="button" onClick={() => setSelectedGame(null)} className="rounded-full border border-[#e5bb73] bg-white p-2 text-[#af5b24]" aria-label="Close game detail">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="grid gap-6 p-6 lg:grid-cols-[320px_1fr]">
+              <div>
+                <div className="overflow-hidden rounded-xl border border-[#ecd29d] bg-[#fff0ce]">
+                  {selectedGame.cover_image_url ? (
+                    <img src={selectedGame.cover_image_url} alt="" className="h-80 w-full object-cover" />
+                  ) : (
+                    <div className="flex h-80 items-center justify-center px-5 text-center font-display text-5xl tracking-wide text-[#ae6d3f]">{selectedGame.title}</div>
+                  )}
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-center">
+                  <div className="rounded border border-[#efd49d] bg-white p-3"><Users className="mx-auto text-[#dd8424]" size={17} /><p className="mt-1 text-xs text-[#776b60]">{selectedGame.min_players ?? '-'}-{selectedGame.max_players ?? '-'} players</p></div>
+                  <div className="rounded border border-[#efd49d] bg-white p-3"><Clock className="mx-auto text-[#4b86d9]" size={17} /><p className="mt-1 text-xs text-[#776b60]">{selectedGame.duration_minutes ?? '-'} minutes</p></div>
+                  <div className="rounded border border-[#efd49d] bg-white p-3"><Star className="mx-auto text-[#e0a328]" size={17} /><p className="mt-1 text-xs text-[#776b60]">{selectedGame.weight?.toFixed(2) ?? '-'} weight</p></div>
+                  <div className="rounded border border-[#efd49d] bg-white p-3"><Trophy className="mx-auto text-[#d06a2c]" size={17} /><p className="mt-1 text-xs text-[#776b60]">{selectedGame.bgg_rank ? `#${selectedGame.bgg_rank}` : 'Unranked'}</p></div>
+                </div>
+              </div>
+
+              <div>
+                <div className="rounded-xl border border-[#efd49d] bg-white p-5">
+                  <h3 className="flex items-center gap-2 font-display text-2xl tracking-wide text-[#3d332b]"><BookOpen size={18} className="text-[#d06a2c]" /> Brief</h3>
+                  <p className="mt-3 text-sm leading-7 text-[#6f655a]">{buildGameBrief(selectedGame)}</p>
+                </div>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {[
+                    ['Complexity', selectedGame.complexity_level || 'Not rated'],
+                    ['Language Dependence', selectedGame.language_dependence || 'Not rated'],
+                    ['Type', selectedGame.item_type || 'Game'],
+                    ['Year Published', selectedGame.year_published?.toString() || 'Unknown'],
+                    ['BGG ID', selectedGame.bgg_id?.toString() || 'Not stored'],
+                    ['BGG Average', selectedGame.bgg_average?.toFixed(2) || selectedGame.average_rating?.toFixed(2) || 'Not rated'],
+                    ['Playtime Range', `${selectedGame.min_playtime_minutes ?? selectedGame.duration_minutes ?? '-'}-${selectedGame.max_playtime_minutes ?? selectedGame.duration_minutes ?? '-'} minutes`],
+                    ['Source', selectedGame.source_collection || 'Catalogue'],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded border border-[#efd49d] bg-[#fffaf1] p-4">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#9b7652]">{label}</p>
+                      <p className="mt-1 text-sm font-semibold text-[#3f352d]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {selectedGame.raw_data && Object.keys(selectedGame.raw_data).length > 0 && (
+                  <details className="mt-4 rounded-xl border border-[#e5d0a8] bg-white p-4">
+                    <summary className="cursor-pointer font-display text-xl tracking-wide text-[#bf5b24]">Imported Collection Notes</summary>
+                    <dl className="mt-4 grid gap-2 text-xs text-[#6f655a] md:grid-cols-2">
+                      {Object.entries(selectedGame.raw_data).slice(0, 12).map(([key, value]) => (
+                        <div key={key} className="rounded bg-[#fff9ee] p-3">
+                          <dt className="font-bold uppercase tracking-wide text-[#9b7652]">{key}</dt>
+                          <dd className="mt-1 break-words">{value || '-'}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </details>
+                )}
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

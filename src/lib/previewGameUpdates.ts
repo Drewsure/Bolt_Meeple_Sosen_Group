@@ -4,6 +4,7 @@ const STORAGE_KEY = 'meeple-sosen-preview-game-updates';
 
 export type PreviewGameUpdate = Partial<Pick<Game, 'cover_image_url' | 'description'>> & {
   id: string;
+  deleted?: boolean;
   requirement?: string;
   updated_at?: string;
 };
@@ -23,10 +24,12 @@ export function applyPreviewGameUpdates(games: Game[]) {
   const updates = new Map(readUpdates().map((update) => [update.id, update]));
   if (!updates.size) return games;
 
-  return games.map((game) => {
-    const update = updates.get(game.id);
-    return update ? { ...game, ...update } : game;
-  });
+  return games
+    .filter((game) => !updates.get(game.id)?.deleted)
+    .map((game) => {
+      const update = updates.get(game.id);
+      return update ? { ...game, ...update } : game;
+    });
 }
 
 export function getPreviewGameUpdate(id: string) {
