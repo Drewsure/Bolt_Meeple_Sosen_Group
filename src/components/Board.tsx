@@ -15,11 +15,11 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
   { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
 ];
 
-const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string }> = [
-  { label: '01', title: 'Choose The Board', verb: 'Browse Reserves', copy: 'Pick a game by time, weight, player count, theme, and language load.', section: 'games', icon: Database, visual: 'Reserve Base' },
-  { label: '02', title: 'Arm The Mission', verb: 'Open Armory', copy: 'Turn the game into a field dossier with a mission statement and skill focus.', section: 'armory', icon: Target, visual: 'Armory Tier' },
-  { label: '03', title: 'Run The Challenge', verb: 'Deploy Challenge', copy: 'Make the table produce English: brief, negotiate, justify, persuade, summarize.', section: 'challenges', icon: Shield, visual: 'Guild Task' },
-  { label: '04', title: 'Log The Result', verb: 'Record Progress', copy: 'Convert the session into XP, badges, ranking movement, and next drills.', section: 'profile', icon: Trophy, visual: 'After Action' },
+const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string }> = [
+  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne' },
+  { label: '02', title: 'Give It A Mission', verb: 'Open Armory', copy: 'Decide what English the game should create: negotiate, explain, persuade, brief, or summarize.', section: 'armory', icon: Target, visual: 'Mission Statement', example: 'Brass: Birmingham' },
+  { label: '03', title: 'Play With A Task', verb: 'Deploy Challenge', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'challenges', icon: Shield, visual: 'Live Challenge', example: 'Pandemic' },
+  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars' },
 ];
 
 function pickRecommended(games: Game[]) {
@@ -45,6 +45,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   }, []);
 
   const recommended = useMemo(() => pickRecommended(games), [games]);
+  const catalogueByTitle = useMemo(() => new Map(games.map((game) => [game.title.toLowerCase(), game])), [games]);
   const readyImages = Math.max(games.length - missingImages.length, 0);
   const strategicTitles = games.filter((game) => (game.weight ?? 0) >= 2.5).length;
   const gatewayTitles = games.filter((game) => (game.weight ?? 99) <= 1.8 && (game.duration_minutes ?? 999) <= 45).length;
@@ -129,6 +130,28 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </article>
         </section>
 
+        <section className="reference-panel mt-8 p-5">
+          <div className="mb-4 text-center">
+            <p className="eyebrow justify-center">Plain English Version</p>
+            <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">How To Use This Page</h2>
+            <p className="mt-2 text-xs text-[#746b60]">The Command Board is just the route from “we have a game” to “we used English for a real reason.”</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-4">
+            {[
+              ['1', 'Pick a game', 'Choose what you will play.'],
+              ['2', 'Give it a job', 'Decide what English skill it should train.'],
+              ['3', 'Play with pressure', 'Use the game situation to force useful speaking.'],
+              ['4', 'Write the result', 'Record what was learned and what comes next.'],
+            ].map(([number, title, copy]) => (
+              <div key={number} className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
+                <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#ed941d] font-display text-xl text-white">{number}</span>
+                <p className="font-display mt-3 text-lg tracking-wide text-[#3d332b]">{title}</p>
+                <p className="mt-1 text-xs leading-5 text-[#70665b]">{copy}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="mt-8 grid gap-4 md:grid-cols-4">
           {operationStats.map(([label, value, Icon, note]) => (
             <article key={String(label)} className="reference-panel p-5 text-center">
@@ -150,17 +173,16 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
             {missionFlow.map((step) => {
               const Icon = step.icon;
+              const exampleGame = catalogueByTitle.get(step.example.toLowerCase());
               return (
                 <button key={step.label} onClick={() => onNavigate(step.section)} className="reference-panel relative overflow-hidden text-left transition hover:-translate-y-1 hover:shadow-xl">
-                  <div className="relative h-36 overflow-hidden bg-[#fff4dd]">
-                    <div className={`absolute inset-0 ${step.label === '01' ? 'bg-[radial-gradient(circle_at_25%_35%,#fff,#ffe0a3_34%,transparent_36%),linear-gradient(135deg,#fff8ea,#f5b95f)]' : step.label === '02' ? 'bg-[radial-gradient(circle_at_70%_30%,#fff,#cfe2ff_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#8fb8f4)]' : step.label === '03' ? 'bg-[radial-gradient(circle_at_35%_30%,#fff,#c9f4d7_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#64cf8a)]' : 'bg-[radial-gradient(circle_at_65%_35%,#fff,#ffd0c2_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#ee8b61)]'}`} />
-                    <div className="absolute inset-x-5 top-16 h-2 rounded-full bg-white/80" />
-                    <div className="absolute left-8 top-11 h-12 w-12 rounded-lg border border-white bg-[#2f251e] shadow-md" />
-                    <div className="absolute left-24 top-11 h-12 w-12 rounded-lg border border-white bg-[#ed941d] shadow-md" />
-                    <div className="absolute left-40 top-11 h-12 w-12 rounded-lg border border-white bg-white shadow-md" />
-                    <Icon className="absolute right-7 top-8 text-[#2f251e]" size={42} />
+                  <div className="relative h-40 overflow-hidden bg-[#fff4dd]">
+                    {exampleGame?.cover_image_url ? <img src={exampleGame.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
+                    <div className={`absolute inset-0 ${step.label === '01' ? 'bg-gradient-to-br from-[#2f251e]/25 via-[#f5b95f]/20 to-[#2f251e]/70' : step.label === '02' ? 'bg-gradient-to-br from-[#1e386b]/20 via-[#8fb8f4]/20 to-[#1e386b]/75' : step.label === '03' ? 'bg-gradient-to-br from-[#1f5b35]/20 via-[#64cf8a]/20 to-[#1f5b35]/75' : 'bg-gradient-to-br from-[#6b2d1e]/20 via-[#ee8b61]/20 to-[#6b2d1e]/75'}`} />
+                    <Icon className="absolute right-7 top-8 text-white drop-shadow" size={42} />
                     <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
                     <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
+                    <span className="absolute bottom-3 right-4 rounded-full border border-white/70 bg-[#2f251e]/80 px-3 py-1 text-[10px] font-bold uppercase text-white">{step.example}</span>
                   </div>
                   <div className="p-5">
                     <Icon className="text-[#dc791d]" size={24} />
