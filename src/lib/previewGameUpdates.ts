@@ -29,11 +29,24 @@ export function applyPreviewGameUpdates(games: Game[]) {
   });
 }
 
+export function getPreviewGameUpdate(id: string) {
+  return readUpdates().find((update) => update.id === id) ?? null;
+}
+
 export function savePreviewGameUpdate(update: PreviewGameUpdate) {
   if (typeof window === 'undefined') return [];
 
   const updates = readUpdates().filter((current) => current.id !== update.id);
   const next = [...updates, { ...update, updated_at: new Date().toISOString() }];
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  window.dispatchEvent(new Event('meeple-sosen-preview-game-updates'));
+  return next;
+}
+
+export function clearPreviewGameUpdate(id: string) {
+  if (typeof window === 'undefined') return [];
+
+  const next = readUpdates().filter((current) => current.id !== id);
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   window.dispatchEvent(new Event('meeple-sosen-preview-game-updates'));
   return next;

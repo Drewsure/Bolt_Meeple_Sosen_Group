@@ -3,13 +3,15 @@ import { Check, ImagePlus, Loader2, Search, UploadCloud } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { publishManualGameUpdate } from '../lib/manualGameUpdates';
-import { savePreviewGameUpdate } from '../lib/previewGameUpdates';
+import { clearPreviewGameUpdate, getPreviewGameUpdate, savePreviewGameUpdate, subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { Game } from '../types/database';
 
 interface ManualGameUpdateProps {
   games: Game[];
   onUpdated: (game: Game) => void;
+  focusTitle?: string;
+  onFocusHandled?: () => void;
 }
 
 function fileToDataUrl(file: File) {
@@ -21,7 +23,7 @@ function fileToDataUrl(file: File) {
   });
 }
 
-export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
+export function ManualGameUpdate({ games, onUpdated, focusTitle, onFocusHandled }: ManualGameUpdateProps) {
   const { user } = useAuth();
   const [query, setQuery] = useState('Camel Up');
   const [selectedId, setSelectedId] = useState('');
@@ -32,6 +34,7 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
   const [message, setMessage] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [draggingImage, setDraggingImage] = useState(false);
+  const [previewVersion, setPreviewVersion] = useState(0);
 
   const matches = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -44,6 +47,20 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
     () => games.find((game) => game.id === selectedId) ?? matches[0] ?? null,
     [games, matches, selectedId],
   );
+  const stagedPreview = useMemo(
+    () => selectedGame ? getPreviewGameUpdate(selectedGame.id) : null,
+    [selectedGame, previewVersion],
+  );
+
+  useEffect(() => subscribeToPreviewGameUpdates(() => setPreviewVersion((current) => current + 1)), []);
+
+  useEffect(() => {
+    if (!focusTitle) return;
+    setQuery(focusTitle);
+    setSelectedId('');
+    setMessage(`Ready to repair ${focusTitle}.`);
+    onFocusHandled?.();
+  }, [focusTitle, onFocusHandled]);
 
   useEffect(() => {
     if (!selectedId && matches[0]) {
@@ -109,6 +126,14 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
     } finally {
       setPublishing(false);
     }
+  };
+
+  const clearLocalPreview = () => {
+    if (!selectedGame) return;
+    clearPreviewGameUpdate(selectedGame.id);
+    setImageFile(null);
+    setPreviewUrl(null);
+    setMessage(`Local preview cleared for ${selectedGame.title}. The card is back to the saved catalogue version.`);
   };
 
   const changed = Boolean(imageFile) || Boolean(requirement.trim()) || description.trim() !== (selectedGame?.description ?? '');
@@ -188,6 +213,11 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
             {publishing ? <Loader2 size={15} className="animate-spin" /> : imageFile ? <ImagePlus size={15} /> : <Check size={15} />}
             {buttonLabel}
           </button>
+          {stagedPreview && (
+            <button type="button" onClick={clearLocalPreview} className="mt-3 w-full rounded border border-[#d2b174] bg-white px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#9d5b1e]">
+              Clear Local Preview for This Game
+            </button>
+          )}
           <p className="mt-3 text-[11px] leading-5 text-[#766b60]">
             {isSupabaseConfigured && user
               ? 'Permanent mode: image, card brief, and requirement note are saved through admin-only Supabase rules.'

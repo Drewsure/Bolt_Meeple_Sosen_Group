@@ -17,6 +17,7 @@ export function ImageAdmin() {
   const [games, setGames] = useState<Game[]>([]);
   const [missing, setMissing] = useState<Game[]>([]);
   const [message, setMessage] = useState('');
+  const [repairFocus, setRepairFocus] = useState('');
   const previewCounts = {
     total: games.length,
     identified: games.filter((game) => game.bgg_id).length,
@@ -80,7 +81,37 @@ export function ImageAdmin() {
             <div className="mt-7 space-y-3 text-sm text-[#9ba2af]"><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Pulls official box-art from BoardGameGeek API</p><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Only updates games with a stored BGG ID</p><p><AlertTriangle className="mr-2 inline text-[#f2a821]" size={16} />Rate-limited to 1.2 s/game — large libraries take several minutes</p></div>
             {message && <p className="mt-6 rounded border border-[#657184] bg-[#303846] p-4 text-sm text-[#dce1eb]">{message}</p>}
           </section>
-          <ManualGameUpdate games={games} onUpdated={acceptUpdatedGame} />
+          <section className="reference-panel mx-auto mt-8 max-w-5xl bg-[#fffdf9] p-7">
+            <div className="md:flex md:items-end md:justify-between">
+              <div>
+                <p className="eyebrow">Image Work Queue</p>
+                <h2 className="font-display mt-2 text-3xl tracking-wide text-[#c55c27]">Cards Missing Images</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#70665b]">These are the cards behind the "Need Images" count. Pick a title to send it straight into the manual repair panel below.</p>
+              </div>
+              <span className="mt-4 inline-flex rounded border border-[#e7bd69] bg-[#fff4d9] px-3 py-2 text-xs font-bold text-[#9b5b1c] md:mt-0">{missing.length} need images</span>
+            </div>
+
+            {missing.length ? (
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {missing.map((game) => (
+                  <article key={game.id} className="rounded border border-[#ecd29e] bg-white p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="font-display text-xl tracking-wide text-[#3f352d]">{game.title}</h3>
+                        <p className="mt-1 text-[11px] uppercase tracking-wide text-[#8a7b6b]">BGG ID: {game.bgg_id ?? 'Not stored'} - {game.item_type ?? 'Game'}</p>
+                      </div>
+                      <button type="button" aria-label={`Repair ${game.title}`} onClick={() => setRepairFocus(game.title)} className="rounded border border-[#e39b43] px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-[#b45a19]">
+                        Repair
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-5 rounded border border-[#dbe9d4] bg-[#f6fff4] p-5 text-sm text-[#4d6948]">All visible catalogue cards currently have images.</div>
+            )}
+          </section>
+          <ManualGameUpdate games={games} onUpdated={acceptUpdatedGame} focusTitle={repairFocus} onFocusHandled={() => setRepairFocus('')} />
           <GameIntake games={games} onPublished={acceptPublishedGames} />
           <footer className="mt-12 flex justify-between border-t border-[#f1d392] bg-[#fffdfa] px-5 py-8 text-sm text-[#6f6458]"><span><strong className="font-display text-[#b85422]">Meeple Sosen Group</strong><br />Nishi-ku, Fukuoka, Japan</span><span className="text-right">Contact<br /><b className="text-[#c75b22]">ministarenglish@mail.com</b></span></footer>
         </>
