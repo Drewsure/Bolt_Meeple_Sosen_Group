@@ -1,4 +1,9 @@
 import { Clock, Target, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { buildGameBrief } from '../lib/gameBriefs';
+import { getGames } from '../lib/games';
+import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
+import type { Game } from '../types/database';
 
 type ArmoryGame = {
   title: string;
@@ -34,6 +39,21 @@ const sectionMeta: Record<string, { note: string; color: string }> = {
 };
 
 export function Armory() {
+  const [catalogue, setCatalogue] = useState<Game[]>([]);
+
+  useEffect(() => {
+    const loadGames = () => {
+      getGames().then(setCatalogue);
+    };
+    loadGames();
+    return subscribeToPreviewGameUpdates(loadGames);
+  }, []);
+
+  const catalogueByTitle = useMemo(
+    () => new Map(catalogue.map((game) => [game.title.toLowerCase(), game])),
+    [catalogue],
+  );
+
   return (
     <main className="page-shell">
       <div className="container-shell py-10">
@@ -46,6 +66,7 @@ export function Armory() {
             ))}
           </div>
         </header>
+
         {Object.keys(sectionMeta).map((level) => (
           <section key={level} className="mt-10">
             <div className="mb-4 flex items-center gap-3 border-l border-[#e8a744] pl-4">
@@ -55,28 +76,40 @@ export function Armory() {
                 <p className="text-[11px] text-[#81766b]">{sectionMeta[level].note}</p>
               </div>
             </div>
+
             <div className="grid gap-4 md:grid-cols-2">
-              {games.filter((game) => game.level === level).map((game) => (
-                <article key={game.title} className="tactical-card overflow-hidden">
-                  {game.featured && <div className="flex h-28 items-center justify-center bg-gradient-to-b from-[#242938] to-[#edf0f4] font-display text-4xl text-[#e9a140]">Smartphone Inc.</div>}
-                  <div className="p-5">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-display text-lg tracking-wide">{game.title}</h3>
-                      <span className="pill pill-blue">Strategy</span>
+              {games.filter((game) => game.level === level).map((game) => {
+                const catalogueGame = catalogueByTitle.get(game.title.toLowerCase());
+                return (
+                  <article key={game.title} className="tactical-card overflow-hidden">
+                    <div className="relative h-36 bg-gradient-to-b from-[#242938] to-[#edf0f4]">
+                      {catalogueGame?.cover_image_url ? (
+                        <img src={catalogueGame.cover_image_url} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center px-5 text-center font-display text-4xl text-[#e9a140]">{game.title}</div>
+                      )}
+                      {game.featured && <span className="absolute right-3 top-3 rounded-full bg-[#ee941e] px-3 py-1 text-[10px] font-bold uppercase text-white">Field</span>}
                     </div>
-                    <p className="mt-3 text-[11px] leading-5 text-[#766d62]">A strategic strategy game emphasizing negotiation and economic decision-making.</p>
-                    <div className="mt-4 grid grid-cols-3 gap-2">
-                      <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Users className="mx-auto mb-1 text-[#e38a1b]" size={13} />{game.players}<br />PLAYERS</span>
-                      <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Clock className="mx-auto mb-1 text-[#448ce1]" size={13} />{game.duration}m<br />DURATION</span>
-                      <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Target className="mx-auto mb-1 text-[#7a7064]" size={13} />{game.difficulty}<br />DIFFICULTY</span>
+
+                    <div className="p-5">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-display text-lg tracking-wide">{game.title}</h3>
+                        <span className="pill pill-blue">Strategy</span>
+                      </div>
+                      <p className="mt-3 text-[11px] leading-5 text-[#766d62]">{catalogueGame ? buildGameBrief(catalogueGame) : 'A strategic simulation emphasizing negotiation, planning, and confident English table talk.'}</p>
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Users className="mx-auto mb-1 text-[#e38a1b]" size={13} />{game.players}<br />PLAYERS</span>
+                        <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Clock className="mx-auto mb-1 text-[#448ce1]" size={13} />{game.duration}m<br />DURATION</span>
+                        <span className="rounded border border-[#f1d38d] p-3 text-center text-[10px]"><Target className="mx-auto mb-1 text-[#7a7064]" size={13} />{game.difficulty}<br />DIFFICULTY</span>
+                      </div>
+                      <p className="mt-4 text-[10px] text-[#756b60]">Core Mechanics</p>
+                      <div className="mt-1 flex flex-wrap gap-1">{game.mechanics.map((tag) => <span className="pill" key={tag}>{tag}</span>)}</div>
+                      <p className="mt-2 text-[10px] text-[#756b60]">Language Focus</p>
+                      <div className="mt-1 flex flex-wrap gap-1">{game.focus.map((tag) => <span className="pill pill-green" key={tag}>{tag}</span>)}</div>
                     </div>
-                    <p className="mt-4 text-[10px] text-[#756b60]">⚄ Core Mechanics</p>
-                    <div className="mt-1 flex flex-wrap gap-1">{game.mechanics.map((tag) => <span className="pill" key={tag}>{tag}</span>)}</div>
-                    <p className="mt-2 text-[10px] text-[#756b60]">◇ Language Focus</p>
-                    <div className="mt-1 flex flex-wrap gap-1">{game.focus.map((tag) => <span className="pill pill-green" key={tag}>{tag}</span>)}</div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </section>
         ))}
