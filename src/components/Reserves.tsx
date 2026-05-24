@@ -1,5 +1,6 @@
 import { RotateCcw, Search, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames } from '../lib/games';
 import type { Game } from '../types/database';
 
@@ -236,7 +237,7 @@ export function Reserves() {
               </div>
               <div className="p-4">
                 <h2 className="font-display text-lg tracking-wide text-[#3d332b]">{game.title}</h2>
-                <p className="mt-3 line-clamp-2 text-[11px] leading-5 text-[#70665b]">{game.description || 'A carefully selected strategy title for table conversation and confident play.'}</p>
+                <p className="mt-3 line-clamp-2 text-[11px] leading-5 text-[#70665b]">{buildGameBrief(game)}</p>
                 <div className="mt-4 flex justify-between gap-2 text-[10px] text-[#936f46]">
                   <span>{game.min_players ?? '-'}-{game.max_players ?? '-'} players</span>
                   <span>{game.duration_minutes ?? '-'}m</span>

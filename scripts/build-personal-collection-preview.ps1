@@ -57,6 +57,66 @@ function Get-Complexity([double] $Weight) {
   return 'Master'
 }
 
+function Get-PlayerPhrase($Minimum, $Maximum) {
+  if ($null -eq $Minimum -or $null -eq $Maximum) { return 'flexible table groups' }
+  if ($Minimum -eq 1 -and $Maximum -eq 1) { return 'solo play' }
+  if ($Minimum -eq 1) { return "solo to $Maximum players" }
+  if ($Minimum -eq $Maximum) { return "$Minimum players" }
+  if ($Maximum -ge 8) { return "large groups of $Minimum-$Maximum" }
+  return "$Minimum-$Maximum players"
+}
+
+function Get-DurationPhrase($Duration) {
+  if ($null -eq $Duration) { return 'open-ended' }
+  if ($Duration -le 15) { return "rapid $Duration-minute" }
+  if ($Duration -le 30) { return "quick $Duration-minute" }
+  if ($Duration -le 60) { return "focused $Duration-minute" }
+  if ($Duration -le 90) { return "extended $Duration-minute" }
+  return "deep $Duration-minute"
+}
+
+function Get-ComplexityPhrase([string] $Complexity) {
+  if ($Complexity -eq 'Master') { return 'heavy strategic' }
+  if ($Complexity -eq 'Advanced') { return 'strategic' }
+  if ($Complexity -eq 'Intermediate') { return 'tactical' }
+  return 'gateway-friendly'
+}
+
+function Get-RankingPhrase($Rank) {
+  if ($null -eq $Rank) { return '' }
+  if ($Rank -le 100) { return 'top-ranked ' }
+  if ($Rank -le 500) { return 'highly regarded ' }
+  if ($Rank -le 1000) { return 'well-regarded ' }
+  return ''
+}
+
+function Get-LanguagePhrase([string] $LanguageDependence) {
+  if ($LanguageDependence -like '*No necessary*') { return 'no required in-game text, making it strong for English table talk' }
+  if ($LanguageDependence -like '*Some necessary*') { return 'light reading needs that can be supported with a small phrase sheet' }
+  if ($LanguageDependence -like '*Moderate*') { return 'moderate text demands suited to guided vocabulary support' }
+  if ($LanguageDependence -like '*Extensive*' -or $LanguageDependence -like '*Unplayable*') { return 'heavy language demands best handled with translation aids or guided play' }
+  return 'language requirements to confirm before session planning'
+}
+
+function Get-BaseTitle([string] $Title) {
+  return ($Title -split '[:\u2013-]')[0].Trim()
+}
+
+function New-GameDescription([string] $Title, [string] $ItemType, [string] $Complexity, $Minimum, $Maximum, $Duration, $Rank, [string] $LanguageDependence) {
+  $rankPhrase = Get-RankingPhrase $Rank
+  $durationPhrase = Get-DurationPhrase $Duration
+  $complexityPhrase = Get-ComplexityPhrase $Complexity
+  $playerPhrase = Get-PlayerPhrase $Minimum $Maximum
+  $languagePhrase = Get-LanguagePhrase $LanguageDependence
+
+  if ($ItemType -eq 'expansion') {
+    $parentTitle = Get-BaseTitle $Title
+    return "Expansion content for $parentTitle, adding $complexityPhrase options for $playerPhrase with $languagePhrase."
+  }
+
+  return "$Title is a $rankPhrase$durationPhrase $complexityPhrase title for $playerPhrase, with $languagePhrase."
+}
+
 function Write-Thumbnail([string] $Source, [string] $Destination) {
   $image = [Drawing.Image]::FromFile($Source)
   try {
@@ -142,6 +202,9 @@ foreach ($row in $rows) {
   $maxPlayers = Convert-ToInteger $row.maxplayers
   $duration = Convert-ToInteger $row.playingtime
   $itemType = if ([string]::IsNullOrWhiteSpace($row.itemtype)) { 'standalone' } else { $row.itemtype }
+  $complexity = Get-Complexity $weight
+  $rank = Convert-ToInteger $row.rank
+  $languageDependence = if ([string]::IsNullOrWhiteSpace($row.bgglanguagedependence)) { $null } else { $row.bgglanguagedependence }
 
   $games.Add([ordered]@{
     id = 'collection-' + $row.objectid
@@ -151,21 +214,21 @@ foreach ($row in $rows) {
     bgg_average = Convert-ToNumber $row.average
     average_rating = Convert-ToNumber $row.average
     weight = $weight
-    bgg_rank = Convert-ToInteger $row.rank
+    bgg_rank = $rank
     min_players = $minPlayers
     max_players = $maxPlayers
     duration_minutes = $duration
     min_playtime_minutes = Convert-ToInteger $row.minplaytime
     max_playtime_minutes = Convert-ToInteger $row.maxplaytime
     year_published = Convert-ToInteger $row.yearpublished
-    language_dependence = if ([string]::IsNullOrWhiteSpace($row.bgglanguagedependence)) { $null } else { $row.bgglanguagedependence }
+    language_dependence = $languageDependence
     image_id = $null
     cover_image_url = $coverUrl
     source_collection = 'personal-preview'
     item_type = $itemType
-    complexity_level = Get-Complexity $weight
+    complexity_level = $complexity
     player_count = if ($null -ne $minPlayers -and $null -ne $maxPlayers) { "$minPlayers-$maxPlayers" } else { $null }
-    description = $null
+    description = New-GameDescription $row.objectname $itemType $complexity $minPlayers $maxPlayers $duration $rank $languageDependence
     is_featured = $games.Count -lt 3
     is_silver_circle = $itemType -eq 'standalone' -and $weight -gt 0 -and $weight -lt 2.3 -and $duration -le 45
     created_at = ''
