@@ -1,0 +1,18 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" fill="#FFF4DD"/>
+  <circle cx="94" cy="80" r="112" fill="#F2A13B" fill-opacity=".18"/>
+  <circle cx="796" cy="438" r="138" fill="#C95D24" fill-opacity=".12"/>
+  <path d="M112 116h676c28 0 50 22 50 50v220c0 28-22 50-50 50H112c-28 0-50-22-50-50V166c0-28 22-50 50-50Z" fill="#FFFDF8" stroke="#D8892A" stroke-width="4"/>
+  <path d="M118 178h274v178H118V178Z" fill="#F8D99B" stroke="#B96A28" stroke-width="4"/>
+  <path d="M146 206h218M146 248h218M146 290h136" stroke="#B96A28" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="526" cy="224" r="44" fill="#ED941D"/>
+  <circle cx="646" cy="224" r="44" fill="#4B86D9"/>
+  <circle cx="586" cy="326" r="44" fill="#49B866"/>
+  <path d="M522 210h8v28h-8zM512 220h28v8h-28z" fill="#FFFDF8"/>
+  <path d="M631 224h30M646 209v30" stroke="#FFFDF8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M572 326h28M586 312v28" stroke="#FFFDF8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M440 126v300" stroke="#EBC783" stroke-width="4" stroke-dasharray="14 14"/>
+  <text x="112" y="82" fill="#C95D24" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2">STEP 01</text>
+  <text x="488" y="82" fill="#2F251E" font-family="Arial, sans-serif" font-size="44" font-weight="900" letter-spacing="1">PICK THE TABLE</text>
+  <text x="488" y="408" fill="#6B5F54" font-family="Arial, sans-serif" font-size="24" font-weight="700">Choose a game that fits time, level, and group energy.</text>
+</svg>

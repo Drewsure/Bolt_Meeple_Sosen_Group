@@ -13,11 +13,11 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
   { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
 ];
 
-const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string }> = [
-  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne' },
-  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', example: 'Brass: Birmingham' },
-  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', example: 'Pandemic' },
-  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars' },
+const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string; image: string }> = [
+  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne', image: '/images/mission-route-pick-game.svg' },
+  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', example: 'Brass: Birmingham', image: '/images/mission-route-english-job.svg' },
+  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', example: 'Pandemic', image: '/images/mission-route-live-challenge.svg' },
+  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars', image: '/images/mission-route-record-result.svg' },
 ];
 
 type MissionLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Master';
@@ -246,7 +246,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           <div className="mb-4 text-center">
             <p className="eyebrow justify-center">Plain English Version</p>
             <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">How To Use This Page</h2>
-            <p className="mt-2 text-xs text-[#746b60]">The Command Board is just the route from “we have a game” to “we used English for a real reason.”</p>
+            <p className="mt-2 text-xs text-[#746b60]">The Command Board is just the route from "we have a game" to "we used English for a real reason."</p>
           </div>
           <div className="grid gap-3 md:grid-cols-4">
             {[
@@ -285,12 +285,11 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
             {missionFlow.map((step) => {
               const Icon = step.icon;
-              const exampleGame = catalogueByTitle.get(step.example.toLowerCase());
               return (
                 <button key={step.label} onClick={() => onNavigate(step.section)} className="reference-panel relative overflow-hidden text-left transition hover:-translate-y-1 hover:shadow-xl">
                   <div className="relative h-40 overflow-hidden bg-[#fff4dd]">
-                    {exampleGame?.cover_image_url ? <img src={exampleGame.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
-                    <div className={`absolute inset-0 ${step.label === '01' ? 'bg-gradient-to-br from-[#2f251e]/25 via-[#f5b95f]/20 to-[#2f251e]/70' : step.label === '02' ? 'bg-gradient-to-br from-[#1e386b]/20 via-[#8fb8f4]/20 to-[#1e386b]/75' : step.label === '03' ? 'bg-gradient-to-br from-[#1f5b35]/20 via-[#64cf8a]/20 to-[#1f5b35]/75' : 'bg-gradient-to-br from-[#6b2d1e]/20 via-[#ee8b61]/20 to-[#6b2d1e]/75'}`} />
+                    <img src={step.image} alt="" className="h-full w-full object-cover" />
+                    <div className={`absolute inset-0 ${step.label === '01' ? 'bg-gradient-to-br from-[#2f251e]/5 via-transparent to-[#2f251e]/35' : step.label === '02' ? 'bg-gradient-to-br from-[#1e386b]/5 via-transparent to-[#1e386b]/35' : step.label === '03' ? 'bg-gradient-to-br from-[#1f5b35]/5 via-transparent to-[#1f5b35]/35' : 'bg-gradient-to-br from-[#6b2d1e]/5 via-transparent to-[#6b2d1e]/35'}`} />
                     <Icon className="absolute right-7 top-8 text-white drop-shadow" size={42} />
                     <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
                     <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
