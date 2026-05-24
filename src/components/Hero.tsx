@@ -15,9 +15,9 @@ export function Hero({ onNavigate }: HeroProps) {
   }, []);
 
   const benefits = [
-    { icon: Brain, number: '01', title: 'Strategic Immersion', copy: 'Negotiate, auction, and alliance-build in English.' },
-    { icon: TrendingUp, number: '02', title: 'Cognitive Mastery', copy: 'Engage your brain with deep Euro-game mechanics.' },
-    { icon: Users, number: '03', title: `${gameCount ?? '...'} Games`, copy: 'Personal strategy collection.' },
+    { icon: Brain, number: '01', title: 'Beginners Welcome', copy: 'Japanese support available. No board game experience needed.' },
+    { icon: TrendingUp, number: '02', title: 'Useful English', copy: 'Learn phrases through real choices, deals, plans, and table talk.' },
+    { icon: Users, number: '03', title: `${gameCount ?? '...'} Games`, copy: 'A growing collection for beginner tables and strategy sessions.' },
   ];
 
   return (
@@ -27,15 +27,15 @@ export function Hero({ onNavigate }: HeroProps) {
       <section className="container-shell flex flex-col items-center pb-9 pt-11 text-center">
         <h1 className="compact-title">The Meeple Sosen Group</h1>
         <Gamepad2 className="mt-5 text-[#e58921]" size={31} />
-        <p className="font-display mt-5 text-xl tracking-wide text-[#443d37]">Master the Game, Command the Language</p>
-        <p className="mt-6 text-sm font-semibold text-[#c45a25]">Are you tired of “Thin Soup” English lessons?</p>
+        <p className="font-display mt-5 text-xl tracking-wide text-[#443d37]">Learn English Through Board Games In Fukuoka</p>
+        <p className="mt-6 text-sm font-semibold text-[#c45a25]">Beginners welcome. Japanese support available. Come for one trial table.</p>
         <div className="mt-4 max-w-xl space-y-4 text-xs leading-6 text-[#675c50]">
-          <p>Traditional language learning lacks substance. It lacks stakes. It lacks the “weight” of real world decision-making.</p>
-          <p>At The Meeple Sosen Group (MSG), we believe the best way to master a language is to use it as a weapon of strategy.</p>
-          <p>We combine sophisticated board games with a high-level English curriculum designed for Authors of the Simulation.</p>
+          <p>We gather around real board games so English appears naturally: explaining a move, asking a question, making a plan, and laughing when the table changes.</p>
+          <p>The first path is simple: pick a game, learn useful phrases, play with support, then review what you used.</p>
+          <p>Advanced members can enter Mission Control for structured challenges, rankings, and deeper strategy work.</p>
         </div>
         <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary mt-7 px-8 py-3">
-          <Sparkles size={13} /> Explore Game Database <ArrowRight size={13} />
+          <Sparkles size={13} /> See How It Works <ArrowRight size={13} />
         </button>
       </section>
 
@@ -54,7 +54,7 @@ export function Hero({ onNavigate }: HeroProps) {
         <article className="reference-panel overflow-hidden">
           <div className="flex items-center justify-between border-b border-[#f1d8a5] px-5 py-3">
             <p className="font-display text-base tracking-wide text-[#9c4b22]">Recommended For You</p>
-            <button onClick={() => onNavigate('games')} className="text-[10px] font-bold text-[#c86123]">View All ›</button>
+            <button onClick={() => onNavigate('games')} className="text-[10px] font-bold text-[#c86123]">View All</button>
           </div>
           {['The Coal Crisis Negotiation', 'The Catan Diplomatic Alliance', 'The Pandemic Emergency Brief'].map((title, index) => (
             <div key={title} className="flex items-center gap-3 border-b border-[#f3e2c2] px-5 py-3 text-xs last:border-0">

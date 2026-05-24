@@ -49,7 +49,7 @@ function AppContent() {
 
   return (
     <div>
-      <Header onAuthClick={() => setAuthModalOpen(true)} onNavigate={navigate} currentSection={section} />
+      <Header onNavigate={navigate} currentSection={section} />
       {section === 'home' && <Hero onNavigate={navigate} />}
       {section === 'situation' && <SituationRoom onNavigate={navigate} />}
       {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} />}

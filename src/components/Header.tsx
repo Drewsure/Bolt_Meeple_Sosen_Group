@@ -4,7 +4,6 @@ import type { Section } from '../App';
 
 interface HeaderProps {
   currentSection: Section;
-  onAuthClick: () => void;
   onNavigate: (section: Section) => void;
 }
 
@@ -16,11 +15,10 @@ const navigation: Array<{ label: string; section: Section }> = [
   { label: 'Dossier', section: 'dossier' },
   { label: 'Ranking', section: 'ranking' },
   { label: 'Silver Circle', section: 'silver-circle' },
-  { label: 'Update Images', section: 'admin-images' },
   { label: 'Profile', section: 'profile' },
 ];
 
-export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps) {
+export function Header({ currentSection, onNavigate }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const activeSection: Section = currentSection === 'armory' || currentSection === 'challenges' ? 'board' : currentSection;
 
@@ -57,7 +55,7 @@ export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps)
           ))}
         </nav>
 
-        <button onClick={onAuthClick} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
+        <button onClick={() => select('silver-circle')} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
           <Languages size={12} />
           日本語
         </button>
