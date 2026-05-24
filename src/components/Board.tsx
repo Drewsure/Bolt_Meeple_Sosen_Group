@@ -13,11 +13,11 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
   { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
 ];
 
-const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string; image: string }> = [
-  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne', image: '/images/mission-route-pick-game.svg' },
-  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', example: 'Brass: Birmingham', image: '/images/mission-route-english-job.svg' },
-  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', example: 'Pandemic', image: '/images/mission-route-live-challenge.svg' },
-  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars', image: '/images/mission-route-record-result.svg' },
+const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; image: string }> = [
+  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', image: '/images/mission-route-pick-game.svg' },
+  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', image: '/images/mission-route-english-job.svg' },
+  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', image: '/images/mission-route-live-challenge.svg' },
+  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', image: '/images/mission-route-record-result.svg' },
 ];
 
 type MissionLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Master';
@@ -293,7 +293,6 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                     <Icon className="absolute right-7 top-8 text-white drop-shadow" size={42} />
                     <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
                     <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
-                    <span className="absolute bottom-3 right-4 rounded-full border border-white/70 bg-[#2f251e]/80 px-3 py-1 text-[10px] font-bold uppercase text-white">{step.example}</span>
                   </div>
                   <div className="p-5">
                     <Icon className="text-[#dc791d]" size={24} />
