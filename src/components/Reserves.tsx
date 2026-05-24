@@ -2,6 +2,7 @@ import { RotateCcw, Search, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames } from '../lib/games';
+import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import type { Game } from '../types/database';
 
 type Filters = {
@@ -161,7 +162,11 @@ export function Reserves() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
 
   useEffect(() => {
-    getGames().then(setGames).finally(() => setLoading(false));
+    const loadGames = () => {
+      getGames().then(setGames).finally(() => setLoading(false));
+    };
+    loadGames();
+    return subscribeToPreviewGameUpdates(loadGames);
   }, []);
 
   const filtered = useMemo(() => games.filter((game) => {

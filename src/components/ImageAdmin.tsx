@@ -2,6 +2,7 @@ import { AlertTriangle, Check, Image, LockKeyhole } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getGames, getGamesNeedingImages } from '../lib/games';
+import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { Game } from '../types/database';
 import { GameIntake } from './GameIntake';
@@ -24,10 +25,12 @@ export function ImageAdmin() {
 
   useEffect(() => {
     if (!unlocked) return;
-    Promise.all([getGames(), getGamesNeedingImages()]).then(([allGames, needsImages]) => {
+    const loadGames = () => Promise.all([getGames(), getGamesNeedingImages()]).then(([allGames, needsImages]) => {
       setGames(allGames);
       setMissing(needsImages);
     });
+    void loadGames();
+    return subscribeToPreviewGameUpdates(() => { void loadGames(); });
   }, [unlocked]);
 
   const unlock = (event: FormEvent) => {

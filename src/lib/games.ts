@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import type { Game } from '../types/database';
 import { isSupabaseConfigured } from './supabase';
 import { GAMES as localGames } from '../data/games';
+import { applyPreviewGameUpdates } from './previewGameUpdates';
 
 export const PUBLIC_GAME_COLUMNS = `
   id,
@@ -77,12 +78,12 @@ async function getFallbackGames(): Promise<Game[]> {
           return fallbackGames;
         }
         const games = await response.json() as Game[];
-        return games.length ? games : fallbackGames;
+        return games.length ? applyPreviewGameUpdates(games) : applyPreviewGameUpdates(fallbackGames);
       })
-      .catch(() => fallbackGames);
+      .catch(() => applyPreviewGameUpdates(fallbackGames));
   }
 
-  return localCollectionPromise;
+  return localCollectionPromise.then(applyPreviewGameUpdates);
 }
 
 async function queryGames(query: () => PromiseLike<{ data: unknown[] | null; error: { message: string } | null }>): Promise<Game[]> {
@@ -94,7 +95,7 @@ async function queryGames(query: () => PromiseLike<{ data: unknown[] | null; err
     const { data, error } = await query();
     throwIfError(error);
     const games = (data ?? []) as Game[];
-    return games.length ? games : getFallbackGames();
+    return games.length ? applyPreviewGameUpdates(games) : getFallbackGames();
   } catch {
     return getFallbackGames();
   }
@@ -173,7 +174,7 @@ export async function getGamesNeedingImages(): Promise<Game[]> {
     .order('title', { ascending: true });
 
   throwIfError(error);
-  return (data ?? []) as Game[];
+  return applyPreviewGameUpdates((data ?? []) as Game[]).filter((game) => !game.cover_image_url);
 }
 
 export async function updateGameImage(gameId: string, imageUrl: string): Promise<Game> {

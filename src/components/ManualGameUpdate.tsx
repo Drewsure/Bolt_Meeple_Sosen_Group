@@ -3,12 +3,22 @@ import { Check, ImagePlus, Loader2, Search, UploadCloud } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { publishManualGameUpdate } from '../lib/manualGameUpdates';
+import { savePreviewGameUpdate } from '../lib/previewGameUpdates';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { Game } from '../types/database';
 
 interface ManualGameUpdateProps {
   games: Game[];
   onUpdated: (game: Game) => void;
+}
+
+function fileToDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error('Could not read the selected image for preview staging.'));
+    reader.readAsDataURL(file);
+  });
 }
 
 export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
@@ -72,11 +82,18 @@ export function ManualGameUpdate({ games, onUpdated }: ManualGameUpdateProps) {
     setMessage('');
     try {
       if (!isSupabaseConfigured || !user) {
+        const stagedImageUrl = imageFile ? await fileToDataUrl(imageFile) : selectedGame.cover_image_url;
         const updated = {
           ...selectedGame,
-          cover_image_url: previewUrl ?? selectedGame.cover_image_url,
+          cover_image_url: stagedImageUrl,
           description: description.trim() || selectedGame.description,
         };
+        savePreviewGameUpdate({
+          id: selectedGame.id,
+          cover_image_url: updated.cover_image_url,
+          description: updated.description,
+          requirement: requirement.trim(),
+        });
         onUpdated(updated);
         setMessage(`Preview staged for ${updated.title}. Note: ${requirement}`);
         return;
