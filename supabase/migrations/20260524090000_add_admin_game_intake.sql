@@ -14,9 +14,18 @@ GRANT INSERT (
   is_featured, is_silver_circle
 ) ON games TO authenticated;
 
+GRANT UPDATE (cover_image_url, description) ON games TO authenticated;
+
 DROP POLICY IF EXISTS "Admins can add catalogue games" ON games;
 CREATE POLICY "Admins can add catalogue games"
   ON games FOR INSERT TO authenticated
+  WITH CHECK ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+DROP POLICY IF EXISTS "Members can update game images" ON games;
+DROP POLICY IF EXISTS "Admins can repair catalogue cards" ON games;
+CREATE POLICY "Admins can repair catalogue cards"
+  ON games FOR UPDATE TO authenticated
+  USING ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
   WITH CHECK ((SELECT auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 INSERT INTO storage.buckets (id, name, public)

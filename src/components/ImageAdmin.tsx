@@ -5,6 +5,7 @@ import { getGames, getGamesNeedingImages } from '../lib/games';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { Game } from '../types/database';
 import { GameIntake } from './GameIntake';
+import { ManualGameUpdate } from './ManualGameUpdate';
 
 const MOCK_ADMIN_CODE = 'preview-curator';
 
@@ -43,6 +44,11 @@ export function ImageAdmin() {
     setGames((current) => [...current, ...created].sort((left, right) => left.title.localeCompare(right.title)));
   };
 
+  const acceptUpdatedGame = (updated: Game) => {
+    setGames((current) => current.map((game) => game.id === updated.id ? updated : game));
+    setMissing((current) => current.filter((game) => game.id !== updated.id));
+  };
+
   return (
     <main className="page-shell min-h-screen bg-[radial-gradient(circle_at_center,#fff7e7,#fbf7ef)]">
       {!unlocked ? (
@@ -71,6 +77,7 @@ export function ImageAdmin() {
             <div className="mt-7 space-y-3 text-sm text-[#9ba2af]"><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Pulls official box-art from BoardGameGeek API</p><p><Check className="mr-2 inline text-[#4bd589]" size={16} />Only updates games with a stored BGG ID</p><p><AlertTriangle className="mr-2 inline text-[#f2a821]" size={16} />Rate-limited to 1.2 s/game — large libraries take several minutes</p></div>
             {message && <p className="mt-6 rounded border border-[#657184] bg-[#303846] p-4 text-sm text-[#dce1eb]">{message}</p>}
           </section>
+          <ManualGameUpdate games={games} onUpdated={acceptUpdatedGame} />
           <GameIntake games={games} onPublished={acceptPublishedGames} />
           <footer className="mt-12 flex justify-between border-t border-[#f1d392] bg-[#fffdfa] px-5 py-8 text-sm text-[#6f6458]"><span><strong className="font-display text-[#b85422]">Meeple Sosen Group</strong><br />Nishi-ku, Fukuoka, Japan</span><span className="text-right">Contact<br /><b className="text-[#c75b22]">ministarenglish@mail.com</b></span></footer>
         </>
