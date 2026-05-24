@@ -3,12 +3,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SituationRoom } from './components/SituationRoom';
-import { Armory } from './components/Armory';
 import { Reserves } from './components/Reserves';
 import { Dossier } from './components/Dossier';
 import { Leaderboard } from './components/Leaderboard';
 import { Dashboard } from './components/Dashboard';
-import { GuildChallenges } from './components/GuildChallenges';
 import { SilverCircle } from './components/SilverCircle';
 import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
@@ -54,11 +52,9 @@ function AppContent() {
       <Header onAuthClick={() => setAuthModalOpen(true)} onNavigate={navigate} currentSection={section} />
       {section === 'home' && <Hero onNavigate={navigate} />}
       {section === 'situation' && <SituationRoom onNavigate={navigate} />}
-      {section === 'armory' && <Armory />}
+      {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} />}
       {section === 'games' && <Reserves />}
       {section === 'dossier' && <Dossier />}
-      {section === 'board' && <Board onNavigate={navigate} />}
-      {section === 'challenges' && <GuildChallenges onNavigate={navigate} />}
       {section === 'ranking' && <Leaderboard onNavigate={navigate} />}
       {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} />}
       {section === 'silver-circle' && <SilverCircle onNavigate={navigate} />}

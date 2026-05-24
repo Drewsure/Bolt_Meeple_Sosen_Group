@@ -11,11 +11,9 @@ interface HeaderProps {
 const navigation: Array<{ label: string; section: Section }> = [
   { label: 'Home', section: 'home' },
   { label: 'Situation', section: 'situation' },
-  { label: 'Armory', section: 'armory' },
+  { label: 'Mission Control', section: 'board' },
   { label: 'Reserves - Database', section: 'games' },
   { label: 'Dossier', section: 'dossier' },
-  { label: 'Board', section: 'board' },
-  { label: 'Guild Challenges', section: 'challenges' },
   { label: 'Ranking', section: 'ranking' },
   { label: 'Silver Circle', section: 'silver-circle' },
   { label: 'Update Images', section: 'admin-images' },
@@ -24,6 +22,7 @@ const navigation: Array<{ label: string; section: Section }> = [
 
 export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const activeSection: Section = currentSection === 'armory' || currentSection === 'challenges' ? 'board' : currentSection;
 
   const select = (section: Section) => {
     onNavigate(section);
@@ -48,9 +47,9 @@ export function Header({ currentSection, onAuthClick, onNavigate }: HeaderProps)
               key={`${section}-${label}`}
               onClick={() => select(section)}
               className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.07em] transition-colors xl:text-[9px] ${
-                currentSection === section && section === 'silver-circle'
+                activeSection === section && section === 'silver-circle'
                   ? 'rounded border border-[#ff99b0] px-3 py-2 text-[#ef3d66]'
-                  : currentSection === section ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
+                  : activeSection === section ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
               }`}
             >
               {label}

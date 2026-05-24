@@ -8,8 +8,6 @@ import type { Game } from '../types/database';
 
 const commands: Array<{ icon: typeof Database; label: string; copy: string; section: Section; tone: string }> = [
   { icon: Database, label: 'Reserves Database', copy: 'Search the full collection, open detailed cards, and select the next table.', section: 'games', tone: 'border-[#f0c978] bg-[#fff9ec]' },
-  { icon: Target, label: 'The Armory', copy: 'Filter simulations by tier and inspect field dossiers before deployment.', section: 'armory', tone: 'border-[#f0c978] bg-white' },
-  { icon: Shield, label: 'Guild Challenges', copy: 'Turn a game into an English mission with tactical output.', section: 'challenges', tone: 'border-[#bde8c9] bg-[#f6fff7]' },
   { icon: Trophy, label: 'Ranking', copy: 'Check the public ranking state and prepare the first submissions.', section: 'ranking', tone: 'border-[#b9d2fb] bg-[#f7fbff]' },
   { icon: Award, label: 'Profile Badges', copy: 'Review rank, domain badges, and completion readiness.', section: 'profile', tone: 'border-[#ead4fa] bg-[#fdf8ff]' },
   { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
@@ -17,9 +15,119 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
 
 const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string }> = [
   { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne' },
-  { label: '02', title: 'Choose The English Job', verb: 'Open Armory', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'armory', icon: Target, visual: 'English Job', example: 'Brass: Birmingham' },
-  { label: '03', title: 'Play With A Task', verb: 'Deploy Challenge', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'challenges', icon: Shield, visual: 'Live Challenge', example: 'Pandemic' },
+  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', example: 'Brass: Birmingham' },
+  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', example: 'Pandemic' },
   { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars' },
+];
+
+type MissionLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Master';
+type LevelFilter = MissionLevel | 'All';
+
+const missionLevels: LevelFilter[] = ['All', 'Foundation', 'Intermediate', 'Advanced', 'Master'];
+
+const missionBuilder: Array<{
+  title: string;
+  level: MissionLevel;
+  englishJob: string;
+  missionStatement: string;
+  challenge: string;
+  tags: string[];
+}> = [
+  {
+    title: 'Carcassonne',
+    level: 'Foundation',
+    englishJob: 'Explain placement decisions',
+    missionStatement: 'Use every tile placement as a short reason-giving drill: "I am placing this here because..."',
+    challenge: 'Before scoring a feature, describe the risk and the reward in one clear English sentence.',
+    tags: ['reasoning', 'spatial language', 'turn explanation'],
+  },
+  {
+    title: 'Sushi Go!',
+    level: 'Foundation',
+    englishJob: 'Read the table and predict choices',
+    missionStatement: 'Players practise simple prediction language while choosing cards under friendly pressure.',
+    challenge: 'Once per round, predict one opponent choice and explain the clue that made you think so.',
+    tags: ['prediction', 'food vocabulary', 'quick turns'],
+  },
+  {
+    title: 'Modern Art',
+    level: 'Intermediate',
+    englishJob: 'Persuade buyers and justify value',
+    missionStatement: 'Turn auctions into negotiation practice where players defend value, timing, and confidence.',
+    challenge: 'Before one bid, give a 20-second sales pitch explaining why the painting is worth the price.',
+    tags: ['persuasion', 'money language', 'confidence'],
+  },
+  {
+    title: 'Pandemic',
+    level: 'Intermediate',
+    englishJob: 'Coordinate urgent plans',
+    missionStatement: 'Use the outbreak pressure to practise proposals, agreement, warning, and emergency teamwork.',
+    challenge: 'On your turn, state the team priority, your action plan, and one risk if the plan fails.',
+    tags: ['teamwork', 'planning', 'problem solving'],
+  },
+  {
+    title: 'Power Grid',
+    level: 'Advanced',
+    englishJob: 'Explain trade-offs',
+    missionStatement: 'Players compare cost, timing, scarcity, and future position while making economic decisions.',
+    challenge: 'Before buying, explain the trade-off: what you gain now, what you lose later, and why it is acceptable.',
+    tags: ['trade-offs', 'economics', 'future planning'],
+  },
+  {
+    title: 'Brass: Birmingham',
+    level: 'Advanced',
+    englishJob: 'Negotiate networks and timing',
+    missionStatement: 'Use industrial decisions to practise conditional language, opportunity cost, and long-term planning.',
+    challenge: 'Describe your network plan using "if", "unless", and "because" before you build.',
+    tags: ['conditions', 'industry', 'strategy'],
+  },
+  {
+    title: 'Terraforming Mars',
+    level: 'Master',
+    englishJob: 'Defend a long-term strategy',
+    missionStatement: 'Players connect engine-building choices to a future vision and explain why the plan is worth patience.',
+    challenge: 'At the end of a generation, give an investor report: what improved, what is weak, and what comes next.',
+    tags: ['presentation', 'science', 'long strategy'],
+  },
+  {
+    title: 'Great Western Trail',
+    level: 'Master',
+    englishJob: 'Report route efficiency',
+    missionStatement: 'Use route planning to practise sequencing, opportunity cost, and performance review language.',
+    challenge: 'After each delivery, summarize whether your route was efficient and name one adjustment.',
+    tags: ['sequencing', 'efficiency', 'self-review'],
+  },
+];
+
+const challengeDeck = [
+  {
+    title: 'Power Grid',
+    label: 'The Power Plant Auction',
+    prompt: 'Win or lose one auction bid, then explain your economic reason in English.',
+    output: 'I bid because... / I stopped because...',
+    tags: ['auction', 'economics', 'decision'],
+  },
+  {
+    title: 'Pandemic',
+    label: 'The Emergency Brief',
+    prompt: 'Give the team a concise crisis update before your turn.',
+    output: 'The biggest danger is... My plan is...',
+    tags: ['teamwork', 'urgency', 'clear instructions'],
+  },
+  {
+    title: 'Brass: Birmingham',
+    label: 'The Coal Crisis Negotiation',
+    prompt: 'Explain a network decision and negotiate one useful table agreement.',
+    output: 'If you take this route, then I can...',
+    tags: ['negotiation', 'conditions', 'industry'],
+  },
+  {
+    title: 'Catan',
+    label: 'The Diplomatic Alliance',
+    prompt: 'Propose a fair trade and explain why it helps both players.',
+    output: 'This is fair because you get... and I get...',
+    tags: ['trade', 'fairness', 'persuasion'],
+  },
 ];
 
 function pickRecommended(games: Game[]) {
@@ -32,6 +140,8 @@ function pickRecommended(games: Game[]) {
 export function Board({ onNavigate }: { onNavigate: (section: Section) => void }) {
   const [games, setGames] = useState<Game[]>([]);
   const [missingImages, setMissingImages] = useState<Game[]>([]);
+  const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('All');
+  const [selectedMissionTitle, setSelectedMissionTitle] = useState(missionBuilder[0].title);
 
   useEffect(() => {
     const load = () => {
@@ -46,6 +156,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
   const recommended = useMemo(() => pickRecommended(games), [games]);
   const catalogueByTitle = useMemo(() => new Map(games.map((game) => [game.title.toLowerCase(), game])), [games]);
+  const filteredMissions = useMemo(() => missionBuilder.filter((mission) => selectedLevel === 'All' || mission.level === selectedLevel), [selectedLevel]);
+  const selectedMission = missionBuilder.find((mission) => mission.title === selectedMissionTitle) ?? missionBuilder[0];
   const readyImages = Math.max(games.length - missingImages.length, 0);
   const strategicTitles = games.filter((game) => (game.weight ?? 0) >= 2.5).length;
   const gatewayTitles = games.filter((game) => (game.weight ?? 99) <= 1.8 && (game.duration_minutes ?? 999) <= 45).length;
@@ -75,7 +187,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                 <p className="mt-5 text-sm leading-7 text-[#6b5f54]">A mission begins with a game, but it only matters when the table creates useful English: decisions, pressure, persuasion, explanation, and reflection.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Start With Reserves</button>
-                  <button onClick={() => onNavigate('armory')} className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Open Armory</button>
+                  <a href="#mission-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Build Mission</a>
                 </div>
               </div>
 
@@ -123,9 +235,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
               <p><Radio className="mr-2 inline text-[#d87522]" size={16} />The board is the situation engine. The mission statement gives the table a reason to speak.</p>
               <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />Process rule: choose the game, arm the language objective, run the challenge, then log the result.</p>
               <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />Every phase below is clickable. Use it as the live control route through the site.</p>
-              <button onClick={() => onNavigate('challenges')} className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
-                <Sparkles size={14} /> Initialize Challenge Route
-              </button>
+              <a href="#challenge-deck" className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
+                <Sparkles size={14} /> Open Challenge Deck
+              </a>
             </div>
           </article>
         </section>
@@ -196,8 +308,126 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </div>
         </section>
 
-        <h2 className="compact-title mt-12 text-center text-3xl">Navigation Stations</h2>
-        <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <section id="mission-builder" className="reference-panel mt-12 overflow-hidden">
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="eyebrow">Unified Mission Builder</p>
+                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Game + English Job + Challenge</h2>
+                  <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">This replaces the old separate Armory idea. Pick a level, choose a game, and the mission statement tells the table exactly what English to produce.</p>
+                </div>
+                <button onClick={() => onNavigate('games')} className="rule-button px-4 py-2">
+                  <Database size={13} /> Browse Reserves
+                </button>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-2">
+                {missionLevels.map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => setSelectedLevel(level)}
+                    className={`rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-wide transition ${
+                      selectedLevel === level
+                        ? 'border-[#dc791d] bg-[#ed941d] text-white shadow-sm'
+                        : 'border-[#efc779] bg-white text-[#9a5a25] hover:bg-[#fff4dd]'
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                {filteredMissions.map((mission) => {
+                  const game = catalogueByTitle.get(mission.title.toLowerCase());
+                  const active = mission.title === selectedMission.title;
+                  return (
+                    <button
+                      key={mission.title}
+                      onClick={() => setSelectedMissionTitle(mission.title)}
+                      className={`overflow-hidden rounded-xl border text-left transition hover:-translate-y-0.5 hover:shadow-md ${
+                        active ? 'border-[#d87522] bg-[#fff7e7] shadow-md' : 'border-[#efd39d] bg-white'
+                      }`}
+                    >
+                      <div className="relative h-32 bg-[#fff1d4]">
+                        {game?.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#2f251e]/70 via-transparent to-transparent" />
+                        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2 py-1 text-[9px] font-bold uppercase text-[#c86123]">{mission.level}</span>
+                        <span className="absolute bottom-3 left-3 font-display text-2xl tracking-wide text-white drop-shadow">{mission.title}</span>
+                      </div>
+                      <div className="p-4">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-[#d87522]">{mission.englishJob}</p>
+                        <p className="mt-2 line-clamp-3 text-xs leading-5 text-[#70665b]">{mission.missionStatement}</p>
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {mission.tags.slice(0, 3).map((tag) => (
+                            <span key={tag} className="rounded border border-[#d8ead3] bg-[#f7fff4] px-2 py-1 text-[9px] font-bold text-[#4a8f56]">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <aside className="bg-[#fff8ea] p-6">
+              <p className="eyebrow">Active Mission Card</p>
+              <h3 className="font-display mt-2 text-4xl tracking-wide text-[#3d332b]">{selectedMission.title}</h3>
+              <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#d87522]">{selectedMission.level} Deployment</p>
+
+              <div className="mt-6 space-y-4">
+                <div className="rounded-xl border border-[#efc779] bg-white p-4">
+                  <p className="font-display text-xl tracking-wide text-[#bd5c24]">Mission Statement</p>
+                  <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.missionStatement}</p>
+                </div>
+                <div className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4">
+                  <p className="font-display text-xl tracking-wide text-[#2e7c44]">Table Challenge</p>
+                  <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.challenge}</p>
+                </div>
+                <div className="rounded-xl border border-[#b9d2fb] bg-[#f7fbff] p-4">
+                  <p className="font-display text-xl tracking-wide text-[#366eb4]">Success Looks Like</p>
+                  <p className="mt-2 text-sm leading-6 text-[#62584f]">A player says a useful sentence because the board situation demanded it, then records the phrase after play.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="challenge-deck" className="mt-12">
+          <div className="mb-5 text-center">
+            <p className="eyebrow justify-center">Challenge Deck</p>
+            <h2 className="compact-title mt-2 text-3xl">Live Table Prompts</h2>
+            <p className="mt-2 text-xs text-[#746b60]">This replaces the old separate Guild Challenges page. Use one card during play, then log the result in Profile.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {challengeDeck.map((challenge) => {
+              const game = catalogueByTitle.get(challenge.title.toLowerCase());
+              return (
+                <article key={challenge.label} className="reference-panel overflow-hidden">
+                  <div className="relative h-36 bg-[#fff1d4]">
+                    {game?.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2f251e]/75 via-[#2f251e]/10 to-transparent" />
+                    <span className="absolute left-3 top-3 rounded bg-white/95 px-2 py-1 text-[9px] font-bold uppercase text-[#d87522]">{challenge.title}</span>
+                    <span className="absolute bottom-3 left-3 right-3 font-display text-xl tracking-wide text-white drop-shadow">{challenge.label}</span>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-xs leading-5 text-[#70665b]">{challenge.prompt}</p>
+                    <div className="mt-3 rounded border border-[#efd39d] bg-[#fffaf0] p-3 text-[11px] font-bold text-[#7a5a34]">{challenge.output}</div>
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {challenge.tags.map((tag) => (
+                        <span key={tag} className="rounded border border-[#d9d9d9] bg-white px-2 py-1 text-[9px] font-bold uppercase text-[#70665b]">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <h2 className="compact-title mt-12 text-center text-3xl">Support Stations</h2>
+        <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-2 lg:grid-cols-4">
           {commands.map(({ icon: Icon, label, copy, section, tone }) => (
             <button key={label} onClick={() => onNavigate(section)} className={`rounded-xl border p-6 text-left transition-transform hover:-translate-y-0.5 hover:shadow-md ${tone}`}>
               <Icon className="text-[#dc791d]" size={28} />
