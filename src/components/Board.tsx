@@ -45,7 +45,6 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   }, []);
 
   const recommended = useMemo(() => pickRecommended(games), [games]);
-  const heroImages = recommended.slice(0, 4);
   const readyImages = Math.max(games.length - missingImages.length, 0);
   const strategicTitles = games.filter((game) => (game.weight ?? 0) >= 2.5).length;
   const gatewayTitles = games.filter((game) => (game.weight ?? 99) <= 1.8 && (game.duration_minutes ?? 999) <= 45).length;
@@ -68,25 +67,48 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
       <div className="container-shell py-10">
         <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
           <article className="reference-panel overflow-hidden">
-            <div className="relative min-h-80 bg-[#261d17] p-7 text-white">
-              <div className="absolute inset-0 opacity-35">
-                <div className="grid h-full grid-cols-2">
-                  {heroImages.map((game) => (
-                    <div key={game.id} className="overflow-hidden">
-                      {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : null}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#24180f] via-[#24180f]/80 to-[#e98b18]/50" />
-              <div className="relative z-10 max-w-xl">
-                <p className="eyebrow text-[#ffd08a]">Operational Process</p>
-                <h2 className="font-display mt-3 text-5xl tracking-wide">Board To Language Pipeline</h2>
-                <p className="mt-5 text-sm leading-7 text-[#ffe8c8]">A mission begins with a game, but it only matters when the table creates useful English: decisions, pressure, persuasion, explanation, and reflection.</p>
+            <div className="grid min-h-80 gap-6 bg-[#fff8ea] p-7 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="flex flex-col justify-center">
+                <p className="eyebrow text-[#bd5c24]">Operational Process</p>
+                <h2 className="font-display mt-3 text-5xl tracking-wide text-[#2f251e]">Board To Language Pipeline</h2>
+                <p className="mt-5 text-sm leading-7 text-[#6b5f54]">A mission begins with a game, but it only matters when the table creates useful English: decisions, pressure, persuasion, explanation, and reflection.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Start With Reserves</button>
-                  <button onClick={() => onNavigate('armory')} className="rounded border border-[#ffd08a] bg-white/10 px-5 py-3 text-xs font-bold uppercase text-white backdrop-blur hover:bg-white/20">Open Armory</button>
+                  <button onClick={() => onNavigate('armory')} className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Open Armory</button>
                 </div>
+              </div>
+
+              <div className="relative flex min-h-72 items-center justify-center overflow-hidden rounded-2xl border border-[#efc978] bg-[#fffdf8] p-6">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,#ffe0a3,transparent_32%),radial-gradient(circle_at_bottom_right,#f7b466,transparent_28%)] opacity-80" />
+                <svg viewBox="0 0 520 300" className="relative z-10 h-full w-full" role="img" aria-label="Operational process graphic showing board game input turning into language output">
+                  <defs>
+                    <linearGradient id="pipelineOrange" x1="0" x2="1">
+                      <stop offset="0%" stopColor="#ed941d" />
+                      <stop offset="100%" stopColor="#c95d24" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="28" y="58" width="132" height="132" rx="18" fill="#fff7e6" stroke="#d8892a" strokeWidth="3" />
+                  <path d="M55 96h78M55 125h78M55 154h78" stroke="#c95d24" strokeWidth="6" strokeLinecap="round" />
+                  <circle cx="55" cy="96" r="8" fill="#ed941d" />
+                  <circle cx="94" cy="125" r="8" fill="#ed941d" />
+                  <circle cx="133" cy="154" r="8" fill="#ed941d" />
+                  <text x="94" y="218" textAnchor="middle" fill="#6b3a1d" fontSize="20" fontWeight="700">BOARD</text>
+
+                  <path d="M176 124 C220 84, 252 84, 296 124" fill="none" stroke="url(#pipelineOrange)" strokeWidth="10" strokeLinecap="round" />
+                  <path d="M282 96l26 28-36 10" fill="none" stroke="#c95d24" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="236" cy="92" r="22" fill="#fff7e6" stroke="#ed941d" strokeWidth="3" />
+                  <text x="236" y="101" textAnchor="middle" fill="#c95d24" fontSize="28" fontWeight="800">?</text>
+
+                  <rect x="330" y="58" width="150" height="132" rx="18" fill="#2f251e" stroke="#d8892a" strokeWidth="3" />
+                  <path d="M363 96h84M363 126h63M363 156h96" stroke="#ffe3ad" strokeWidth="7" strokeLinecap="round" />
+                  <circle cx="447" cy="96" r="8" fill="#49d178" />
+                  <circle cx="426" cy="126" r="8" fill="#4b86d9" />
+                  <circle cx="459" cy="156" r="8" fill="#ed941d" />
+                  <text x="405" y="218" textAnchor="middle" fill="#6b3a1d" fontSize="20" fontWeight="700">LANGUAGE</text>
+
+                  <path d="M102 252h310" stroke="#efc978" strokeWidth="4" strokeLinecap="round" strokeDasharray="10 12" />
+                  <text x="258" y="276" textAnchor="middle" fill="#7a6554" fontSize="18" fontWeight="700">SELECT  ARM  DEPLOY  LOG</text>
+                </svg>
               </div>
             </div>
           </article>
@@ -128,12 +150,15 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
             {missionFlow.map((step) => {
               const Icon = step.icon;
-              const phaseImage = step.label === '01' ? heroImages[0]?.cover_image_url : step.label === '02' ? heroImages[1]?.cover_image_url : step.label === '03' ? heroImages[2]?.cover_image_url : heroImages[3]?.cover_image_url;
               return (
                 <button key={step.label} onClick={() => onNavigate(step.section)} className="reference-panel relative overflow-hidden text-left transition hover:-translate-y-1 hover:shadow-xl">
-                  <div className="relative h-32 bg-[#fff0ce]">
-                    {phaseImage ? <img src={phaseImage} alt="" className="h-full w-full object-cover" /> : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b2119]/80 to-transparent" />
+                  <div className="relative h-36 overflow-hidden bg-[#fff4dd]">
+                    <div className={`absolute inset-0 ${step.label === '01' ? 'bg-[radial-gradient(circle_at_25%_35%,#fff,#ffe0a3_34%,transparent_36%),linear-gradient(135deg,#fff8ea,#f5b95f)]' : step.label === '02' ? 'bg-[radial-gradient(circle_at_70%_30%,#fff,#cfe2ff_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#8fb8f4)]' : step.label === '03' ? 'bg-[radial-gradient(circle_at_35%_30%,#fff,#c9f4d7_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#64cf8a)]' : 'bg-[radial-gradient(circle_at_65%_35%,#fff,#ffd0c2_32%,transparent_34%),linear-gradient(135deg,#fff8ea,#ee8b61)]'}`} />
+                    <div className="absolute inset-x-5 top-16 h-2 rounded-full bg-white/80" />
+                    <div className="absolute left-8 top-11 h-12 w-12 rounded-lg border border-white bg-[#2f251e] shadow-md" />
+                    <div className="absolute left-24 top-11 h-12 w-12 rounded-lg border border-white bg-[#ed941d] shadow-md" />
+                    <div className="absolute left-40 top-11 h-12 w-12 rounded-lg border border-white bg-white shadow-md" />
+                    <Icon className="absolute right-7 top-8 text-[#2f251e]" size={42} />
                     <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
                     <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
                   </div>
