@@ -17,7 +17,7 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
 
 const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; example: string }> = [
   { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', example: 'Carcassonne' },
-  { label: '02', title: 'Give It A Mission', verb: 'Open Armory', copy: 'Decide what English the game should create: negotiate, explain, persuade, brief, or summarize.', section: 'armory', icon: Target, visual: 'Mission Statement', example: 'Brass: Birmingham' },
+  { label: '02', title: 'Choose The English Job', verb: 'Open Armory', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'armory', icon: Target, visual: 'English Job', example: 'Brass: Birmingham' },
   { label: '03', title: 'Play With A Task', verb: 'Deploy Challenge', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'challenges', icon: Shield, visual: 'Live Challenge', example: 'Pandemic' },
   { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', example: 'Terraforming Mars' },
 ];
@@ -139,7 +139,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           <div className="grid gap-3 md:grid-cols-4">
             {[
               ['1', 'Pick a game', 'Choose what you will play.'],
-              ['2', 'Give it a job', 'Decide what English skill it should train.'],
+              ['2', 'Give it an English job', 'Example: this game will train explaining, negotiating, persuading, or reporting.'],
               ['3', 'Play with pressure', 'Use the game situation to force useful speaking.'],
               ['4', 'Write the result', 'Record what was learned and what comes next.'],
             ].map(([number, title, copy]) => (

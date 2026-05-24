@@ -101,6 +101,34 @@ export function Armory() {
           </div>
         </header>
 
+        <section className="reference-panel mt-8 overflow-hidden">
+          <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-4">
+            <p className="eyebrow">What “Give It A Mission” Means</p>
+            <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">Turn A Game Into An English Job</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6b5f54]">A mission is not extra story text. It is a clear speaking job attached to the game situation.</p>
+          </div>
+          <div className="grid gap-3 p-5 md:grid-cols-3">
+            <div className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
+              <p className="font-display text-2xl text-[#d06122]">1</p>
+              <h3 className="font-display mt-2 text-lg tracking-wide">Game Situation</h3>
+              <p className="mt-1 text-xs leading-5 text-[#70665b]">What is happening on the board? A shortage, race, trade, alliance, auction, or crisis.</p>
+            </div>
+            <div className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
+              <p className="font-display text-2xl text-[#d06122]">2</p>
+              <h3 className="font-display mt-2 text-lg tracking-wide">English Action</h3>
+              <p className="mt-1 text-xs leading-5 text-[#70665b]">What must the player say? Explain, negotiate, persuade, compare, predict, or summarize.</p>
+            </div>
+            <div className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
+              <p className="font-display text-2xl text-[#d06122]">3</p>
+              <h3 className="font-display mt-2 text-lg tracking-wide">Visible Output</h3>
+              <p className="mt-1 text-xs leading-5 text-[#70665b]">What is produced? A short briefing, deal proposal, warning, pitch, or after-action report.</p>
+            </div>
+          </div>
+          <div className="mx-5 mb-5 rounded-xl border border-[#efc978] bg-[#fff9e9] p-4 text-sm leading-6 text-[#6b5f54]">
+            <strong className="font-display text-lg tracking-wide text-[#3d332b]">Example:</strong> In Brass: Birmingham, coal is short. The English job is: “Explain the supply problem and propose a deal.” The output is a 30-second negotiation pitch.
+          </div>
+        </section>
+
         <section className="reference-panel mt-8 grid gap-4 p-5 md:grid-cols-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wide text-[#a36b2c]">Active Tier</p>
