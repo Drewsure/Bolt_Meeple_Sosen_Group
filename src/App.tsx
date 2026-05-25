@@ -12,6 +12,7 @@ import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
 import { Board } from './components/Board';
 import { Seo } from './components/Seo';
+import { Briefings } from './components/Briefings';
 import type { Language } from './lib/i18n';
 
 export type Section =
@@ -19,6 +20,7 @@ export type Section =
   | 'situation'
   | 'armory'
   | 'games'
+  | 'briefings'
   | 'dossier'
   | 'board'
   | 'challenges'
@@ -29,7 +31,7 @@ export type Section =
 
 const sectionFromHash = (): Section => {
   const hash = window.location.hash.replace('#', '') as Section;
-  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
   return valid.includes(hash) ? hash : 'home';
 };
 
@@ -69,6 +71,7 @@ function AppContent() {
       {section === 'situation' && <SituationRoom onNavigate={navigate} language={language} />}
       {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} language={language} />}
       {section === 'games' && <Reserves language={language} />}
+      {section === 'briefings' && <Briefings language={language} onNavigate={navigate} />}
       {section === 'dossier' && <Dossier language={language} />}
       {section === 'ranking' && <Leaderboard onNavigate={navigate} language={language} />}
       {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} language={language} />}

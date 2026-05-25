@@ -11,11 +11,12 @@ interface HeaderProps {
   onToggleLanguage: () => void;
 }
 
-const navigation: Array<{ labelKey: keyof typeof ui.en.nav; section: Section }> = [
+const navigation: Array<{ labelKey?: keyof typeof ui.en.nav; label?: { en: string; ja: string }; section: Section }> = [
   { labelKey: 'home', section: 'home' },
   { labelKey: 'silver', section: 'silver-circle' },
   { labelKey: 'board', section: 'board' },
   { labelKey: 'games', section: 'games' },
+  { label: { en: 'Briefings', ja: 'ブリーフィング' }, section: 'briefings' },
   { labelKey: 'dossier', section: 'dossier' },
   { labelKey: 'ranking', section: 'ranking' },
   { labelKey: 'profile', section: 'profile' },
@@ -44,12 +45,13 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
         </button>
 
         <nav className="hidden flex-1 items-center justify-end gap-3 md:flex">
-          {navigation.map(({ labelKey, section }) => {
+          {navigation.map(({ labelKey, label, section }) => {
             const isSilver = section === 'silver-circle';
             const isActive = activeSection === section;
+            const navLabel = labelKey ? t[labelKey] : label?.[language];
             return (
               <button
-                key={`${section}-${labelKey}`}
+                key={`${section}-${labelKey ?? navLabel}`}
                 onClick={() => select(section)}
                 className={`whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.06em] transition-colors xl:text-[12px] ${
                   isSilver
@@ -57,7 +59,7 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
                     : isActive ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
                 }`}
               >
-                {t[labelKey]}
+                {navLabel}
               </button>
             );
           })}
@@ -76,17 +78,18 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
           <button onClick={onToggleLanguage} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#d06720]">
             {t.toggle}
           </button>
-          {navigation.map(({ labelKey, section }) => {
+          {navigation.map(({ labelKey, label, section }) => {
             const isSilver = section === 'silver-circle';
+            const navLabel = labelKey ? t[labelKey] : label?.[language];
             return (
               <button
-                key={`${section}-${labelKey}`}
+                key={`${section}-${labelKey ?? navLabel}`}
                 onClick={() => select(section)}
                 className={`border-b border-[#eadfce] px-2 py-3 text-left text-sm font-bold uppercase tracking-[0.12em] ${
                   isSilver ? 'text-[#ef3d66]' : 'text-[#5d574d]'
                 }`}
               >
-                {t[labelKey]}
+                {navLabel}
               </button>
             );
           })}

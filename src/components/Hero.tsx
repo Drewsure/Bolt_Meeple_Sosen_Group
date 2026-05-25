@@ -46,6 +46,9 @@ export function Hero({ onNavigate, language }: HeroProps) {
           <button onClick={() => onNavigate('games')} className="rounded border border-[#e8a33e] bg-white px-8 py-3 text-xs font-bold uppercase text-[#d06720] shadow-sm hover:bg-[#fff6e6]">
             {t.browse}
           </button>
+          <button onClick={() => onNavigate('briefings')} className="rounded border border-[#e8a33e] bg-[#fffaf0] px-8 py-3 text-xs font-bold uppercase text-[#d06720] shadow-sm hover:bg-[#fff1d8]">
+            {language === 'ja' ? '週刊ブリーフィング' : 'Weekly Briefings'}
+          </button>
         </div>
       </section>
 

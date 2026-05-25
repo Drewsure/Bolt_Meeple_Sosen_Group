@@ -36,6 +36,11 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     description: 'Browse a board game library used for English conversation sessions in Fukuoka, from relaxed beginner tables to deeper strategy games.',
     keywords: 'board game library Fukuoka, English board game collection, beginner board games English',
   },
+  briefings: {
+    title: 'Weekly English Game Briefings | Meeple Sosen Group',
+    description: 'Weekly board game briefing cards for English conversation practice in Fukuoka, including phrases, prompts, table missions, and Silver Circle suitability.',
+    keywords: 'English game briefing cards, board game English blog, Camel Up English phrases, Azul English conversation, Fukuoka English board games',
+  },
   dossier: {
     title: 'About Meeple Sosen Group | English Through Board Games',
     description: 'Meet the thinking behind Meeple Sosen Group: a friendly participation system using analog games to support English conversation.',
