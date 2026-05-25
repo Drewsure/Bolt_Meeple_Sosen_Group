@@ -16,7 +16,11 @@ export type Briefing = {
   jpWhy: string;
   mission: string;
   jpMission: string;
-  phrases: string[];
+  phraseTiers: {
+    beginner: string[];
+    someExperience: string[];
+    experienced: string[];
+  };
   prompts: string[];
   jpPrompts: string[];
   silverFit: string;
@@ -38,7 +42,11 @@ export const briefings: Briefing[] = [
     jpWhy: '予想する、反応する、考えを変える理由が自然に生まれます。短い英語表現にとても向いています。',
     mission: 'Before placing a bet, say one prediction and one reason.',
     jpMission: '賭ける前に、予想と理由を一つずつ言う。',
-    phrases: ['I think the blue camel will win.', 'Maybe red will fall behind.', 'That was a surprise.', 'I changed my mind because...', 'It is risky, but I choose...'],
+    phraseTiers: {
+      beginner: ['Blue camel.', 'Red camel.', 'I choose blue.', 'I think blue wins.', 'Oh no!'],
+      someExperience: ['I think the blue camel will win.', 'Maybe red will fall behind.', 'That was a surprise.', 'I changed my mind.'],
+      experienced: ['I changed my mind because the race order changed.', 'It is risky, but I choose yellow because the odds are better.', 'I do not trust blue anymore after that roll.'],
+    },
     prompts: ['Which camel do you trust now?', 'What changed after that roll?', 'Was your bet safe or risky?'],
     jpPrompts: ['今、どのラクダを信じますか？', 'そのサイコロで何が変わりましたか？', 'その賭けは安全でしたか、リスクがありましたか？'],
     silverFit: 'Very strong. It is visual, funny, fast, and easy to support with Japanese.',
@@ -58,7 +66,11 @@ export const briefings: Briefing[] = [
     jpWhy: '色、模様、無駄を避ける、簡単な作戦を説明する英語が自然に出てきます。',
     mission: 'Explain your tile choice using color, pattern, and one risk.',
     jpMission: '色、模様、リスクを使って、選んだ理由を説明する。',
-    phrases: ['I need this color.', 'This row is almost finished.', 'I want to avoid waste.', 'This choice blocks you.', 'My pattern is getting better.'],
+    phraseTiers: {
+      beginner: ['I need blue.', 'I take red.', 'This is good.', 'No waste.', 'My wall.'],
+      someExperience: ['I need this color.', 'This row is almost finished.', 'I want to avoid waste.', 'My pattern is getting better.'],
+      experienced: ['I am taking this color because it completes my row.', 'This choice blocks you and protects my score.', 'I want to avoid waste, even if this gives fewer points now.'],
+    },
     prompts: ['Which color do you need most?', 'What are you trying to avoid?', 'Did you help yourself or block someone?'],
     jpPrompts: ['一番必要な色は何ですか？', '何を避けようとしていますか？', '自分を助けましたか、それとも誰かを止めましたか？'],
     silverFit: 'Strong. Beautiful components and calm turns make it reassuring for slower conversation.',
@@ -78,7 +90,11 @@ export const briefings: Briefing[] = [
     jpWhy: 'タイルを置くたびに、場所、理由、つなげる、止める、完成させる表現が使えます。',
     mission: 'When placing a tile, say where it goes and why it helps.',
     jpMission: 'タイルを置く時に、どこに置くか、なぜ役に立つかを言う。',
-    phrases: ['I place this tile here.', 'This connects to my road.', 'I want to finish this city.', 'This blocks your farm.', 'I get points because...'],
+    phraseTiers: {
+      beginner: ['Here.', 'My road.', 'My city.', 'I place this here.', 'I get points.'],
+      someExperience: ['I place this tile here.', 'This connects to my road.', 'I want to finish this city.', 'This blocks your farm.'],
+      experienced: ['I place this tile here because it gives me two scoring options.', 'This connects to my road and makes your farm less valuable.', 'I want to finish this city before someone blocks it.'],
+    },
     prompts: ['Why did you place it there?', 'What are you trying to finish?', 'Did you help yourself or block someone?'],
     jpPrompts: ['なぜそこに置きましたか？', '何を完成させようとしていますか？', '自分を助けましたか、誰かを止めましたか？'],
     silverFit: 'Good. Use fewer rules at first and focus on roads and cities.',
@@ -98,7 +114,11 @@ export const briefings: Briefing[] = [
     jpWhy: '食べ物、好き嫌い、短い反応、予想の英語にぴったりです。',
     mission: 'Say what you want, what you pass, and one reason.',
     jpMission: '欲しいカード、渡すカード、理由を一つ言う。',
-    phrases: ['I want tempura.', 'I pass this card.', 'I need one more.', 'This is good for points.', 'I think you want pudding.'],
+    phraseTiers: {
+      beginner: ['I want tempura.', 'I pass this.', 'One more.', 'Good card.', 'I like sushi.'],
+      someExperience: ['I pass this card.', 'I need one more.', 'This is good for points.', 'I think you want pudding.'],
+      experienced: ['I am keeping this because it works with my last card.', 'I think you want pudding, so I will take it first.', 'This is not useful now, but it may score later.'],
+    },
     prompts: ['What food do you want?', 'What card are you waiting for?', 'Can you predict another player?'],
     jpPrompts: ['どの食べ物が欲しいですか？', 'どのカードを待っていますか？', '他の人の狙いを予想できますか？'],
     silverFit: 'Good as a short warm-up, but the passing can feel fast. Slow mode is recommended.',
@@ -206,14 +226,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
                 <BriefingBlock icon={Brain} title={t.why} body={language === 'ja' ? briefing.jpWhy : briefing.why} />
                 <BriefingBlock icon={Sparkles} title={t.mission} body={language === 'ja' ? briefing.jpMission : briefing.mission} />
-                <div className="rounded-xl border border-[#efd39d] bg-[#fffaf0] p-4">
-                  <h3 className="font-display text-xl tracking-wide text-[#3d332b]">{t.phrases}</h3>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {briefing.phrases.map((phrase) => (
-                      <span key={phrase} className="rounded-full border border-[#e4c785] bg-white px-3 py-1 text-xs font-bold text-[#8a5d2a]">{phrase}</span>
-                    ))}
-                  </div>
-                </div>
+                <PhraseTiers title={t.phrases} tiers={briefing.phraseTiers} language={language} compact />
                 <div className="grid gap-3 sm:grid-cols-3">
                   {(language === 'ja' ? briefing.jpPrompts : briefing.prompts).map((prompt) => (
                     <div key={prompt} className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4 text-xs leading-6 text-[#536456]">
@@ -302,12 +315,7 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
 
           <aside className="space-y-5">
             <div className="reference-panel p-5">
-              <h2 className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.phrases}</h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {briefing.phrases.map((phrase) => (
-                  <span key={phrase} className="rounded-full border border-[#e4c785] bg-white px-3 py-2 text-xs font-bold text-[#8a5d2a]">{phrase}</span>
-                ))}
-              </div>
+              <PhraseTiers title={t.phrases} tiers={briefing.phraseTiers} language={language} />
             </div>
             <div className="reference-panel border-[#ffbdce] bg-[#fff7fa] p-5">
               <h2 className="font-display text-2xl tracking-wide text-[#ef3d66]">{t.silver}</h2>
@@ -339,6 +347,47 @@ function BriefingBlock({ icon: Icon, title, body }: { icon: typeof BookOpen; tit
     <div className="rounded-xl border border-[#efd39d] bg-white p-4">
       <h3 className="flex items-center gap-2 font-display text-xl tracking-wide text-[#3d332b]"><Icon className="text-[#d87522]" size={17} />{title}</h3>
       <p className="mt-2 text-sm leading-7 text-[#62584f]">{body}</p>
+    </div>
+  );
+}
+
+function PhraseTiers({
+  compact = false,
+  language,
+  tiers,
+  title,
+}: {
+  compact?: boolean;
+  language: Language;
+  tiers: Briefing['phraseTiers'];
+  title: string;
+}) {
+  const labels = language === 'ja'
+    ? ['Beginner / 初心者', 'Some Experience / 少し経験あり', 'Experienced / 経験者']
+    : ['Beginner', 'Some Experience', 'Experienced'];
+  const entries = [
+    { label: labels[0], phrases: tiers.beginner, tone: 'border-[#bde8c9] bg-[#f7fff8] text-[#2e7c44]' },
+    { label: labels[1], phrases: tiers.someExperience, tone: 'border-[#efd39d] bg-[#fffaf0] text-[#8a5d2a]' },
+    { label: labels[2], phrases: tiers.experienced, tone: 'border-[#b9d2fb] bg-[#f7fbff] text-[#366eb4]' },
+  ];
+
+  return (
+    <div className="rounded-xl border border-[#efd39d] bg-[#fffaf0] p-4">
+      <h3 className="font-display text-xl tracking-wide text-[#3d332b]">{title}</h3>
+      <div className={`mt-3 grid gap-3 ${compact ? '' : 'lg:grid-cols-1'}`}>
+        {entries.map(({ label, phrases, tone }) => (
+          <section key={label} className={`rounded-xl border p-3 ${tone}`}>
+            <p className="text-[10px] font-bold uppercase tracking-wide">{label}</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {phrases.map((phrase) => (
+                <span key={phrase} className="rounded-full border border-white/80 bg-white px-3 py-1 text-xs font-bold text-[#4f463e] shadow-sm">
+                  {phrase}
+                </span>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
