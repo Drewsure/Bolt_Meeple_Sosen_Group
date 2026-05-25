@@ -2,7 +2,7 @@ import { ArrowRight, BookOpen, Brain, CalendarDays, Download, HelpCircle, MapPin
 import type { Section } from '../App';
 import type { Language } from '../lib/i18n';
 
-type Briefing = {
+export type Briefing = {
   slug: string;
   title: string;
   jpTitle: string;
@@ -23,7 +23,7 @@ type Briefing = {
   jpSilverFit: string;
 };
 
-const briefings: Briefing[] = [
+export const briefings: Briefing[] = [
   {
     slug: 'camel-up-english-briefing-card',
     title: 'Camel Up English Briefing Card',
@@ -155,6 +155,10 @@ const pageCopy = {
 
 export function Briefings({ language, onNavigate }: { language: Language; onNavigate: (section: Section) => void }) {
   const t = pageCopy[language];
+  const openBriefing = (slug: string) => {
+    window.location.hash = `briefings/${slug}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <main className="page-shell">
@@ -222,7 +226,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                   <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? briefing.jpSilverFit : briefing.silverFit}</p>
                 </div>
                 <div className="flex flex-wrap gap-3 pt-2">
-                  <a href={`#${briefing.slug}`} className="rule-button px-4 py-2"><BookOpen size={13} /> {t.read}</a>
+                  <button onClick={() => openBriefing(briefing.slug)} className="rule-button px-4 py-2"><BookOpen size={13} /> {t.read}</button>
                   <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-4 py-2"><ArrowRight size={13} /> {t.cta}</button>
                   <button className="rounded border border-[#e0d2b6] bg-white px-4 py-2 text-[10px] font-bold uppercase text-[#8c7563]"><Download size={13} className="mr-1 inline" /> PDF later</button>
                 </div>
@@ -231,6 +235,101 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
           ))}
         </section>
       </div>
+    </main>
+  );
+}
+
+export function BriefingDetail({ language, onNavigate, slug }: { language: Language; onNavigate: (section: Section) => void; slug: string }) {
+  const t = pageCopy[language];
+  const briefing = briefings.find((item) => item.slug === slug) ?? briefings[0];
+  const title = language === 'ja' ? briefing.jpTitle : briefing.title;
+  const audience = language === 'ja' ? briefing.jpAudience : briefing.audience;
+  const level = language === 'ja' ? briefing.jpLevel : briefing.level;
+  const prompts = language === 'ja' ? briefing.jpPrompts : briefing.prompts;
+
+  return (
+    <main className="page-shell">
+      <article className="container-shell py-12">
+        <a href="#briefings" className="text-xs font-bold uppercase tracking-wide text-[#c86123]">
+          {language === 'ja' ? '← ブリーフィング一覧へ' : '← Back to all briefings'}
+        </a>
+
+        <header className="reference-panel mt-6 overflow-hidden">
+          <div className="bg-[#fff8ea] p-7 text-center">
+            <p className="eyebrow justify-center">{level}</p>
+            <h1 className="compact-title mt-2">{title}</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#71685d]">
+              {language === 'ja'
+                ? '英語セッション、地域の検索、AI回答に使いやすい、一つのゲーム専用ブリーフィングページです。'
+                : 'A standalone briefing page for one game, designed for English sessions, local search, and AI answer engines.'}
+            </p>
+          </div>
+          <div className="grid gap-0 md:grid-cols-3">
+            <div className="border-b border-[#efd39d] p-5 text-center md:border-b-0 md:border-r">
+              <Users className="mx-auto text-[#d87522]" size={24} />
+              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">{t.audience}</p>
+              <p className="mt-2 text-sm leading-6 text-[#62584f]">{audience}</p>
+            </div>
+            <div className="border-b border-[#efd39d] p-5 text-center md:border-b-0 md:border-r">
+              <CalendarDays className="mx-auto text-[#d87522]" size={24} />
+              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">{language === 'ja' ? '公開リズム' : 'Publishing Use'}</p>
+              <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? '毎週記事のサンプル' : 'Example weekly article'}</p>
+            </div>
+            <div className="p-5 text-center">
+              <MapPin className="mx-auto text-[#d87522]" size={24} />
+              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">GEO</p>
+              <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? '福岡・西区の英語ゲーム活動向け' : 'For English game activity in Nishi-ku, Fukuoka'}</p>
+            </div>
+          </div>
+        </header>
+
+        <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_0.8fr]">
+          <div className="space-y-5">
+            <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
+            <BriefingBlock icon={Brain} title={t.why} body={language === 'ja' ? briefing.jpWhy : briefing.why} />
+            <BriefingBlock icon={Sparkles} title={t.mission} body={language === 'ja' ? briefing.jpMission : briefing.mission} />
+            <div className="reference-panel p-5">
+              <h2 className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.prompts}</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {prompts.map((prompt) => (
+                  <p key={prompt} className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4 text-sm leading-7 text-[#536456]">
+                    <MessageCircle className="mb-2 text-[#2e7c44]" size={16} />{prompt}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <aside className="space-y-5">
+            <div className="reference-panel p-5">
+              <h2 className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.phrases}</h2>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {briefing.phrases.map((phrase) => (
+                  <span key={phrase} className="rounded-full border border-[#e4c785] bg-white px-3 py-2 text-xs font-bold text-[#8a5d2a]">{phrase}</span>
+                ))}
+              </div>
+            </div>
+            <div className="reference-panel border-[#ffbdce] bg-[#fff7fa] p-5">
+              <h2 className="font-display text-2xl tracking-wide text-[#ef3d66]">{t.silver}</h2>
+              <p className="mt-3 text-sm leading-7 text-[#62584f]">{language === 'ja' ? briefing.jpSilverFit : briefing.silverFit}</p>
+            </div>
+            <div className="reference-panel p-5">
+              <h2 className="font-display text-2xl tracking-wide text-[#3d332b]">FAQ</h2>
+              <details className="mt-4 rounded border border-[#efd39d] bg-white p-4">
+                <summary className="cursor-pointer font-bold">{language === 'ja' ? '初心者に向いていますか？' : 'Is this good for beginners?'}</summary>
+                <p className="mt-3 text-sm leading-7 text-[#62584f]">{language === 'ja' ? 'はい。短い表現から始められるので、初心者にも使いやすいです。' : 'Yes. It works well because the language can start with short, repeatable phrases.'}</p>
+              </details>
+              <details className="mt-3 rounded border border-[#efd39d] bg-white p-4">
+                <summary className="cursor-pointer font-bold">{language === 'ja' ? 'どう使えばいいですか？' : 'How should I use it at the table?'}</summary>
+                <p className="mt-3 text-sm leading-7 text-[#62584f]">{language === 'ja' ? '一つのミッションと三つのプロンプトだけを選び、プレイ中に無理なく使います。' : 'Choose one mission and three prompts, then use them lightly during play.'}</p>
+              </details>
+            </div>
+            <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary w-full justify-center py-3">
+              <ArrowRight size={14} /> {t.cta}
+            </button>
+          </aside>
+        </section>
+      </article>
     </main>
   );
 }

@@ -24,7 +24,9 @@ const navigation: Array<{ labelKey?: keyof typeof ui.en.nav; label?: { en: strin
 
 export function Header({ currentSection, language, onNavigate, onToggleLanguage }: HeaderProps) {
   const [open, setOpen] = useState(false);
-  const activeSection: Section = currentSection === 'armory' || currentSection === 'challenges' ? 'board' : currentSection;
+  const activeSection: Section = currentSection === 'armory' || currentSection === 'challenges'
+    ? 'board'
+    : currentSection === 'briefing-detail' ? 'briefings' : currentSection;
   const t = ui[language].nav;
 
   const select = (section: Section) => {
