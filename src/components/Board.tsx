@@ -7,17 +7,16 @@ import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import type { Game } from '../types/database';
 
 const commands: Array<{ icon: typeof Database; label: string; copy: string; section: Section; tone: string }> = [
-  { icon: Database, label: 'Reserves Database', copy: 'Search the full collection, open detailed cards, and select the next table.', section: 'games', tone: 'border-[#f0c978] bg-[#fff9ec]' },
-  { icon: Trophy, label: 'Ranking', copy: 'Check the public ranking state and prepare the first submissions.', section: 'ranking', tone: 'border-[#b9d2fb] bg-[#f7fbff]' },
-  { icon: Award, label: 'Profile Badges', copy: 'Review rank, domain badges, and completion readiness.', section: 'profile', tone: 'border-[#ead4fa] bg-[#fdf8ff]' },
-  { icon: Image, label: 'Image Maintenance', copy: 'Repair covers, stage manual updates, and clear missing-image work.', section: 'admin-images', tone: 'border-[#f3b6a8] bg-[#fff7f4]' },
+  { icon: Database, label: 'Game Library', copy: 'Browse the collection and choose a table that fits the group.', section: 'games', tone: 'border-[#f0c978] bg-[#fff9ec]' },
+  { icon: Trophy, label: 'Community Progress', copy: 'See how the group is growing over time.', section: 'ranking', tone: 'border-[#b9d2fb] bg-[#f7fbff]' },
+  { icon: Award, label: 'My Progress', copy: 'Review phrases, badges, and session history when you are ready.', section: 'profile', tone: 'border-[#ead4fa] bg-[#fdf8ff]' },
 ];
 
 const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; image: string }> = [
-  { label: '01', title: 'Pick A Game', verb: 'Browse Reserves', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', image: '/images/mission-route-pick-game.svg' },
-  { label: '02', title: 'Choose The English Job', verb: 'Build Mission Here', copy: 'Give the game one language job: explain a plan, make a deal, persuade someone, or report what happened.', section: 'board', icon: Target, visual: 'English Job', image: '/images/mission-route-english-job.svg' },
-  { label: '03', title: 'Play With A Task', verb: 'Use Challenge Deck', copy: 'During play, use the mission. Players must speak because the board creates pressure.', section: 'board', icon: Shield, visual: 'Live Challenge', image: '/images/mission-route-live-challenge.svg' },
-  { label: '04', title: 'Record What Happened', verb: 'Record Progress', copy: 'After play, write what happened, what English appeared, and what should be practised next.', section: 'profile', icon: Trophy, visual: 'After Action', image: '/images/mission-route-record-result.svg' },
+  { label: '01', title: 'Choose A Game', verb: 'Browse Games', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', image: '/images/mission-route-pick-game.svg' },
+  { label: '02', title: 'Choose One English Focus', verb: 'Pick A Focus', copy: 'Give the table one gentle language aim: explain, ask, persuade, report, or reflect.', section: 'board', icon: Target, visual: 'English Focus', image: '/images/mission-route-english-job.svg' },
+  { label: '03', title: 'Play With Support', verb: 'Use A Conversation Card', copy: 'During play, use the prompt. The game gives everyone a reason to speak.', section: 'board', icon: Shield, visual: 'Supported Play', image: '/images/mission-route-live-challenge.svg' },
+  { label: '04', title: 'Review Together', verb: 'Record Progress', copy: 'After play, notice what English appeared and choose one small thing for next time.', section: 'profile', icon: Trophy, visual: 'Session Review', image: '/images/mission-route-record-result.svg' },
 ];
 
 type MissionLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Master';
@@ -102,29 +101,29 @@ const missionBuilder: Array<{
 const challengeDeck = [
   {
     title: 'Power Grid',
-    label: 'The Power Plant Auction',
-    prompt: 'Win or lose one auction bid, then explain your economic reason in English.',
+    label: 'Auction Reason',
+    prompt: 'After one bid, explain why you chose that price.',
     output: 'I bid because... / I stopped because...',
     tags: ['auction', 'economics', 'decision'],
   },
   {
     title: 'Pandemic',
-    label: 'The Emergency Brief',
-    prompt: 'Give the team a concise crisis update before your turn.',
+    label: 'Team Plan',
+    prompt: 'Before your turn, tell the table the next useful step.',
     output: 'The biggest danger is... My plan is...',
     tags: ['teamwork', 'urgency', 'clear instructions'],
   },
   {
     title: 'Brass: Birmingham',
-    label: 'The Coal Crisis Negotiation',
-    prompt: 'Explain a network decision and negotiate one useful table agreement.',
+    label: 'Network Deal',
+    prompt: 'Explain one route choice and ask for one fair agreement.',
     output: 'If you take this route, then I can...',
     tags: ['negotiation', 'conditions', 'industry'],
   },
   {
     title: 'Catan',
-    label: 'The Diplomatic Alliance',
-    prompt: 'Propose a fair trade and explain why it helps both players.',
+    label: 'Fair Trade Offer',
+    prompt: 'Offer a trade and explain why it helps both players.',
     output: 'This is fair because you get... and I get...',
     tags: ['trade', 'fairness', 'persuasion'],
   },
@@ -172,9 +171,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   return (
     <main className="page-shell">
       <header className="tactical-banner py-11 text-center">
-        <p className="eyebrow justify-center">Mission Control</p>
-        <h1 className="compact-title mt-2">Command Board</h1>
-        <p className="mt-4 text-xs text-[#71685d]">Plan the next mission. Deploy language through strategy.</p>
+        <p className="eyebrow justify-center">How It Works</p>
+        <h1 className="compact-title mt-2">From Game To Conversation</h1>
+        <p className="mt-4 text-xs text-[#71685d]">A simple session flow for turning play into useful English.</p>
       </header>
 
       <div className="container-shell py-10">
@@ -182,12 +181,12 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           <article className="reference-panel overflow-hidden">
             <div className="grid min-h-80 gap-6 bg-[#fff8ea] p-7 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="flex flex-col justify-center">
-                <p className="eyebrow text-[#bd5c24]">Operational Process</p>
-                <h2 className="font-display mt-3 text-5xl tracking-wide text-[#2f251e]">Board To Language Pipeline</h2>
-                <p className="mt-5 text-sm leading-7 text-[#6b5f54]">A mission begins with a game, but it only matters when the table creates useful English: decisions, pressure, persuasion, explanation, and reflection.</p>
+                <p className="eyebrow text-[#bd5c24]">Session Flow</p>
+                <h2 className="font-display mt-3 text-5xl tracking-wide text-[#2f251e]">A Game Becomes English</h2>
+                <p className="mt-5 text-sm leading-7 text-[#6b5f54]">A session begins with a game, then gently creates real English: explaining choices, asking questions, making small plans, and reflecting together.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Start With Reserves</button>
-                  <a href="#mission-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Build Mission</a>
+                  <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Browse Games</button>
+                  <a href="#session-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Choose A Focus</a>
                 </div>
               </div>
 
@@ -220,7 +219,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                   <text x="405" y="218" textAnchor="middle" fill="#6b3a1d" fontSize="20" fontWeight="700">LANGUAGE</text>
 
                   <path d="M102 252h310" stroke="#efc978" strokeWidth="4" strokeLinecap="round" strokeDasharray="10 12" />
-                  <text x="258" y="276" textAnchor="middle" fill="#7a6554" fontSize="18" fontWeight="700">SELECT  ARM  DEPLOY  LOG</text>
+                  <text x="258" y="276" textAnchor="middle" fill="#7a6554" fontSize="18" fontWeight="700">CHOOSE  FOCUS  PLAY  REVIEW</text>
                 </svg>
               </div>
             </div>
@@ -228,15 +227,15 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-4">
-              <p className="eyebrow">Commander&apos;s Brief</p>
+              <p className="eyebrow">Session Guide</p>
               <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">What Happens Here</h2>
             </div>
             <div className="space-y-4 p-5 text-sm leading-7 text-[#6f655a]">
-              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />The board is the situation engine. The mission statement gives the table a reason to speak.</p>
-              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />Process rule: choose the game, arm the language objective, run the challenge, then log the result.</p>
-              <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />Every phase below is clickable. Use it as the live control route through the site.</p>
-              <a href="#challenge-deck" className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
-                <Sparkles size={14} /> Open Challenge Deck
+              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />The board game gives people something real to talk about.</p>
+              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />The focus keeps it simple: one useful kind of English at a time.</p>
+              <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />The review makes the learning visible without making it feel like a test.</p>
+              <a href="#conversation-cards" className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
+                <Sparkles size={14} /> See Conversation Cards
               </a>
             </div>
           </article>
@@ -246,14 +245,14 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           <div className="mb-4 text-center">
             <p className="eyebrow justify-center">Plain English Version</p>
             <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">How To Use This Page</h2>
-            <p className="mt-2 text-xs text-[#746b60]">The Command Board is just the route from "we have a game" to "we used English for a real reason."</p>
+            <p className="mt-2 text-xs text-[#746b60]">This is the route from "we have a game" to "we used English for a real reason."</p>
           </div>
           <div className="grid gap-3 md:grid-cols-4">
             {[
               ['1', 'Pick a game', 'Choose what you will play.'],
-              ['2', 'Give it an English job', 'Example: this game will train explaining, negotiating, persuading, or reporting.'],
-              ['3', 'Play with pressure', 'Use the game situation to force useful speaking.'],
-              ['4', 'Write the result', 'Record what was learned and what comes next.'],
+              ['2', 'Choose one focus', 'Example: explaining, asking, negotiating, or reporting.'],
+              ['3', 'Play with support', 'Use the game situation to make speaking natural.'],
+              ['4', 'Review together', 'Notice what was learned and what comes next.'],
             ].map(([number, title, copy]) => (
               <div key={number} className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
                 <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#ed941d] font-display text-xl text-white">{number}</span>
@@ -277,9 +276,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         <section className="mt-10">
           <div className="mb-5 text-center">
-            <p className="eyebrow justify-center">Phase Map</p>
-            <h2 className="compact-title mt-2 text-3xl">Mission Route</h2>
-            <p className="mt-2 text-xs text-[#746b60]">Follow the orange line from selection to after-action learning.</p>
+            <p className="eyebrow justify-center">Session Map</p>
+            <h2 className="compact-title mt-2 text-3xl">The Table Route</h2>
+            <p className="mt-2 text-xs text-[#746b60]">Follow the orange line from choosing a game to noticing what you said.</p>
           </div>
           <div className="relative grid gap-4 lg:grid-cols-4">
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
@@ -306,17 +305,17 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </div>
         </section>
 
-        <section id="mission-builder" className="reference-panel mt-12 overflow-hidden">
+        <section id="session-builder" className="reference-panel mt-12 overflow-hidden">
           <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="eyebrow">Unified Mission Builder</p>
-                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Game + English Job + Challenge</h2>
-                  <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">This replaces the old separate Armory idea. Pick a level, choose a game, and the mission statement tells the table exactly what English to produce.</p>
+                  <p className="eyebrow">Session Builder</p>
+                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Game + English Focus + Conversation Card</h2>
+                  <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">Pick a level, choose a game, and give the table one small English focus. The aim is confidence, not performance.</p>
                 </div>
                 <button onClick={() => onNavigate('games')} className="rule-button px-4 py-2">
-                  <Database size={13} /> Browse Reserves
+                  <Database size={13} /> Browse Games
                 </button>
               </div>
 
@@ -370,33 +369,33 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             </div>
 
             <aside className="bg-[#fff8ea] p-6">
-              <p className="eyebrow">Active Mission Card</p>
+              <p className="eyebrow">Active Session Card</p>
               <h3 className="font-display mt-2 text-4xl tracking-wide text-[#3d332b]">{selectedMission.title}</h3>
-              <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#d87522]">{selectedMission.level} Deployment</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#d87522]">{selectedMission.level} Table</p>
 
               <div className="mt-6 space-y-4">
                 <div className="rounded-xl border border-[#efc779] bg-white p-4">
-                  <p className="font-display text-xl tracking-wide text-[#bd5c24]">Mission Statement</p>
+                  <p className="font-display text-xl tracking-wide text-[#bd5c24]">Table Focus</p>
                   <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.missionStatement}</p>
                 </div>
                 <div className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4">
-                  <p className="font-display text-xl tracking-wide text-[#2e7c44]">Table Challenge</p>
+                  <p className="font-display text-xl tracking-wide text-[#2e7c44]">Conversation Card</p>
                   <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.challenge}</p>
                 </div>
                 <div className="rounded-xl border border-[#b9d2fb] bg-[#f7fbff] p-4">
                   <p className="font-display text-xl tracking-wide text-[#366eb4]">Success Looks Like</p>
-                  <p className="mt-2 text-sm leading-6 text-[#62584f]">A player says a useful sentence because the board situation demanded it, then records the phrase after play.</p>
+                  <p className="mt-2 text-sm leading-6 text-[#62584f]">Someone says a useful sentence because the game made it natural, then notices it after play.</p>
                 </div>
               </div>
             </aside>
           </div>
         </section>
 
-        <section id="challenge-deck" className="mt-12">
+        <section id="conversation-cards" className="mt-12">
           <div className="mb-5 text-center">
-            <p className="eyebrow justify-center">Challenge Deck</p>
-            <h2 className="compact-title mt-2 text-3xl">Live Table Prompts</h2>
-            <p className="mt-2 text-xs text-[#746b60]">This replaces the old separate Guild Challenges page. Use one card during play, then log the result in Profile.</p>
+            <p className="eyebrow justify-center">Conversation Cards</p>
+            <h2 className="compact-title mt-2 text-3xl">Gentle Table Prompts</h2>
+            <p className="mt-2 text-xs text-[#746b60]">Use one card during play. It gives the table a simple reason to speak.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {challengeDeck.map((challenge) => {
@@ -424,14 +423,14 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </div>
         </section>
 
-        <h2 className="compact-title mt-12 text-center text-3xl">Support Stations</h2>
-        <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <h2 className="compact-title mt-12 text-center text-3xl">Helpful Next Places</h2>
+        <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-3">
           {commands.map(({ icon: Icon, label, copy, section, tone }) => (
             <button key={label} onClick={() => onNavigate(section)} className={`rounded-xl border p-6 text-left transition-transform hover:-translate-y-0.5 hover:shadow-md ${tone}`}>
               <Icon className="text-[#dc791d]" size={28} />
               <span className="mt-5 block font-display text-xl tracking-wide text-[#4c4036]">{label}</span>
               <span className="mt-2 block text-xs leading-5 text-[#70665b]">{copy}</span>
-              <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">Go <ChevronRight size={12} /></span>
+              <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">Open <ChevronRight size={12} /></span>
             </button>
           ))}
         </section>
@@ -439,8 +438,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
         <section className="mt-12 grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] px-6 py-4">
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Next Deployment Candidates</p>
-              <p className="mt-1 text-xs text-[#7a7065]">Curated from the reserve base for immediate mission planning.</p>
+              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Good Next Table Choices</p>
+              <p className="mt-1 text-xs text-[#7a7065]">A few games that can quickly become useful English practice.</p>
             </div>
             <div className="divide-y divide-[#f3dfba]">
               {recommended.map((game) => (
@@ -460,8 +459,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] px-6 py-4">
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">After-Action Template</p>
-              <p className="mt-1 text-xs text-[#7a7065]">Use this structure after any session.</p>
+              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Session Review Template</p>
+              <p className="mt-1 text-xs text-[#7a7065]">Use this gently after a session. It is a reflection, not a test.</p>
             </div>
             <div className="grid gap-3 p-5">
               {[
@@ -469,7 +468,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                 ['Decision', 'What did you choose and why?'],
                 ['Language', 'Which phrases or vocabulary appeared naturally?'],
                 ['Result', 'What changed because of the decision?'],
-                ['Next Drill', 'What should be practised next time?'],
+                ['Next Time', 'What would be useful to try next time?'],
               ].map(([label, copy]) => (
                 <div key={label} className="rounded border border-[#efd39d] bg-white p-4">
                   <p className="flex items-center gap-2 font-display text-lg tracking-wide text-[#3d332b]"><FileText size={15} className="text-[#d87522]" /> {label}</p>
@@ -481,14 +480,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
         </section>
 
         {missingImages.length > 0 && (
-          <section className="reference-panel mt-10 flex flex-wrap items-center justify-between gap-4 p-5">
-            <div>
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Maintenance Alert</p>
-              <p className="mt-1 text-xs text-[#70665b]">{missingImages.length} reserve cards still need cover images before full visual readiness.</p>
-            </div>
-            <button onClick={() => onNavigate('admin-images')} className="rule-button rule-button-primary px-5 py-3">
-              <Image size={14} /> Open Maintenance
-            </button>
+          <section className="reference-panel mt-10 p-5 text-center">
+            <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Library Note</p>
+            <p className="mt-1 text-xs text-[#70665b]">Some game covers are still being prepared. The library can still be used for choosing sessions.</p>
           </section>
         )}
       </div>

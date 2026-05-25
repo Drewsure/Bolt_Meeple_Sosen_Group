@@ -10,10 +10,10 @@ interface HeaderProps {
 const navigation: Array<{ label: string; section: Section }> = [
   { label: 'Home', section: 'home' },
   { label: 'Situation', section: 'situation' },
-  { label: 'Mission Control', section: 'board' },
-  { label: 'Reserves - Database', section: 'games' },
+  { label: 'How It Works', section: 'board' },
+  { label: 'Game Library', section: 'games' },
   { label: 'Dossier', section: 'dossier' },
-  { label: 'Ranking', section: 'ranking' },
+  { label: 'Progress', section: 'ranking' },
   { label: 'Silver Circle', section: 'silver-circle' },
   { label: 'Profile', section: 'profile' },
 ];
