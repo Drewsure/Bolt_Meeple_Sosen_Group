@@ -159,6 +159,50 @@ const focusOptions = [
   },
 ];
 
+const boardTranslations = {
+  en: {
+    missionFlow,
+    sessionBuilder: 'Session Builder',
+    sessionBuilderTitle: 'Game + English Focus + Conversation Card',
+    sessionBuilderCopy: 'Pick a level, choose a game, and give the table one small English focus. The aim is confidence, not performance.',
+    activeSession: 'Active Session Card',
+    tableFocus: 'Table Focus',
+    conversationCard: 'Conversation Card',
+    successLooksLike: 'Success Looks Like',
+    successCopy: 'Someone says a useful sentence because the game made it natural, then notices it after play.',
+    reviewTemplate: [
+      ['Situation', 'What was happening on the board?'],
+      ['Decision', 'What did you choose and why?'],
+      ['Language', 'Which phrases or vocabulary appeared naturally?'],
+      ['Result', 'What changed because of the decision?'],
+      ['Next Time', 'What would be useful to try next time?'],
+    ],
+  },
+  ja: {
+    missionFlow: [
+      { title: 'ゲームを選ぶ', verb: 'ゲームを見る', copy: '時間、難しさ、テーマ、人数に合うボードゲームを一つ選びます。', visual: 'ゲーム選び' },
+      { title: '英語フォーカスを一つ選ぶ', verb: 'フォーカスを選ぶ', copy: '説明する、質問する、提案する、報告する、ふり返るなど、一つだけ選びます。', visual: '英語フォーカス' },
+      { title: 'サポート付きで遊ぶ', verb: '会話カードを使う', copy: 'プレイ中にプロンプトを使います。ゲームが話す理由を作ります。', visual: 'サポートプレイ' },
+      { title: '一緒にふり返る', verb: '進捗を記録する', copy: 'プレイ後に、出てきた英語に気づき、次回の小さな目標を選びます。', visual: 'セッション記録' },
+    ],
+    sessionBuilder: 'セッションビルダー',
+    sessionBuilderTitle: 'ゲーム + 英語フォーカス + 会話カード',
+    sessionBuilderCopy: 'レベルを選び、ゲームを選び、テーブルに一つだけ英語フォーカスを置きます。目的は完璧さではなく、自信です。',
+    activeSession: '現在のセッションカード',
+    tableFocus: 'テーブルのフォーカス',
+    conversationCard: '会話カード',
+    successLooksLike: '成功の形',
+    successCopy: 'ゲームの流れの中で誰かが使える一文を言い、プレイ後にそれに気づけることです。',
+    reviewTemplate: [
+      ['状況', 'ボード上で何が起きていましたか？'],
+      ['判断', '何を選びましたか？その理由は？'],
+      ['言葉', '自然に出てきたフレーズや語彙は何ですか？'],
+      ['結果', 'その判断で何が変わりましたか？'],
+      ['次回', '次に試すと役に立ちそうなことは何ですか？'],
+    ],
+  },
+} as const;
+
 function pickRecommended(games: Game[]) {
   const names = ['Brass: Birmingham', 'Power Grid', 'Carcassonne', 'Pandemic', 'Terraforming Mars', 'Modern Art'];
   return names
@@ -180,6 +224,7 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
   const [saveMessage, setSaveMessage] = useState('');
   const t = ui[language].board;
   const common = ui[language].common;
+  const local = boardTranslations[language];
 
   useEffect(() => {
     const load = () => {
@@ -340,7 +385,8 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
           </div>
           <div className="relative grid gap-4 lg:grid-cols-4">
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
-            {missionFlow.map((step) => {
+            {missionFlow.map((step, index) => {
+              const translatedStep = local.missionFlow[index];
               const Icon = step.icon;
               return (
                 <button key={step.label} onClick={() => onNavigate(step.section)} className="reference-panel relative overflow-hidden text-left transition hover:-translate-y-1 hover:shadow-xl">
@@ -349,13 +395,13 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
                     <div className={`absolute inset-0 ${step.label === '01' ? 'bg-gradient-to-br from-[#2f251e]/5 via-transparent to-[#2f251e]/35' : step.label === '02' ? 'bg-gradient-to-br from-[#1e386b]/5 via-transparent to-[#1e386b]/35' : step.label === '03' ? 'bg-gradient-to-br from-[#1f5b35]/5 via-transparent to-[#1f5b35]/35' : 'bg-gradient-to-br from-[#6b2d1e]/5 via-transparent to-[#6b2d1e]/35'}`} />
                     <Icon className="absolute right-7 top-8 text-white drop-shadow" size={42} />
                     <span className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-[#ed941d] font-display text-xl text-white shadow-lg">{step.label}</span>
-                    <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{step.visual}</span>
+                    <span className="absolute bottom-3 left-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase text-[#a75b1d]">{translatedStep.visual}</span>
                   </div>
                   <div className="p-5">
                     <Icon className="text-[#dc791d]" size={24} />
-                    <h3 className="font-display mt-3 text-xl tracking-wide text-[#3d332b]">{step.title}</h3>
-                    <p className="mt-2 text-xs leading-5 text-[#70665b]">{step.copy}</p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">{step.verb} <ChevronRight size={12} /></span>
+                    <h3 className="font-display mt-3 text-xl tracking-wide text-[#3d332b]">{translatedStep.title}</h3>
+                    <p className="mt-2 text-xs leading-5 text-[#70665b]">{translatedStep.copy}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">{translatedStep.verb} <ChevronRight size={12} /></span>
                   </div>
                 </button>
               );
@@ -467,12 +513,12 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
             <div className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="eyebrow">Session Builder</p>
-                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Game + English Focus + Conversation Card</h2>
-                  <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">Pick a level, choose a game, and give the table one small English focus. The aim is confidence, not performance.</p>
+                  <p className="eyebrow">{local.sessionBuilder}</p>
+                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">{local.sessionBuilderTitle}</h2>
+                  <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">{local.sessionBuilderCopy}</p>
                 </div>
                 <button onClick={() => onNavigate('games')} className="rule-button px-4 py-2">
-                  <Database size={13} /> Browse Games
+                  <Database size={13} /> {t.browseGames}
                 </button>
               </div>
 
@@ -526,22 +572,22 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
             </div>
 
             <aside className="bg-[#fff8ea] p-6">
-              <p className="eyebrow">Active Session Card</p>
+              <p className="eyebrow">{local.activeSession}</p>
               <h3 className="font-display mt-2 text-4xl tracking-wide text-[#3d332b]">{selectedMission.title}</h3>
               <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#d87522]">{selectedMission.level} Table</p>
 
               <div className="mt-6 space-y-4">
                 <div className="rounded-xl border border-[#efc779] bg-white p-4">
-                  <p className="font-display text-xl tracking-wide text-[#bd5c24]">Table Focus</p>
+                  <p className="font-display text-xl tracking-wide text-[#bd5c24]">{local.tableFocus}</p>
                   <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.missionStatement}</p>
                 </div>
                 <div className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4">
-                  <p className="font-display text-xl tracking-wide text-[#2e7c44]">Conversation Card</p>
+                  <p className="font-display text-xl tracking-wide text-[#2e7c44]">{local.conversationCard}</p>
                   <p className="mt-2 text-sm leading-6 text-[#62584f]">{selectedMission.challenge}</p>
                 </div>
                 <div className="rounded-xl border border-[#b9d2fb] bg-[#f7fbff] p-4">
-                  <p className="font-display text-xl tracking-wide text-[#366eb4]">Success Looks Like</p>
-                  <p className="mt-2 text-sm leading-6 text-[#62584f]">Someone says a useful sentence because the game made it natural, then notices it after play.</p>
+                  <p className="font-display text-xl tracking-wide text-[#366eb4]">{local.successLooksLike}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#62584f]">{local.successCopy}</p>
                 </div>
               </div>
             </aside>
@@ -620,13 +666,7 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
               <p className="mt-1 text-xs text-[#7a7065]">{t.reviewCopy}</p>
             </div>
             <div className="grid gap-3 p-5">
-              {[
-                ['Situation', 'What was happening on the board?'],
-                ['Decision', 'What did you choose and why?'],
-                ['Language', 'Which phrases or vocabulary appeared naturally?'],
-                ['Result', 'What changed because of the decision?'],
-                ['Next Time', 'What would be useful to try next time?'],
-              ].map(([label, copy]) => (
+              {local.reviewTemplate.map(([label, copy]) => (
                 <div key={label} className="rounded border border-[#efd39d] bg-white p-4">
                   <p className="flex items-center gap-2 font-display text-lg tracking-wide text-[#3d332b]"><FileText size={15} className="text-[#d87522]" /> {label}</p>
                   <p className="mt-1 text-xs text-[#70665b]">{copy}</p>

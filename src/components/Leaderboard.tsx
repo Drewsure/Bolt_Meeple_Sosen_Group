@@ -39,8 +39,31 @@ const scoring = [
   ['Master Simulation', '+100 XP', 'Complete a Master-level game mission.'],
 ];
 
+const leaderboardTranslations = {
+  en: {
+    anonymousRank: 'Anonymous Guild Rank',
+    rankTiers: 'Rank Tiers',
+    rankTiersCopy: 'Anonymous progression ladder for the Guild.',
+    rankHeaders: ['Rank', 'Agent', 'XP', 'Wins', 'Games', 'Deploy'],
+    tiers: rankTiers,
+  },
+  ja: {
+    anonymousRank: '匿名ギルドランク',
+    rankTiers: 'ランク段階',
+    rankTiersCopy: 'コミュニティ内の匿名進捗ステップです。',
+    rankHeaders: ['順位', 'エージェント', 'XP', '勝利', 'ゲーム', '実行'],
+    tiers: [
+      { title: 'リクルート', range: '0-249 XP', copy: 'テーブルで使う言葉に慣れていく段階です。' },
+      { title: 'ストラテジスト', range: '250-499 XP', copy: 'ミッションを完了し、判断をはっきり説明できます。' },
+      { title: 'コマンダー', range: '500-749 XP', copy: '説明、交渉、ふり返りをリードできます。' },
+      { title: 'グランドマスター', range: '750+ XP', copy: '複雑なゲームでも、落ち着いて英語を使えます。' },
+    ],
+  },
+} as const;
+
 export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Section) => void; language: Language }) {
   const t = ui[language].ranking;
+  const local = leaderboardTranslations[language];
   const totals = {
     xp: agents.reduce((sum, agent) => sum + agent.xp, 0),
     victories: agents.reduce((sum, agent) => sum + agent.wins, 0),
@@ -51,7 +74,7 @@ export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Se
   return (
     <main className="page-shell">
       <header className="tactical-banner py-11 text-center">
-        <p className="eyebrow justify-center">Anonymous Guild Rank</p>
+        <p className="eyebrow justify-center">{local.anonymousRank}</p>
         <h1 className="compact-title mt-2">{t.title}</h1>
         <p className="mt-4 text-xs text-[#71685d]">{t.subtitle}</p>
       </header>
@@ -75,7 +98,7 @@ export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Se
         <section className="mt-8 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
           <article className="reference-panel overflow-hidden">
             <div className="grid grid-cols-[60px_1.4fr_0.7fr_0.6fr_0.6fr_0.8fr] bg-[#f9e4c8] px-5 py-3 font-display text-xs text-[#ab531c]">
-              <span>Rank</span><span>Agent</span><span>XP</span><span>Wins</span><span>Games</span><span>Deploy</span>
+              {local.rankHeaders.map((header) => <span key={header}>{header}</span>)}
             </div>
             <div className="divide-y divide-[#f1dec0]">
               {agents.map((agent) => (
@@ -131,13 +154,13 @@ export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Se
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] px-6 py-4">
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Rank Tiers</p>
-              <p className="mt-1 text-xs text-[#7a7065]">Anonymous progression ladder for the Guild.</p>
+              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{local.rankTiers}</p>
+              <p className="mt-1 text-xs text-[#7a7065]">{local.rankTiersCopy}</p>
             </div>
             <div className="grid gap-3 p-5">
-              {rankTiers.map(({ title, range, copy }, index) => (
+              {local.tiers.map(({ title, range, copy }, index) => (
                 <div key={title} className="flex gap-4 rounded border border-[#efd39d] bg-white p-4">
-                  <Medal className={`${index === rankTiers.length - 1 ? 'text-[#d06122]' : 'text-[#e5a51c]'}`} size={24} />
+                  <Medal className={`${index === local.tiers.length - 1 ? 'text-[#d06122]' : 'text-[#e5a51c]'}`} size={24} />
                   <span>
                     <span className="font-display text-lg tracking-wide text-[#3d332b]">{title}</span>
                     <span className="ml-2 text-[10px] font-bold uppercase text-[#a36b2c]">{range}</span>
