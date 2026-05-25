@@ -1,5 +1,8 @@
 import { Award, Crown, Lightbulb, Shield, Swords, Target, TrendingUp, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { loadSessionProgress } from '../lib/sessionProgress';
+import type { SessionProgressRecord } from '../lib/sessionProgress';
 
 const badges = [
   { icon: Swords, name: 'Master Negotiator', detail: 'Submitted tips for Negotiation Challenges' },
@@ -14,9 +17,14 @@ const badges = [
 
 export function Dashboard({ onJoin: _onJoin }: { onJoin: () => void }) {
   const { profile, user } = useAuth();
+  const [sessionRecords, setSessionRecords] = useState<SessionProgressRecord[]>([]);
   const name = profile?.display_name || (user ? 'Guild Member' : 'Preview Member');
   const email = user?.email || 'Sign in to view member details';
   const xp = profile?.xp_points || 0;
+
+  useEffect(() => {
+    setSessionRecords(loadSessionProgress());
+  }, []);
 
   return (
     <main className="page-shell bg-[radial-gradient(circle_at_center,#fff7e7,#fbf7ef)]">
@@ -42,8 +50,45 @@ export function Dashboard({ onJoin: _onJoin }: { onJoin: () => void }) {
             <article key={badge} className="rounded-xl border border-[#e1ded7] bg-[#f8f7f4] p-5 text-center text-[#989997]"><Icon className="mx-auto" size={30} /><h3 className="font-display mt-4 text-sm text-[#36312d]">{badge}</h3><p className="mt-2 text-[10px] leading-4">{detail}</p></article>
           ))}
         </div>
-        <h2 className="font-display mt-10 text-2xl tracking-wide">Completed Challenges</h2>
-        <section className="reference-panel mt-4 py-12 text-center"><Award className="mx-auto text-[#f0c457]" size={42} /><h3 className="font-display mt-4 text-lg text-[#71685e]">No Challenges Completed Yet</h3><p className="mt-2 text-xs text-[#92897f]">Submit tips on Guild Challenges to earn badges and XP.</p></section>
+        <h2 className="font-display mt-10 text-2xl tracking-wide">Session Progress</h2>
+        <section className="reference-panel mt-4 overflow-hidden">
+          {sessionRecords.length === 0 ? (
+            <div className="py-12 text-center">
+              <Award className="mx-auto text-[#f0c457]" size={42} />
+              <h3 className="font-display mt-4 text-lg text-[#71685e]">No Session Notes Yet</h3>
+              <p className="mt-2 text-xs text-[#92897f]">Use How It Works to pick a focus, use a conversation card, and save one session note.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-[#f3dfba]">
+              {sessionRecords.map((record) => (
+                <article key={record.id} className="p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-display text-xl tracking-wide text-[#bd5c24]">{record.gameTitle}</p>
+                      <p className="mt-1 text-xs text-[#776d62]">{new Date(record.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <span className="rounded-full border border-[#bde8c9] bg-[#f7fff8] px-3 py-1 text-[10px] font-bold uppercase text-[#2e7c44]">{record.focusTitle}</span>
+                  </div>
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    <div className="rounded border border-[#efd39d] bg-[#fffaf0] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Conversation Card</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.conversationCard}</p>
+                    </div>
+                    <div className="rounded border border-[#b9d2fb] bg-[#f7fbff] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#506d9a]">Useful Phrase</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.usefulPhrase}</p>
+                    </div>
+                    <div className="rounded border border-[#ead4fa] bg-[#fdf8ff] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#75518e]">Next Time</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.nextTime}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-[#62584f]">{record.whatHappened}</p>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

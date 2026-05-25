@@ -1,9 +1,10 @@
-import { Award, BookOpen, ChevronRight, Clock, Database, FileText, Image, Radio, Shield, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { Award, BookOpen, CheckCircle2, ChevronRight, Clock, Database, FileText, Image, Radio, Save, Shield, Sparkles, Target, Trophy, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { Section } from '../App';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames, getGamesNeedingImages } from '../lib/games';
 import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
+import { saveSessionProgressRecord } from '../lib/sessionProgress';
 import type { Game } from '../types/database';
 
 const commands: Array<{ icon: typeof Database; label: string; copy: string; section: Section; tone: string }> = [
@@ -129,6 +130,33 @@ const challengeDeck = [
   },
 ];
 
+const focusOptions = [
+  {
+    id: 'explain',
+    title: 'Explain A Choice',
+    plain: 'Say what you did and why.',
+    phrases: ['I chose this because...', 'My reason is...', 'I think this helps because...'],
+  },
+  {
+    id: 'ask',
+    title: 'Ask A Useful Question',
+    plain: 'Ask for information before you decide.',
+    phrases: ['Can I ask about...?', 'What happens if...?', 'Do you think I should...?'],
+  },
+  {
+    id: 'suggest',
+    title: 'Suggest A Plan',
+    plain: 'Offer a simple next step to the table.',
+    phrases: ['Maybe we should...', 'One option is...', 'I suggest we...'],
+  },
+  {
+    id: 'reflect',
+    title: 'Notice What Happened',
+    plain: 'Review one moment after the turn.',
+    phrases: ['That worked because...', 'Next time I want to...', 'I learned the phrase...'],
+  },
+];
+
 function pickRecommended(games: Game[]) {
   const names = ['Brass: Birmingham', 'Power Grid', 'Carcassonne', 'Pandemic', 'Terraforming Mars', 'Modern Art'];
   return names
@@ -141,6 +169,13 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   const [missingImages, setMissingImages] = useState<Game[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('All');
   const [selectedMissionTitle, setSelectedMissionTitle] = useState(missionBuilder[0].title);
+  const [selectedFocusId, setSelectedFocusId] = useState(focusOptions[0].id);
+  const [selectedCardLabel, setSelectedCardLabel] = useState(challengeDeck[0].label);
+  const [recordGameTitle, setRecordGameTitle] = useState('');
+  const [usefulPhrase, setUsefulPhrase] = useState('');
+  const [whatHappened, setWhatHappened] = useState('');
+  const [nextTime, setNextTime] = useState('');
+  const [saveMessage, setSaveMessage] = useState('');
 
   useEffect(() => {
     const load = () => {
@@ -157,6 +192,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   const catalogueByTitle = useMemo(() => new Map(games.map((game) => [game.title.toLowerCase(), game])), [games]);
   const filteredMissions = useMemo(() => missionBuilder.filter((mission) => selectedLevel === 'All' || mission.level === selectedLevel), [selectedLevel]);
   const selectedMission = missionBuilder.find((mission) => mission.title === selectedMissionTitle) ?? missionBuilder[0];
+  const selectedFocus = focusOptions.find((focus) => focus.id === selectedFocusId) ?? focusOptions[0];
+  const selectedCard = challengeDeck.find((card) => card.label === selectedCardLabel) ?? challengeDeck[0];
+  const progressGameTitle = recordGameTitle || selectedMission.title;
   const readyImages = Math.max(games.length - missingImages.length, 0);
   const strategicTitles = games.filter((game) => (game.weight ?? 0) >= 2.5).length;
   const gatewayTitles = games.filter((game) => (game.weight ?? 99) <= 1.8 && (game.duration_minutes ?? 999) <= 45).length;
@@ -167,6 +205,22 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
     ['Strategic Titles', games.length ? strategicTitles.toString() : '...', Target, 'Advanced candidates'],
     ['Gateway Tables', games.length ? gatewayTitles.toString() : '...', Users, 'Fast onboarding'],
   ];
+
+  const saveProgress = () => {
+    saveSessionProgressRecord({
+      gameTitle: progressGameTitle,
+      focusTitle: selectedFocus.title,
+      conversationCard: selectedCard.label,
+      usefulPhrase: usefulPhrase.trim() || selectedCard.output,
+      whatHappened: whatHappened.trim() || 'A supported table session was completed.',
+      nextTime: nextTime.trim() || 'Try the same focus again with one new phrase.',
+    });
+    setUsefulPhrase('');
+    setWhatHappened('');
+    setNextTime('');
+    setSaveMessage('Saved to Profile progress.');
+    window.setTimeout(() => setSaveMessage(''), 2400);
+  };
 
   return (
     <main className="page-shell">
@@ -302,6 +356,105 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                 </button>
               );
             })}
+          </div>
+        </section>
+
+        <section className="reference-panel mt-12 overflow-hidden">
+          <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-5 text-center">
+            <p className="eyebrow justify-center">Session Workspace</p>
+            <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Pick Focus, Use Card, Record Progress</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">Use this during or after a table session. It turns the soft process into three clear actions.</p>
+          </div>
+
+          <div className="grid gap-0 lg:grid-cols-3">
+            <article className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
+              <div className="flex items-center gap-2">
+                <Target className="text-[#d87522]" size={20} />
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">1. Pick A Focus</h3>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">Choose one kind of English for the table. One focus is enough.</p>
+              <div className="mt-5 space-y-3">
+                {focusOptions.map((focus) => (
+                  <button
+                    key={focus.id}
+                    onClick={() => setSelectedFocusId(focus.id)}
+                    className={`w-full rounded-xl border p-4 text-left transition ${
+                      selectedFocus.id === focus.id ? 'border-[#d87522] bg-[#fff4dd] shadow-sm' : 'border-[#efd39d] bg-white hover:bg-[#fffaf0]'
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="font-display text-lg tracking-wide text-[#3d332b]">{focus.title}</span>
+                      {selectedFocus.id === focus.id && <CheckCircle2 className="text-[#d87522]" size={18} />}
+                    </span>
+                    <span className="mt-1 block text-xs text-[#70665b]">{focus.plain}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl border border-[#d9ead3] bg-[#f7fff4] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-[#4a8f56]">Starter phrases</p>
+                <ul className="mt-2 space-y-1 text-xs leading-5 text-[#536456]">
+                  {selectedFocus.phrases.map((phrase) => <li key={phrase}>- {phrase}</li>)}
+                </ul>
+              </div>
+            </article>
+
+            <article className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
+              <div className="flex items-center gap-2">
+                <Shield className="text-[#2e7c44]" size={20} />
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">2. Use A Conversation Card</h3>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">Pick one prompt. Read it aloud before or during play.</p>
+              <div className="mt-5 space-y-3">
+                {challengeDeck.map((card) => (
+                  <button
+                    key={card.label}
+                    onClick={() => setSelectedCardLabel(card.label)}
+                    className={`w-full rounded-xl border p-4 text-left transition ${
+                      selectedCard.label === card.label ? 'border-[#4ca866] bg-[#f7fff4] shadow-sm' : 'border-[#efd39d] bg-white hover:bg-[#fffaf0]'
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="font-display text-lg tracking-wide text-[#3d332b]">{card.label}</span>
+                      {selectedCard.label === card.label && <CheckCircle2 className="text-[#49a85f]" size={18} />}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-[#70665b]">{card.prompt}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl border border-[#efd39d] bg-[#fffaf0] p-4 text-sm font-bold text-[#7a5a34]">
+                {selectedCard.output}
+              </div>
+            </article>
+
+            <article className="p-5">
+              <div className="flex items-center gap-2">
+                <FileText className="text-[#366eb4]" size={20} />
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">3. Record Progress</h3>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">Save one small record. It will appear on your Profile page.</p>
+
+              <label className="mt-5 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Game</label>
+              <select value={progressGameTitle} onChange={(event) => setRecordGameTitle(event.target.value)} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]">
+                <option value={selectedMission.title}>{selectedMission.title}</option>
+                {games.slice(0, 40).map((game) => (
+                  <option key={game.id} value={game.title}>{game.title}</option>
+                ))}
+              </select>
+
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Useful phrase</label>
+              <input value={usefulPhrase} onChange={(event) => setUsefulPhrase(event.target.value)} placeholder={selectedCard.output} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
+
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">What happened?</label>
+              <textarea value={whatHappened} onChange={(event) => setWhatHappened(event.target.value)} placeholder="One useful moment from the table..." rows={3} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
+
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Next time</label>
+              <textarea value={nextTime} onChange={(event) => setNextTime(event.target.value)} placeholder="One small thing to try next..." rows={3} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
+
+              <button onClick={saveProgress} className="rule-button rule-button-primary mt-5 w-full justify-center py-3">
+                <Save size={14} /> Save Progress
+              </button>
+              {saveMessage && <p className="mt-3 text-center text-xs font-bold text-[#2e7c44]">{saveMessage}</p>}
+            </article>
           </div>
         </section>
 
