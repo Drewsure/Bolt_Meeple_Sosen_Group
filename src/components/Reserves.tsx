@@ -1,5 +1,6 @@
-import { BookOpen, Clock, RotateCcw, Search, SlidersHorizontal, Sparkles, Star, Trophy, Users, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, RotateCcw, Search, SlidersHorizontal, Sparkles, Star, Trophy, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { briefings } from './Briefings';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames } from '../lib/games';
 import type { Language } from '../lib/i18n';
@@ -157,6 +158,15 @@ function matchesAppeal(game: Game, selected: string) {
   return true;
 }
 
+function normalizeTitle(title: string) {
+  return title.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function getBriefingForGame(game: Game) {
+  const normalizedGameTitle = normalizeTitle(game.title);
+  return briefings.find((briefing) => normalizedGameTitle.includes(normalizeTitle(briefing.gameTitle)));
+}
+
 export function Reserves({ language }: { language: Language }) {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
@@ -176,6 +186,12 @@ export function Reserves({ language }: { language: Language }) {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    const requestedQuery = params.get('q');
+    if (requestedQuery) {
+      setQuery(requestedQuery);
+    }
+
     const loadGames = () => {
       getGames().then(setGames).finally(() => setLoading(false));
     };
@@ -248,15 +264,19 @@ export function Reserves({ language }: { language: Language }) {
           </section>
         )}
         <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-          {filtered.map((game) => (
+          {filtered.map((game) => {
+            const linkedBriefing = getBriefingForGame(game);
+            return (
             <button key={game.id} type="button" onClick={() => setSelectedGame(game)} className="tactical-card overflow-hidden text-left transition hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#e28a24]">
               <div className="relative h-32 bg-[#fff0ce]">
                 {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center px-4 text-center font-display text-3xl text-[#ae6d3f]">{game.title}</div>}
                 <span className="pill pill-blue absolute left-2 top-2">{game.complexity_level || 'Beginner'}</span>
+                {linkedBriefing && <span className="absolute right-2 top-2 rounded-full bg-[#fff5f8] px-2 py-1 text-[9px] font-bold uppercase text-[#ef3d66]">Briefing</span>}
               </div>
               <div className="p-4">
                 <h2 className="font-display text-lg tracking-wide text-[#3d332b]">{game.title}</h2>
                 <p className="mt-3 line-clamp-2 text-[11px] leading-5 text-[#70665b]">{buildGameBrief(game)}</p>
+                {linkedBriefing && <p className="mt-3 text-[10px] font-bold uppercase tracking-wide text-[#ef3d66]">{language === 'ja' ? '英語ブリーフィングあり' : 'English briefing linked'}</p>}
                 <div className="mt-4 flex justify-between gap-2 text-[10px] text-[#936f46]">
                   <span>{game.min_players ?? '-'}-{game.max_players ?? '-'} players</span>
                   <span>{game.duration_minutes ?? '-'}m</span>
@@ -265,7 +285,8 @@ export function Reserves({ language }: { language: Language }) {
                 </div>
               </div>
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -305,6 +326,18 @@ export function Reserves({ language }: { language: Language }) {
                   <h3 className="flex items-center gap-2 font-display text-2xl tracking-wide text-[#3d332b]"><BookOpen size={18} className="text-[#d06a2c]" /> Brief</h3>
                   <p className="mt-3 text-sm leading-7 text-[#6f655a]">{buildGameBrief(selectedGame)}</p>
                 </div>
+                {getBriefingForGame(selectedGame) && (
+                  <a
+                    href={`#briefings/${getBriefingForGame(selectedGame)?.slug}`}
+                    className="mt-4 flex items-center justify-between rounded-xl border border-[#ffbdce] bg-[#fff7fa] p-4 text-left text-[#ef3d66] transition hover:bg-[#ffeef4]"
+                  >
+                    <span>
+                      <span className="block font-display text-xl tracking-wide">{language === 'ja' ? '英語ブリーフィングカード' : 'English Briefing Card'}</span>
+                      <span className="mt-1 block text-xs text-[#7a655f]">{language === 'ja' ? 'レベル別フレーズと会話プロンプトを見る' : 'Open leveled phrases and conversation prompts'}</span>
+                    </span>
+                    <ArrowRight size={18} />
+                  </a>
+                )}
 
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   {[

@@ -4,6 +4,7 @@ import type { Language } from '../lib/i18n';
 
 export type Briefing = {
   slug: string;
+  gameTitle: string;
   title: string;
   jpTitle: string;
   audience: string;
@@ -30,6 +31,7 @@ export type Briefing = {
 export const briefings: Briefing[] = [
   {
     slug: 'camel-up-english-briefing-card',
+    gameTitle: 'Camel Up',
     title: 'Camel Up English Briefing Card',
     jpTitle: 'キャメルアップ 英語ブリーフィングカード',
     audience: 'Beginners, families, Silver Circle tables',
@@ -54,6 +56,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'azul-english-briefing-card',
+    gameTitle: 'Azul',
     title: 'Azul English Briefing Card',
     jpTitle: 'アズール 英語ブリーフィングカード',
     audience: 'Calm beginner tables, visual thinkers, seniors',
@@ -78,6 +81,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'carcassonne-english-briefing-card',
+    gameTitle: 'Carcassonne',
     title: 'Carcassonne English Briefing Card',
     jpTitle: 'カルカソンヌ 英語ブリーフィングカード',
     audience: 'Beginner strategy tables, families, gentle competition',
@@ -102,6 +106,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'sushi-go-english-briefing-card',
+    gameTitle: 'Sushi Go!',
     title: 'Sushi Go! English Briefing Card',
     jpTitle: 'すしゴー 英語ブリーフィングカード',
     audience: 'Children, parents, beginners, quick warm-up tables',
@@ -179,6 +184,10 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
     window.location.hash = `briefings/${slug}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  const openGame = (title: string) => {
+    window.location.hash = `games?q=${encodeURIComponent(title)}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <main className="page-shell">
@@ -240,6 +249,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 </div>
                 <div className="flex flex-wrap gap-3 pt-2">
                   <button onClick={() => openBriefing(briefing.slug)} className="rule-button px-4 py-2"><BookOpen size={13} /> {t.read}</button>
+                  <button onClick={() => openGame(briefing.gameTitle)} className="rule-button px-4 py-2"><Search size={13} /> {language === 'ja' ? 'ゲームを見る' : 'View Game'}</button>
                   <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-4 py-2"><ArrowRight size={13} /> {t.cta}</button>
                   <button className="rounded border border-[#e0d2b6] bg-white px-4 py-2 text-[10px] font-bold uppercase text-[#8c7563]"><Download size={13} className="mr-1 inline" /> PDF later</button>
                 </div>
@@ -259,6 +269,10 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
   const audience = language === 'ja' ? briefing.jpAudience : briefing.audience;
   const level = language === 'ja' ? briefing.jpLevel : briefing.level;
   const prompts = language === 'ja' ? briefing.jpPrompts : briefing.prompts;
+  const openGame = () => {
+    window.location.hash = `games?q=${encodeURIComponent(briefing.gameTitle)}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <main className="page-shell">
@@ -334,6 +348,9 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
             </div>
             <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary w-full justify-center py-3">
               <ArrowRight size={14} /> {t.cta}
+            </button>
+            <button onClick={openGame} className="rule-button w-full justify-center py-3">
+              <Search size={14} /> {language === 'ja' ? 'ゲームカードを見る' : 'View Linked Game Card'}
             </button>
           </aside>
         </section>
