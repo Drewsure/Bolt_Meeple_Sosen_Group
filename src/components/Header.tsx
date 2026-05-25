@@ -1,26 +1,31 @@
 import { Gamepad2, Languages, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Section } from '../App';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 
 interface HeaderProps {
   currentSection: Section;
+  language: Language;
   onNavigate: (section: Section) => void;
+  onToggleLanguage: () => void;
 }
 
-const navigation: Array<{ label: string; section: Section }> = [
-  { label: 'Home', section: 'home' },
-  { label: 'Situation', section: 'situation' },
-  { label: 'How It Works', section: 'board' },
-  { label: 'Game Library', section: 'games' },
-  { label: 'Dossier', section: 'dossier' },
-  { label: 'Progress', section: 'ranking' },
-  { label: 'Silver Circle', section: 'silver-circle' },
-  { label: 'Profile', section: 'profile' },
+const navigation: Array<{ labelKey: keyof typeof ui.en.nav; section: Section }> = [
+  { labelKey: 'home', section: 'home' },
+  { labelKey: 'situation', section: 'situation' },
+  { labelKey: 'board', section: 'board' },
+  { labelKey: 'games', section: 'games' },
+  { labelKey: 'dossier', section: 'dossier' },
+  { labelKey: 'ranking', section: 'ranking' },
+  { labelKey: 'silver', section: 'silver-circle' },
+  { labelKey: 'profile', section: 'profile' },
 ];
 
-export function Header({ currentSection, onNavigate }: HeaderProps) {
+export function Header({ currentSection, language, onNavigate, onToggleLanguage }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const activeSection: Section = currentSection === 'armory' || currentSection === 'challenges' ? 'board' : currentSection;
+  const t = ui[language].nav;
 
   const select = (section: Section) => {
     onNavigate(section);
@@ -40,9 +45,9 @@ export function Header({ currentSection, onNavigate }: HeaderProps) {
         </button>
 
         <nav className="hidden flex-1 items-center justify-end gap-3 md:flex">
-          {navigation.map(({ label, section }) => (
+          {navigation.map(({ labelKey, section }) => (
             <button
-              key={`${section}-${label}`}
+              key={`${section}-${labelKey}`}
               onClick={() => select(section)}
               className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.07em] transition-colors xl:text-[9px] ${
                 activeSection === section && section === 'silver-circle'
@@ -50,14 +55,14 @@ export function Header({ currentSection, onNavigate }: HeaderProps) {
                   : activeSection === section ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
               }`}
             >
-              {label}
+              {t[labelKey]}
             </button>
           ))}
         </nav>
 
-        <button onClick={() => select('silver-circle')} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
+        <button onClick={onToggleLanguage} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
           <Languages size={12} />
-          日本語
+          {t.toggle}
         </button>
         <button onClick={() => setOpen(!open)} className="text-[#cf612d] md:hidden" aria-label="Toggle navigation">
           {open ? <X /> : <Menu />}
@@ -65,9 +70,12 @@ export function Header({ currentSection, onNavigate }: HeaderProps) {
       </div>
       {open && (
         <nav className="grid gap-1 border-t border-[#efc779] bg-[#fffdf8] p-5 sm:grid-cols-2 md:hidden">
-          {navigation.map(({ label, section }) => (
-            <button key={`${section}-${label}`} onClick={() => select(section)} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#5d574d]">
-              {label}
+          <button onClick={onToggleLanguage} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#d06720]">
+            {t.toggle}
+          </button>
+          {navigation.map(({ labelKey, section }) => (
+            <button key={`${section}-${labelKey}`} onClick={() => select(section)} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#5d574d]">
+              {t[labelKey]}
             </button>
           ))}
         </nav>

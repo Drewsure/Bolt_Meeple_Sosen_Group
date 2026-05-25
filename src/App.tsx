@@ -12,6 +12,7 @@ import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
 import { Board } from './components/Board';
 import { Seo } from './components/Seo';
+import type { Language } from './lib/i18n';
 
 export type Section =
   | 'home'
@@ -35,6 +36,10 @@ const sectionFromHash = (): Section => {
 function AppContent() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [section, setSection] = useState<Section>(sectionFromHash);
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = window.localStorage.getItem('msg-language');
+    return saved === 'ja' || saved === 'en' ? saved : 'en';
+  });
 
   useEffect(() => {
     const syncHash = () => setSection(sectionFromHash());
@@ -48,18 +53,26 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toggleLanguage = () => {
+    setLanguage((current) => {
+      const next = current === 'en' ? 'ja' : 'en';
+      window.localStorage.setItem('msg-language', next);
+      return next;
+    });
+  };
+
   return (
     <div>
-      <Seo section={section} />
-      <Header onNavigate={navigate} currentSection={section} />
-      {section === 'home' && <Hero onNavigate={navigate} />}
-      {section === 'situation' && <SituationRoom onNavigate={navigate} />}
-      {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} />}
-      {section === 'games' && <Reserves />}
-      {section === 'dossier' && <Dossier />}
-      {section === 'ranking' && <Leaderboard onNavigate={navigate} />}
-      {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} />}
-      {section === 'silver-circle' && <SilverCircle onNavigate={navigate} />}
+      <Seo section={section} language={language} />
+      <Header onNavigate={navigate} currentSection={section} language={language} onToggleLanguage={toggleLanguage} />
+      {section === 'home' && <Hero onNavigate={navigate} language={language} />}
+      {section === 'situation' && <SituationRoom onNavigate={navigate} language={language} />}
+      {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} language={language} />}
+      {section === 'games' && <Reserves language={language} />}
+      {section === 'dossier' && <Dossier language={language} />}
+      {section === 'ranking' && <Leaderboard onNavigate={navigate} language={language} />}
+      {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} language={language} />}
+      {section === 'silver-circle' && <SilverCircle onNavigate={navigate} language={language} />}
       {section === 'admin-images' && <ImageAdmin />}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>

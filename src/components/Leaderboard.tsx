@@ -1,5 +1,7 @@
 import { ArrowUpRight, Crown, Medal, Sparkles, Target, Trophy, Users, Zap } from 'lucide-react';
 import type { Section } from '../App';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 
 type Agent = {
   rank: number;
@@ -37,7 +39,8 @@ const scoring = [
   ['Master Simulation', '+100 XP', 'Complete a Master-level game mission.'],
 ];
 
-export function Leaderboard({ onNavigate }: { onNavigate: (section: Section) => void }) {
+export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Section) => void; language: Language }) {
+  const t = ui[language].ranking;
   const totals = {
     xp: agents.reduce((sum, agent) => sum + agent.xp, 0),
     victories: agents.reduce((sum, agent) => sum + agent.wins, 0),
@@ -49,8 +52,8 @@ export function Leaderboard({ onNavigate }: { onNavigate: (section: Section) => 
     <main className="page-shell">
       <header className="tactical-banner py-11 text-center">
         <p className="eyebrow justify-center">Anonymous Guild Rank</p>
-        <h1 className="compact-title mt-2">Global Leaderboard</h1>
-        <p className="mt-4 text-xs text-[#71685d]">Compete anonymously. Rise through the ranks. Dominate the Guild.</p>
+        <h1 className="compact-title mt-2">{t.title}</h1>
+        <p className="mt-4 text-xs text-[#71685d]">{t.subtitle}</p>
       </header>
 
       <div className="mx-auto max-w-6xl px-5 py-9">
@@ -113,8 +116,8 @@ export function Leaderboard({ onNavigate }: { onNavigate: (section: Section) => 
 
         <section className="mt-8 grid gap-5 lg:grid-cols-2">
           <article className="rounded-lg border border-[#edb444] bg-[#fff2cb] p-8">
-            <h2 className="font-display text-2xl">Rise To The Top</h2>
-            <p className="mt-3 text-xs leading-5 text-[#766a5d]">Points reward visible language output, not just winning. The Guild values strategic speech: briefing, negotiating, justifying, and summarizing under pressure.</p>
+            <h2 className="font-display text-2xl">{t.rise}</h2>
+            <p className="mt-3 text-xs leading-5 text-[#766a5d]">{t.riseCopy}</p>
             <div className="mt-5 grid gap-2 text-[10px] sm:grid-cols-2">
               {scoring.map(([label, xp, copy]) => (
                 <div key={label} className="rounded border border-[#edba55] bg-white/70 p-3">

@@ -2,6 +2,8 @@ import { BookOpen, Clock, RotateCcw, Search, SlidersHorizontal, Sparkles, Star, 
 import { useEffect, useMemo, useState } from 'react';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames } from '../lib/games';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import type { Game } from '../types/database';
 
@@ -155,12 +157,23 @@ function matchesAppeal(game: Game, selected: string) {
   return true;
 }
 
-export function Reserves() {
+export function Reserves({ language }: { language: Language }) {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const t = ui[language].games;
+  const common = ui[language].common;
+  const filterLabels: Record<keyof Filters, string> = {
+    english: t.level,
+    complexity: t.complexity,
+    players: t.playerCount,
+    duration: t.playTime,
+    ranking: t.bggRanking,
+    type: t.type,
+    appeal: t.appeal,
+  };
 
   useEffect(() => {
     const loadGames = () => {
@@ -199,33 +212,33 @@ export function Reserves() {
     <main className="page-shell">
       <div className="container-shell py-11">
         <header className="text-center">
-          <h1 className="compact-title">Game Database</h1>
-          <p className="mt-4 text-sm text-[#756c60]">Discover Your Next Strategic Adventure</p>
+          <h1 className="compact-title">{t.title}</h1>
+          <p className="mt-4 text-sm text-[#756c60]">{t.subtitle}</p>
           <Sparkles className="mx-auto mt-4 text-[#ed941d]" size={19} />
         </header>
         <label className="relative mx-auto mt-9 block max-w-md">
           <Search className="absolute left-4 top-3.5 text-[#d9821d]" size={16} />
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search games..." className="w-full rounded border border-[#e9bd64] bg-white py-3 pl-11 pr-4 text-sm outline-none" />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={common.searchGames} className="w-full rounded border border-[#e9bd64] bg-white py-3 pl-11 pr-4 text-sm outline-none" />
         </label>
         <section className="reference-panel mt-7 p-5">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="flex items-center gap-2 font-display text-lg tracking-wide"><SlidersHorizontal size={15} className="text-[#dc791d]" /> Filters</h2>
+            <h2 className="flex items-center gap-2 font-display text-lg tracking-wide"><SlidersHorizontal size={15} className="text-[#dc791d]" /> {common.filters}</h2>
             <button onClick={clearFilters} disabled={!activeFilters} className="inline-flex items-center gap-2 text-[11px] font-bold text-[#c86122] disabled:cursor-default disabled:text-[#b7ad9f]">
-              <RotateCcw size={12} /> Reset {activeFilters ? `(${activeFilters})` : ''}
+              <RotateCcw size={12} /> {common.reset} {activeFilters ? `(${activeFilters})` : ''}
             </button>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {filterFields.map(({ key, label, options }, index) => (
               <label key={key} className={index === 6 ? 'lg:col-span-2' : ''}>
-                <span className="mb-1 block text-[10px] text-[#766d62]">{label}</span>
+                <span className="mb-1 block text-[10px] text-[#766d62]">{filterLabels[key] || label}</span>
                 <select value={filters[key]} onChange={(event) => updateFilter(key, event.target.value)} className="w-full rounded border border-[#f0cf8c] bg-[#fffefb] p-2 text-[11px] text-[#746a60]">
-                  {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  {options.map((option) => <option key={option.value} value={option.value}>{option.value === 'all' ? common.all : option.label}</option>)}
                 </select>
               </label>
             ))}
           </div>
         </section>
-        <p className="mt-6 text-center text-sm text-[#736a60]"><span className="font-display text-2xl text-[#e2811d]">{loading ? '...' : filtered.length}</span> results</p>
+        <p className="mt-6 text-center text-sm text-[#736a60]"><span className="font-display text-2xl text-[#e2811d]">{loading ? '...' : filtered.length}</span> {common.results}</p>
         {!loading && filtered.length === 0 && (
           <section className="reference-panel mx-auto mt-6 max-w-xl px-8 py-12 text-center">
             <Search className="mx-auto text-[#e1a340]" size={30} />
@@ -261,7 +274,7 @@ export function Reserves() {
           <section className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#e7bd70] bg-[#fffdf8] shadow-2xl">
             <div className="flex items-start justify-between gap-4 border-b border-[#efd49d] bg-[#fff4df] px-6 py-5">
               <div>
-                <p className="eyebrow">Catalogue Detail Card</p>
+                <p className="eyebrow">{t.detailsTitle}</p>
                 <h2 id="game-detail-title" className="font-display mt-2 text-4xl tracking-wide text-[#bf5b24]">{selectedGame.title}</h2>
                 {selectedGame.original_name && selectedGame.original_name !== selectedGame.title && <p className="mt-1 text-sm text-[#7b7065]">Original title: {selectedGame.original_name}</p>}
               </div>
@@ -276,7 +289,7 @@ export function Reserves() {
                   {selectedGame.cover_image_url ? (
                     <img src={selectedGame.cover_image_url} alt="" className="h-80 w-full object-cover" />
                   ) : (
-                    <div className="flex h-80 items-center justify-center px-5 text-center font-display text-5xl tracking-wide text-[#ae6d3f]">{selectedGame.title}</div>
+                    <div className="flex h-80 items-center justify-center px-5 text-center font-display text-5xl tracking-wide text-[#ae6d3f]">{t.noImage}</div>
                   )}
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-3 text-center">

@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Section } from '../App';
 import { buildGameBrief } from '../lib/gameBriefs';
 import { getGames, getGamesNeedingImages } from '../lib/games';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 import { subscribeToPreviewGameUpdates } from '../lib/previewGameUpdates';
 import { saveSessionProgressRecord } from '../lib/sessionProgress';
 import type { Game } from '../types/database';
@@ -164,7 +166,7 @@ function pickRecommended(games: Game[]) {
     .filter(Boolean) as Game[];
 }
 
-export function Board({ onNavigate }: { onNavigate: (section: Section) => void }) {
+export function Board({ onNavigate, language }: { onNavigate: (section: Section) => void; language: Language }) {
   const [games, setGames] = useState<Game[]>([]);
   const [missingImages, setMissingImages] = useState<Game[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<LevelFilter>('All');
@@ -176,6 +178,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
   const [whatHappened, setWhatHappened] = useState('');
   const [nextTime, setNextTime] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
+  const t = ui[language].board;
+  const common = ui[language].common;
 
   useEffect(() => {
     const load = () => {
@@ -218,16 +222,16 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
     setUsefulPhrase('');
     setWhatHappened('');
     setNextTime('');
-    setSaveMessage('Saved to Profile progress.');
+    setSaveMessage(t.saved);
     window.setTimeout(() => setSaveMessage(''), 2400);
   };
 
   return (
     <main className="page-shell">
       <header className="tactical-banner py-11 text-center">
-        <p className="eyebrow justify-center">How It Works</p>
-        <h1 className="compact-title mt-2">From Game To Conversation</h1>
-        <p className="mt-4 text-xs text-[#71685d]">A simple session flow for turning play into useful English.</p>
+        <p className="eyebrow justify-center">{t.eyebrow}</p>
+        <h1 className="compact-title mt-2">{t.title}</h1>
+        <p className="mt-4 text-xs text-[#71685d]">{t.subtitle}</p>
       </header>
 
       <div className="container-shell py-10">
@@ -235,12 +239,12 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           <article className="reference-panel overflow-hidden">
             <div className="grid min-h-80 gap-6 bg-[#fff8ea] p-7 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="flex flex-col justify-center">
-                <p className="eyebrow text-[#bd5c24]">Session Flow</p>
-                <h2 className="font-display mt-3 text-5xl tracking-wide text-[#2f251e]">A Game Becomes English</h2>
-                <p className="mt-5 text-sm leading-7 text-[#6b5f54]">A session begins with a game, then gently creates real English: explaining choices, asking questions, making small plans, and reflecting together.</p>
+                <p className="eyebrow text-[#bd5c24]">{t.sessionFlow}</p>
+                <h2 className="font-display mt-3 text-5xl tracking-wide text-[#2f251e]">{t.gameBecomesEnglish}</h2>
+                <p className="mt-5 text-sm leading-7 text-[#6b5f54]">{t.flowCopy}</p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> Browse Games</button>
-                  <a href="#session-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">Choose A Focus</a>
+                  <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> {t.browseGames}</button>
+                  <a href="#session-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">{t.chooseFocus}</a>
                 </div>
               </div>
 
@@ -281,15 +285,15 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-4">
-              <p className="eyebrow">Session Guide</p>
-              <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">What Happens Here</h2>
+              <p className="eyebrow">{t.sessionGuide}</p>
+              <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">{t.whatHappens}</h2>
             </div>
             <div className="space-y-4 p-5 text-sm leading-7 text-[#6f655a]">
-              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />The board game gives people something real to talk about.</p>
-              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />The focus keeps it simple: one useful kind of English at a time.</p>
-              <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />The review makes the learning visible without making it feel like a test.</p>
+              <p><Radio className="mr-2 inline text-[#d87522]" size={16} />{t.guide1}</p>
+              <p><BookOpen className="mr-2 inline text-[#4c89d8]" size={16} />{t.guide2}</p>
+              <p><Sparkles className="mr-2 inline text-[#d87522]" size={16} />{t.guide3}</p>
               <a href="#conversation-cards" className="rule-button rule-button-primary mt-2 w-full justify-center py-3">
-                <Sparkles size={14} /> See Conversation Cards
+                <Sparkles size={14} /> {t.seeCards}
               </a>
             </div>
           </article>
@@ -297,16 +301,16 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         <section className="reference-panel mt-8 p-5">
           <div className="mb-4 text-center">
-            <p className="eyebrow justify-center">Plain English Version</p>
-            <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">How To Use This Page</h2>
-            <p className="mt-2 text-xs text-[#746b60]">This is the route from "we have a game" to "we used English for a real reason."</p>
+            <p className="eyebrow justify-center">{t.plain}</p>
+            <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">{t.usePage}</h2>
+            <p className="mt-2 text-xs text-[#746b60]">{t.route}</p>
           </div>
           <div className="grid gap-3 md:grid-cols-4">
             {[
-              ['1', 'Pick a game', 'Choose what you will play.'],
-              ['2', 'Choose one focus', 'Example: explaining, asking, negotiating, or reporting.'],
-              ['3', 'Play with support', 'Use the game situation to make speaking natural.'],
-              ['4', 'Review together', 'Notice what was learned and what comes next.'],
+              ['1', t.step1, t.step1Copy],
+              ['2', t.step2, t.step2Copy],
+              ['3', t.step3, t.step3Copy],
+              ['4', t.step4, t.step4Copy],
             ].map(([number, title, copy]) => (
               <div key={number} className="rounded-xl border border-[#efd39d] bg-white p-4 text-center">
                 <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#ed941d] font-display text-xl text-white">{number}</span>
@@ -330,9 +334,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         <section className="mt-10">
           <div className="mb-5 text-center">
-            <p className="eyebrow justify-center">Session Map</p>
-            <h2 className="compact-title mt-2 text-3xl">The Table Route</h2>
-            <p className="mt-2 text-xs text-[#746b60]">Follow the orange line from choosing a game to noticing what you said.</p>
+            <p className="eyebrow justify-center">{t.sessionMap}</p>
+            <h2 className="compact-title mt-2 text-3xl">{t.tableRoute}</h2>
+            <p className="mt-2 text-xs text-[#746b60]">{t.routeCopy}</p>
           </div>
           <div className="relative grid gap-4 lg:grid-cols-4">
             <div className="absolute left-8 right-8 top-20 hidden h-1 bg-gradient-to-r from-[#ed941d] via-[#f4c16d] to-[#d06122] lg:block" />
@@ -361,18 +365,18 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         <section className="reference-panel mt-12 overflow-hidden">
           <div className="border-b border-[#f1d8a5] bg-[#fff8ea] px-6 py-5 text-center">
-            <p className="eyebrow justify-center">Session Workspace</p>
-            <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">Pick Focus, Use Card, Record Progress</h2>
-            <p className="mx-auto mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">Use this during or after a table session. It turns the soft process into three clear actions.</p>
+            <p className="eyebrow justify-center">{t.workspace}</p>
+            <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">{t.workspaceTitle}</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">{t.workspaceCopy}</p>
           </div>
 
           <div className="grid gap-0 lg:grid-cols-3">
             <article className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
               <div className="flex items-center gap-2">
                 <Target className="text-[#d87522]" size={20} />
-                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">1. Pick A Focus</h3>
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">{t.pickFocus}</h3>
               </div>
-              <p className="mt-2 text-xs leading-5 text-[#70665b]">Choose one kind of English for the table. One focus is enough.</p>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">{t.pickFocusCopy}</p>
               <div className="mt-5 space-y-3">
                 {focusOptions.map((focus) => (
                   <button
@@ -391,7 +395,7 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                 ))}
               </div>
               <div className="mt-5 rounded-xl border border-[#d9ead3] bg-[#f7fff4] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wide text-[#4a8f56]">Starter phrases</p>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-[#4a8f56]">{t.starterPhrases}</p>
                 <ul className="mt-2 space-y-1 text-xs leading-5 text-[#536456]">
                   {selectedFocus.phrases.map((phrase) => <li key={phrase}>- {phrase}</li>)}
                 </ul>
@@ -401,9 +405,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             <article className="border-b border-[#f1d8a5] p-5 lg:border-b-0 lg:border-r">
               <div className="flex items-center gap-2">
                 <Shield className="text-[#2e7c44]" size={20} />
-                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">2. Use A Conversation Card</h3>
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">{t.useCard}</h3>
               </div>
-              <p className="mt-2 text-xs leading-5 text-[#70665b]">Pick one prompt. Read it aloud before or during play.</p>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">{t.useCardCopy}</p>
               <div className="mt-5 space-y-3">
                 {challengeDeck.map((card) => (
                   <button
@@ -429,11 +433,11 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
             <article className="p-5">
               <div className="flex items-center gap-2">
                 <FileText className="text-[#366eb4]" size={20} />
-                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">3. Record Progress</h3>
+                <h3 className="font-display text-2xl tracking-wide text-[#3d332b]">{t.recordProgress}</h3>
               </div>
-              <p className="mt-2 text-xs leading-5 text-[#70665b]">Save one small record. It will appear on your Profile page.</p>
+              <p className="mt-2 text-xs leading-5 text-[#70665b]">{t.recordProgressCopy}</p>
 
-              <label className="mt-5 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Game</label>
+              <label className="mt-5 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">{common.game}</label>
               <select value={progressGameTitle} onChange={(event) => setRecordGameTitle(event.target.value)} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]">
                 <option value={selectedMission.title}>{selectedMission.title}</option>
                 {games.slice(0, 40).map((game) => (
@@ -441,17 +445,17 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
                 ))}
               </select>
 
-              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Useful phrase</label>
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">{common.usefulPhrase}</label>
               <input value={usefulPhrase} onChange={(event) => setUsefulPhrase(event.target.value)} placeholder={selectedCard.output} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
 
-              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">What happened?</label>
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">{common.whatHappened}</label>
               <textarea value={whatHappened} onChange={(event) => setWhatHappened(event.target.value)} placeholder="One useful moment from the table..." rows={3} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
 
-              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">Next time</label>
+              <label className="mt-4 block text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">{common.nextTime}</label>
               <textarea value={nextTime} onChange={(event) => setNextTime(event.target.value)} placeholder="One small thing to try next..." rows={3} className="mt-2 w-full rounded border border-[#efd39d] bg-white px-3 py-3 text-sm text-[#453b34]" />
 
               <button onClick={saveProgress} className="rule-button rule-button-primary mt-5 w-full justify-center py-3">
-                <Save size={14} /> Save Progress
+                <Save size={14} /> {t.saveProgress}
               </button>
               {saveMessage && <p className="mt-3 text-center text-xs font-bold text-[#2e7c44]">{saveMessage}</p>}
             </article>
@@ -546,9 +550,9 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         <section id="conversation-cards" className="mt-12">
           <div className="mb-5 text-center">
-            <p className="eyebrow justify-center">Conversation Cards</p>
-            <h2 className="compact-title mt-2 text-3xl">Gentle Table Prompts</h2>
-            <p className="mt-2 text-xs text-[#746b60]">Use one card during play. It gives the table a simple reason to speak.</p>
+            <p className="eyebrow justify-center">{t.conversationCards}</p>
+            <h2 className="compact-title mt-2 text-3xl">{t.gentlePrompts}</h2>
+            <p className="mt-2 text-xs text-[#746b60]">{t.cardsCopy}</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {challengeDeck.map((challenge) => {
@@ -576,14 +580,14 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
           </div>
         </section>
 
-        <h2 className="compact-title mt-12 text-center text-3xl">Helpful Next Places</h2>
+        <h2 className="compact-title mt-12 text-center text-3xl">{t.helpfulPlaces}</h2>
         <section className="mx-auto mt-7 grid max-w-5xl gap-4 md:grid-cols-3">
           {commands.map(({ icon: Icon, label, copy, section, tone }) => (
             <button key={label} onClick={() => onNavigate(section)} className={`rounded-xl border p-6 text-left transition-transform hover:-translate-y-0.5 hover:shadow-md ${tone}`}>
               <Icon className="text-[#dc791d]" size={28} />
               <span className="mt-5 block font-display text-xl tracking-wide text-[#4c4036]">{label}</span>
               <span className="mt-2 block text-xs leading-5 text-[#70665b]">{copy}</span>
-              <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">Open <ChevronRight size={12} /></span>
+              <span className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase text-[#c86123]">{common.open} <ChevronRight size={12} /></span>
             </button>
           ))}
         </section>
@@ -591,8 +595,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
         <section className="mt-12 grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] px-6 py-4">
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Good Next Table Choices</p>
-              <p className="mt-1 text-xs text-[#7a7065]">A few games that can quickly become useful English practice.</p>
+              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.goodChoices}</p>
+              <p className="mt-1 text-xs text-[#7a7065]">{t.goodChoicesCopy}</p>
             </div>
             <div className="divide-y divide-[#f3dfba]">
               {recommended.map((game) => (
@@ -612,8 +616,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
           <article className="reference-panel overflow-hidden">
             <div className="border-b border-[#f1d8a5] px-6 py-4">
-              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Session Review Template</p>
-              <p className="mt-1 text-xs text-[#7a7065]">Use this gently after a session. It is a reflection, not a test.</p>
+              <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.sessionReview}</p>
+              <p className="mt-1 text-xs text-[#7a7065]">{t.reviewCopy}</p>
             </div>
             <div className="grid gap-3 p-5">
               {[
@@ -634,8 +638,8 @@ export function Board({ onNavigate }: { onNavigate: (section: Section) => void }
 
         {missingImages.length > 0 && (
           <section className="reference-panel mt-10 p-5 text-center">
-            <p className="font-display text-2xl tracking-wide text-[#bd5c24]">Library Note</p>
-            <p className="mt-1 text-xs text-[#70665b]">Some game covers are still being prepared. The library can still be used for choosing sessions.</p>
+            <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.libraryNote}</p>
+            <p className="mt-1 text-xs text-[#70665b]">{t.libraryNoteCopy}</p>
           </section>
         )}
       </div>

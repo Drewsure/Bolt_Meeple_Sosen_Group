@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import type { Section } from '../App';
+import type { Language } from '../lib/i18n';
 
 const siteUrl = import.meta.env.VITE_SITE_URL || 'https://drewsure.github.io/Bolt_Meeple_Sosen_Group';
 const imageUrl = `${siteUrl}/images/og-meeple-sosen.svg`;
@@ -153,12 +154,13 @@ function setJsonLd(id: string, data: object) {
   script.textContent = JSON.stringify(data);
 }
 
-export function Seo({ section }: { section: Section }) {
+export function Seo({ section, language }: { section: Section; language: Language }) {
   useEffect(() => {
     const meta = pageMeta[section] ?? pageMeta.home;
     const canonical = section === 'home' ? siteUrl : `${siteUrl}/#${section}`;
 
-    document.title = meta.title;
+    document.documentElement.lang = language;
+    document.title = language === 'ja' ? `${meta.title} | 日本語` : meta.title;
     upsertMeta('meta[name="description"]', () => {
       const tag = document.createElement('meta');
       tag.name = 'description';
@@ -189,21 +191,6 @@ export function Seo({ section }: { section: Section }) {
       tag.setAttribute('property', 'og:image');
       return tag;
     }, imageUrl);
-    upsertMeta('meta[name="twitter:title"]', () => {
-      const tag = document.createElement('meta');
-      tag.name = 'twitter:title';
-      return tag;
-    }, meta.title);
-    upsertMeta('meta[name="twitter:description"]', () => {
-      const tag = document.createElement('meta');
-      tag.name = 'twitter:description';
-      return tag;
-    }, meta.description);
-    upsertMeta('meta[name="twitter:image"]', () => {
-      const tag = document.createElement('meta');
-      tag.name = 'twitter:image';
-      return tag;
-    }, imageUrl);
 
     let canonicalLink = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonicalLink) {
@@ -216,7 +203,7 @@ export function Seo({ section }: { section: Section }) {
     setJsonLd('schema-local-business', localBusinessSchema);
     setJsonLd('schema-website', websiteSchema);
     setJsonLd('schema-faq', faqSchema);
-  }, [section]);
+  }, [section, language]);
 
   return null;
 }
