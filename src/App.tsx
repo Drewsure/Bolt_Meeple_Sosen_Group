@@ -11,6 +11,7 @@ import { SilverCircle } from './components/SilverCircle';
 import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
 import { Board } from './components/Board';
+import { Seo } from './components/Seo';
 
 export type Section =
   | 'home'
@@ -49,6 +50,7 @@ function AppContent() {
 
   return (
     <div>
+      <Seo section={section} />
       <Header onNavigate={navigate} currentSection={section} />
       {section === 'home' && <Hero onNavigate={navigate} />}
       {section === 'situation' && <SituationRoom onNavigate={navigate} />}
