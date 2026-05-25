@@ -13,12 +13,11 @@ interface HeaderProps {
 
 const navigation: Array<{ labelKey: keyof typeof ui.en.nav; section: Section }> = [
   { labelKey: 'home', section: 'home' },
-  { labelKey: 'situation', section: 'situation' },
+  { labelKey: 'silver', section: 'silver-circle' },
   { labelKey: 'board', section: 'board' },
   { labelKey: 'games', section: 'games' },
   { labelKey: 'dossier', section: 'dossier' },
   { labelKey: 'ranking', section: 'ranking' },
-  { labelKey: 'silver', section: 'silver-circle' },
   { labelKey: 'profile', section: 'profile' },
 ];
 
@@ -45,19 +44,23 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
         </button>
 
         <nav className="hidden flex-1 items-center justify-end gap-3 md:flex">
-          {navigation.map(({ labelKey, section }) => (
-            <button
-              key={`${section}-${labelKey}`}
-              onClick={() => select(section)}
-              className={`whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.07em] transition-colors xl:text-[9px] ${
-                activeSection === section && section === 'silver-circle'
-                  ? 'rounded border border-[#ff99b0] px-3 py-2 text-[#ef3d66]'
-                  : activeSection === section ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
-              }`}
-            >
-              {t[labelKey]}
-            </button>
-          ))}
+          {navigation.map(({ labelKey, section }) => {
+            const isSilver = section === 'silver-circle';
+            const isActive = activeSection === section;
+            return (
+              <button
+                key={`${section}-${labelKey}`}
+                onClick={() => select(section)}
+                className={`whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.06em] transition-colors xl:text-[12px] ${
+                  isSilver
+                    ? `rounded border border-[#ff99b0] bg-[#fff5f8] px-3 py-2 text-[#ef3d66] shadow-sm hover:bg-[#ffeaf0] ${isActive ? 'ring-1 ring-[#ef3d66]/30' : ''}`
+                    : isActive ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
+                }`}
+              >
+                {t[labelKey]}
+              </button>
+            );
+          })}
         </nav>
 
         <button onClick={onToggleLanguage} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
@@ -73,11 +76,20 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
           <button onClick={onToggleLanguage} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#d06720]">
             {t.toggle}
           </button>
-          {navigation.map(({ labelKey, section }) => (
-            <button key={`${section}-${labelKey}`} onClick={() => select(section)} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#5d574d]">
-              {t[labelKey]}
-            </button>
-          ))}
+          {navigation.map(({ labelKey, section }) => {
+            const isSilver = section === 'silver-circle';
+            return (
+              <button
+                key={`${section}-${labelKey}`}
+                onClick={() => select(section)}
+                className={`border-b border-[#eadfce] px-2 py-3 text-left text-sm font-bold uppercase tracking-[0.12em] ${
+                  isSilver ? 'text-[#ef3d66]' : 'text-[#5d574d]'
+                }`}
+              >
+                {t[labelKey]}
+              </button>
+            );
+          })}
         </nav>
       )}
     </header>
