@@ -35,10 +35,11 @@ export type Section =
   | 'admin-images';
 
 const sectionFromHash = (): Section => {
-  const hash = window.location.hash.replace('#', '') as Section;
-  if (hash.startsWith('briefings/')) return 'briefing-detail';
+  const hash = window.location.hash.replace('#', '');
+  const route = hash.split('?')[0] as Section;
+  if (route.startsWith('briefings/')) return 'briefing-detail';
   const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'offers', 'partnerships', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
-  return valid.includes(hash) ? hash : 'home';
+  return valid.includes(route) ? route : 'home';
 };
 
 function AppContent() {
@@ -69,7 +70,7 @@ function AppContent() {
     });
   };
 
-  const briefingSlug = window.location.hash.replace('#briefings/', '');
+  const briefingSlug = window.location.hash.replace('#briefings/', '').split('?')[0];
 
   return (
     <div>
