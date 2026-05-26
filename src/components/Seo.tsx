@@ -41,6 +41,11 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     description: 'Weekly board game briefing cards for English conversation practice in Fukuoka, including phrases, prompts, table missions, and Silver Circle suitability.',
     keywords: 'English game briefing cards, board game English blog, Camel Up English phrases, Azul English conversation, Fukuoka English board games',
   },
+  offers: {
+    title: 'Join And Pricing | English Board Game Sessions In Fukuoka',
+    description: 'Book English board game sessions, Silver Circle membership, private strategy English coaching, workshops, and weekly briefing-card learning products in Fukuoka.',
+    keywords: 'English board game pricing Fukuoka, Silver Circle membership, English game workshop Fukuoka, private English coaching board games',
+  },
   'briefing-detail': {
     title: 'Camel Up English Briefing Card | Meeple Sosen Group',
     description: 'A standalone Camel Up briefing card for English conversation practice, with useful phrases, prompts, a table mission, and Silver Circle suitability.',

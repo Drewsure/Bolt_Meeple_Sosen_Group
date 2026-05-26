@@ -17,6 +17,7 @@ const navigation: Array<{ labelKey?: keyof typeof ui.en.nav; label?: { en: strin
   { labelKey: 'board', section: 'board' },
   { labelKey: 'games', section: 'games' },
   { label: { en: 'Briefings', ja: 'ブリーフィング' }, section: 'briefings' },
+  { label: { en: 'Join / Pricing', ja: '参加・料金' }, section: 'offers' },
   { labelKey: 'dossier', section: 'dossier' },
   { labelKey: 'ranking', section: 'ranking' },
   { labelKey: 'profile', section: 'profile' },
