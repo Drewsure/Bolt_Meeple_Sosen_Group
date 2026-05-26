@@ -2,6 +2,7 @@ import { ArrowUpRight, Crown, Medal, Sparkles, Target, Trophy, Users, Zap } from
 import type { Section } from '../App';
 import type { Language } from '../lib/i18n';
 import { ui } from '../lib/i18n';
+import { SessionWorkspace } from './SessionWorkspace';
 
 type Agent = {
   rank: number;
@@ -171,6 +172,8 @@ export function Leaderboard({ onNavigate, language }: { onNavigate: (section: Se
             </div>
           </article>
         </section>
+
+        <SessionWorkspace language={language} />
 
         <section className="reference-panel mt-8 flex flex-wrap items-center justify-between gap-4 p-6">
           <div>
