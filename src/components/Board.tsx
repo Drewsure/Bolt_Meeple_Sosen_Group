@@ -16,8 +16,8 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
 
 const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; image: string }> = [
   { label: '01', title: 'Choose A Game', verb: 'Browse Games', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', image: '/images/mission-route-pick-game.svg' },
-  { label: '02', title: 'Use One Briefing Goal', verb: 'See English Goals', copy: 'Use the briefing card to choose one practical aim: predict, explain, ask, negotiate, or review.', section: 'briefings', icon: Target, visual: 'English Goal', image: '/images/mission-route-english-job.svg' },
-  { label: '03', title: 'Play With Support', verb: 'Use A Conversation Card', copy: 'During play, use the prompt. The game gives everyone a reason to speak.', section: 'board', icon: Shield, visual: 'Supported Play', image: '/images/mission-route-live-challenge.svg' },
+  { label: '02', title: 'Use One Briefing Goal', verb: 'Build Table Play Device', copy: 'Use the briefing card to choose one practical aim: predict, explain, ask, negotiate, or review.', section: 'play', icon: Target, visual: 'English Goal', image: '/images/mission-route-english-job.svg' },
+  { label: '03', title: 'Play With Support', verb: 'Choose A Conversation Card', copy: 'During play, use the prompt. The game gives everyone a reason to speak.', section: 'play', icon: Shield, visual: 'Supported Play', image: '/images/mission-route-live-challenge.svg' },
   { label: '04', title: 'Review Together', verb: 'Record Progress', copy: 'After play, notice what English appeared and choose one small thing for next time.', section: 'profile', icon: Trophy, visual: 'Session Review', image: '/images/mission-route-record-result.svg' },
 ];
 
@@ -404,8 +404,8 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
             ))}
           </div>
           <div className="mt-5 flex justify-center">
-            <button onClick={() => onNavigate('briefings')} className="rule-button rule-button-primary px-5 py-3">
-              <BookOpen size={14} /> Open Briefing Cards
+            <button onClick={() => onNavigate('play')} className="rule-button rule-button-primary px-5 py-3">
+              <BookOpen size={14} /> Build Table Play Device
             </button>
           </div>
         </section>

@@ -51,6 +51,11 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     description: 'Corporate soft-skill workshops and sponsored community tables using board games for communication, teamwork, English confidence, and local participation in Fukuoka.',
     keywords: 'corporate soft skill workshop Fukuoka, team building board games Japan, sponsor senior community table, English communication workshop',
   },
+  play: {
+    title: 'Table Play Device | Choose A Game And Play In English',
+    description: 'Build a table-ready English play plan: choose a game, open its briefing card, select one English goal, use a conversation card, and record progress.',
+    keywords: 'table play device, board game English process, conversation card, briefing card, English board games Fukuoka',
+  },
   'briefing-detail': {
     title: 'Camel Up English Briefing Card | Meeple Sosen Group',
     description: 'A standalone Camel Up briefing card for English conversation practice, with useful phrases, prompts, a table mission, and Silver Circle suitability.',

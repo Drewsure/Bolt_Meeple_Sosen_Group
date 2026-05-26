@@ -22,6 +22,7 @@ const primaryNavigation: NavItem[] = [
 ];
 
 const secondaryNavigation: NavItem[] = [
+  { label: { en: 'Table Play', ja: 'Table Play' }, section: 'play' },
   { label: { en: 'Join / Pricing', ja: '参加・料金' }, section: 'offers' },
   { label: { en: 'Partners', ja: '提携' }, section: 'partnerships' },
   { labelKey: 'dossier', section: 'dossier' },
