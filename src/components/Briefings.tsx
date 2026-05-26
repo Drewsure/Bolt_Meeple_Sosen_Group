@@ -242,7 +242,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
             <CalendarDays className="text-[#d87522]" size={28} />
             <h2 className="font-display mt-4 text-3xl tracking-wide text-[#3d332b]">{t.cadence}</h2>
             <p className="mt-4 text-sm leading-7 text-[#62584f]">{t.cadenceCopy}</p>
-            <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary mt-6 px-5 py-3">
+            <button onClick={() => onNavigate('play')} className="rule-button rule-button-primary mt-6 px-5 py-3">
               <Sparkles size={14} /> {t.cta}
             </button>
           </article>
@@ -275,7 +275,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 <div className="flex flex-wrap gap-3 pt-2">
                   <button onClick={() => openBriefing(briefing.slug)} className="rule-button px-4 py-2"><BookOpen size={13} /> {t.read}</button>
                   <button onClick={() => openGame(briefing.gameTitle)} className="rule-button px-4 py-2"><Search size={13} /> {language === 'ja' ? 'ゲームを見る' : 'View Game'}</button>
-                  <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-4 py-2"><ArrowRight size={13} /> {t.cta}</button>
+                  <button onClick={() => onNavigate('play')} className="rule-button rule-button-primary px-4 py-2"><ArrowRight size={13} /> {t.cta}</button>
                   <button className="rounded border border-[#e0d2b6] bg-white px-4 py-2 text-[10px] font-bold uppercase text-[#8c7563]"><Download size={13} className="mr-1 inline" /> PDF later</button>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
   );
 }
 
-export function BriefingDetail({ language, onNavigate, slug }: { language: Language; onNavigate: (section: Section) => void; slug: string }) {
+export function BriefingDetail({ language, onNavigate: _onNavigate, slug }: { language: Language; onNavigate: (section: Section) => void; slug: string }) {
   const t = pageCopy[language];
   const briefing = briefings.find((item) => item.slug === slug) ?? briefings[0];
   const title = language === 'ja' ? briefing.jpTitle : briefing.title;
@@ -296,6 +296,10 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
   const prompts = language === 'ja' ? briefing.jpPrompts : briefing.prompts;
   const openGame = () => {
     window.location.hash = `games?q=${encodeURIComponent(briefing.gameTitle)}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const openPlay = () => {
+    window.location.hash = `play?briefing=${encodeURIComponent(briefing.slug)}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -371,7 +375,7 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
                 <p className="mt-3 text-sm leading-7 text-[#62584f]">{language === 'ja' ? '一つのミッションと三つのプロンプトだけを選び、プレイ中に無理なく使います。' : 'Choose one mission and three prompts, then use them lightly during play.'}</p>
               </details>
             </div>
-            <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary w-full justify-center py-3">
+            <button onClick={openPlay} className="rule-button rule-button-primary w-full justify-center py-3">
               <ArrowRight size={14} /> {t.cta}
             </button>
             <button onClick={openGame} className="rule-button w-full justify-center py-3">

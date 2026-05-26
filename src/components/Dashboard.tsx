@@ -52,10 +52,27 @@ export function Dashboard({ onJoin: _onJoin, language }: { onJoin: () => void; l
   const [sessionRecords, setSessionRecords] = useState<SessionProgressRecord[]>([]);
   const name = profile?.display_name || (user ? 'Guild Member' : 'Preview Member');
   const email = user?.email || 'Sign in to view member details';
-  const xp = profile?.xp_points || 0;
   const t = ui[language].profile;
   const common = ui[language].common;
   const local = dashboardTranslations[language];
+  const sessionsCompleted = sessionRecords.length;
+  const uniqueGames = new Set(sessionRecords.map((record) => record.gameTitle)).size;
+  const usefulPhrases = sessionRecords.filter((record) => record.usefulPhrase.trim()).length;
+  const calculatedXp = sessionsCompleted * 10 + usefulPhrases * 5 + uniqueGames * 5;
+  const xp = Math.max(profile?.xp_points || 0, calculatedXp);
+  const nextRankTarget = xp >= 100 ? 200 : xp >= 50 ? 100 : 50;
+  const rankIndex = xp >= 200 ? 4 : xp >= 100 ? 3 : xp >= 50 ? 2 : xp >= 20 ? 1 : 0;
+  const progressPercent = Math.min(100, Math.round((xp / nextRankTarget) * 100));
+  const earnedBadgeCount = [
+    sessionsCompleted >= 1,
+    sessionsCompleted >= 3,
+    uniqueGames >= 3,
+    usefulPhrases >= 5,
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('suggest') || record.focusTitle.toLowerCase().includes('negotiate')),
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('explain')),
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('review')),
+    sessionsCompleted >= 10,
+  ].filter(Boolean).length;
 
   useEffect(() => {
     setSessionRecords(loadSessionProgress());
@@ -70,23 +87,27 @@ export function Dashboard({ onJoin: _onJoin, language }: { onJoin: () => void; l
         <div className="mt-9 grid gap-4 sm:grid-cols-4">
           {[Swords, Lightbulb, TrendingUp, Target].map((Icon, index) => {
             const label = local.stats[index];
+            const values = [sessionsCompleted, usefulPhrases, uniqueGames, earnedBadgeCount];
             return (
-            <article key={label} className="reference-panel py-6 text-center"><Icon className="mx-auto text-[#d46a20]" size={21} /><p className="font-display mt-2 text-2xl">0</p><p className="text-[10px] text-[#746b61]">{label}</p></article>
+            <article key={label} className="reference-panel py-6 text-center"><Icon className="mx-auto text-[#d46a20]" size={21} /><p className="font-display mt-2 text-2xl">{values[index]}</p><p className="text-[10px] text-[#746b61]">{label}</p></article>
             );
           })}
         </div>
         <h2 className="font-display mt-10 text-2xl tracking-wide">{t.growth}</h2>
         <section className="reference-panel mt-4 p-7">
-          <div className="flex justify-between"><div><p className="text-[10px] text-[#82766b]">{t.currentRank}</p><p className="font-display text-3xl text-[#d06122]">{local.ranks[0]}</p></div><div className="text-right"><p className="text-[10px] text-[#82766b]">{t.totalPoints}</p><p className="font-display text-3xl">{xp} XP</p></div></div>
-          <div className="mt-6 h-4 rounded-full border border-[#dedad4] bg-white"><div className="h-full w-0 rounded-full bg-[#d56a22]" /></div>
-          <p className="mt-3 text-right text-[10px] font-bold text-[#e07521]">{local.nextRank}</p>
-          <div className="mt-5 grid grid-cols-5 gap-2 text-center font-display text-[10px] text-[#a29a91]">{local.ranks.map((rank, index) => <span key={rank} className={`border-t-4 pt-2 ${index === 0 ? 'border-[#aca59d] text-[#554b42]' : 'border-[#dedad5]'}`}>{rank}</span>)}</div>
+          <div className="flex justify-between"><div><p className="text-[10px] text-[#82766b]">{t.currentRank}</p><p className="font-display text-3xl text-[#d06122]">{local.ranks[rankIndex]}</p></div><div className="text-right"><p className="text-[10px] text-[#82766b]">{t.totalPoints}</p><p className="font-display text-3xl">{xp} XP</p></div></div>
+          <div className="mt-6 h-4 rounded-full border border-[#dedad4] bg-white"><div className="h-full rounded-full bg-[#d56a22]" style={{ width: `${progressPercent}%` }} /></div>
+          <p className="mt-3 text-right text-[10px] font-bold text-[#e07521]">{xp >= 200 ? 'Grand Master progress is active' : `${Math.max(nextRankTarget - xp, 0)} XP to next rank`}</p>
+          <div className="mt-5 grid grid-cols-5 gap-2 text-center font-display text-[10px] text-[#a29a91]">{local.ranks.map((rank, index) => <span key={rank} className={`border-t-4 pt-2 ${index <= rankIndex ? 'border-[#d56a22] text-[#554b42]' : 'border-[#dedad5]'}`}>{rank}</span>)}</div>
         </section>
-        <div className="mt-10 flex justify-between"><h2 className="font-display text-2xl tracking-wide">{t.badges}</h2><span className="text-xs text-[#776e63]">0 / 8 {local.earned}</span></div>
+        <div className="mt-10 flex justify-between"><h2 className="font-display text-2xl tracking-wide">{t.badges}</h2><span className="text-xs text-[#776e63]">{earnedBadgeCount} / 8 {local.earned}</span></div>
         <div className="mt-5 grid gap-4 sm:grid-cols-4">
-          {badges.map(({ icon: Icon }, index) => (
-            <article key={local.badges[index].name} className="rounded-xl border border-[#e1ded7] bg-[#f8f7f4] p-5 text-center text-[#989997]"><Icon className="mx-auto" size={30} /><h3 className="font-display mt-4 text-sm text-[#36312d]">{local.badges[index].name}</h3><p className="mt-2 text-[10px] leading-4">{local.badges[index].detail}</p></article>
-          ))}
+          {badges.map(({ icon: Icon }, index) => {
+            const earned = index < earnedBadgeCount;
+            return (
+              <article key={local.badges[index].name} className={`rounded-xl border p-5 text-center ${earned ? 'border-[#efc779] bg-[#fff7e7] text-[#d46a20]' : 'border-[#e1ded7] bg-[#f8f7f4] text-[#989997]'}`}><Icon className="mx-auto" size={30} /><h3 className="font-display mt-4 text-sm text-[#36312d]">{local.badges[index].name}</h3><p className="mt-2 text-[10px] leading-4">{local.badges[index].detail}</p></article>
+            );
+          })}
         </div>
         <h2 className="font-display mt-10 text-2xl tracking-wide">{common.profileProgress}</h2>
         <section className="reference-panel mt-4 overflow-hidden">
