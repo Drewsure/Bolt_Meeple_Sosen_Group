@@ -15,6 +15,7 @@ const copy = {
     subtitle: 'Meeple Sosen can earn through local sessions, Silver Circle groups, private coaching, school/community bookings, and weekly briefing-card products.',
     primary: 'Ask About A Session',
     secondary: 'See Weekly Briefings',
+    partnersCta: 'Corporate + Sponsor Offers',
     best: 'Best first monetization path',
     bestCopy: 'Start with local paid sessions and Silver Circle memberships. They are easiest to explain, easiest to deliver, and create proof for schools, community partners, and downloadable products later.',
     productsTitle: 'Commercial Offers',
@@ -105,6 +106,7 @@ const copy = {
     subtitle: 'Meeple Sosen は、地域セッション、Silver Circle、個別コーチング、学校・地域ワークショップ、週刊ブリーフィングカードで収益化できます。',
     primary: 'セッションについて相談する',
     secondary: '週刊ブリーフィングを見る',
+    partnersCta: '企業・スポンサー提案',
     best: '最初に強い収益化ルート',
     bestCopy: 'まずは地域の有料セッションと Silver Circle の月会費から始めるのが自然です。説明しやすく、提供しやすく、後の学校・地域提携や教材販売の実績になります。',
     productsTitle: 'サービス内容',
@@ -207,6 +209,7 @@ export function Offers({ language, onNavigate }: { language: Language; onNavigat
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href={generalLink} className="rule-button rule-button-primary px-7 py-3"><Mail size={14} /> {t.primary}</a>
           <button onClick={() => onNavigate('briefings')} className="rule-button px-7 py-3"><BookOpen size={14} /> {t.secondary}</button>
+          <button onClick={() => onNavigate('partnerships')} className="rule-button px-7 py-3"><Briefcase size={14} /> {t.partnersCta}</button>
         </div>
       </header>
 

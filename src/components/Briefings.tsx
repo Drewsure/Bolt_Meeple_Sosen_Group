@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Brain, CalendarDays, Download, HelpCircle, MapPin, MessageCircle, Search, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, Brain, CalendarDays, Download, MessageCircle, Search, Sparkles, Users } from 'lucide-react';
 import type { Section } from '../App';
 import type { Language } from '../lib/i18n';
 
@@ -161,11 +161,11 @@ const pageCopy = {
     eyebrow: 'Weekly English Game Briefings',
     title: 'A Blog That Works Like A Teaching Library',
     subtitle: 'Each week, publish one simple game briefing card. It helps search engines, AI answers, local discovery, and real people preparing for a table session.',
-    seoTitle: 'Why this helps SEO + GEO + AEO',
-    seoBullets: [
-      'SEO: each game creates a searchable page for “game name + English conversation”.',
-      'GEO: Fukuoka and Nishi-ku local wording connects the content to place.',
-      'AEO: clear questions, answers, phrases, and summaries help AI answer engines quote the site.',
+    introTitle: 'How To Use These Cards',
+    introBullets: [
+      'Choose one game before the session.',
+      'Pick one mission and a few useful phrases.',
+      'Play gently, speak during real turns, and review one phrase at the end.',
     ],
     cadence: 'Recommended publishing rhythm',
     cadenceCopy: 'Release one briefing every week, then collect four into a monthly guide such as “Best Beginner Board Games For English Conversation In Fukuoka.”',
@@ -183,11 +183,11 @@ const pageCopy = {
     eyebrow: '毎週の英語ゲーム・ブリーフィング',
     title: 'ブログではなく、使える教材ライブラリーへ',
     subtitle: '毎週一つ、シンプルなゲーム別ブリーフィングカードを公開します。検索、AI回答、地域発見、そして実際のセッション準備に役立ちます。',
-    seoTitle: 'SEO + GEO + AEO に効く理由',
-    seoBullets: [
-      'SEO: 「ゲーム名 + 英会話」で検索されるページを増やせます。',
-      'GEO: 福岡・西区など地域の言葉を入れることで、場所との関係が強くなります。',
-      'AEO: 質問、答え、フレーズ、要約を明確にすると、AI回答にも拾われやすくなります。',
+    introTitle: 'このカードの使い方',
+    introBullets: [
+      'セッション前にゲームを一つ選びます。',
+      'ミッションを一つ、使うフレーズをいくつか選びます。',
+      '実際のターンで少しずつ話し、最後に一つの表現を振り返ります。',
     ],
     cadence: 'おすすめ公開リズム',
     cadenceCopy: '毎週一つ公開し、月末に「福岡で英会話に使いやすい初心者向けボードゲーム」のようなまとめ記事にします。',
@@ -225,10 +225,10 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
       <div className="container-shell py-10">
         <section className="grid gap-5 lg:grid-cols-[1fr_0.85fr]">
           <article className="reference-panel p-6">
-            <h2 className="font-display text-3xl tracking-wide text-[#bd5c24]">{t.seoTitle}</h2>
+            <h2 className="font-display text-3xl tracking-wide text-[#bd5c24]">{t.introTitle}</h2>
             <div className="mt-5 grid gap-3">
-              {t.seoBullets.map((bullet, index) => {
-                const icons = [Search, MapPin, HelpCircle];
+              {t.introBullets.map((bullet, index) => {
+                const icons = [BookOpen, MessageCircle, Sparkles];
                 const Icon = icons[index];
                 return (
                   <p key={bullet} className="rounded-xl border border-[#efd39d] bg-white p-4 text-sm leading-7 text-[#62584f]">
@@ -312,8 +312,8 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
             <h1 className="compact-title mt-2">{title}</h1>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#71685d]">
               {language === 'ja'
-                ? '英語セッション、地域の検索、AI回答に使いやすい、一つのゲーム専用ブリーフィングページです。'
-                : 'A standalone briefing page for one game, designed for English sessions, local search, and AI answer engines.'}
+                ? '一つのゲームを英語セッションで使いやすくするためのブリーフィングページです。'
+                : 'A standalone briefing page for one game, designed for real English table sessions.'}
             </p>
           </div>
           <div className="grid gap-0 md:grid-cols-3">
@@ -328,9 +328,9 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
               <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? '毎週記事のサンプル' : 'Example weekly article'}</p>
             </div>
             <div className="p-5 text-center">
-              <MapPin className="mx-auto text-[#d87522]" size={24} />
-              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">GEO</p>
-              <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? '福岡・西区の英語ゲーム活動向け' : 'For English game activity in Nishi-ku, Fukuoka'}</p>
+              <BookOpen className="mx-auto text-[#d87522]" size={24} />
+              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">{language === 'ja' ? 'セッション用' : 'Session Use'}</p>
+              <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? 'テーブルでそのまま使える英語カード' : 'Ready to use at the table'}</p>
             </div>
           </div>
         </header>

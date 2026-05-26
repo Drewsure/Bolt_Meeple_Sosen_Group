@@ -46,6 +46,11 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     description: 'Book English board game sessions, Silver Circle membership, private strategy English coaching, workshops, and weekly briefing-card learning products in Fukuoka.',
     keywords: 'English board game pricing Fukuoka, Silver Circle membership, English game workshop Fukuoka, private English coaching board games',
   },
+  partnerships: {
+    title: 'Corporate Workshops And Sponsor A Table | Meeple Sosen Group',
+    description: 'Corporate soft-skill workshops and sponsored community tables using board games for communication, teamwork, English confidence, and local participation in Fukuoka.',
+    keywords: 'corporate soft skill workshop Fukuoka, team building board games Japan, sponsor senior community table, English communication workshop',
+  },
   'briefing-detail': {
     title: 'Camel Up English Briefing Card | Meeple Sosen Group',
     description: 'A standalone Camel Up briefing card for English conversation practice, with useful phrases, prompts, a table mission, and Silver Circle suitability.',

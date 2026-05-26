@@ -14,6 +14,7 @@ import { Board } from './components/Board';
 import { Seo } from './components/Seo';
 import { BriefingDetail, Briefings } from './components/Briefings';
 import { Offers } from './components/Offers';
+import { Partnerships } from './components/Partnerships';
 import type { Language } from './lib/i18n';
 
 export type Section =
@@ -23,6 +24,7 @@ export type Section =
   | 'games'
   | 'briefings'
   | 'offers'
+  | 'partnerships'
   | 'briefing-detail'
   | 'dossier'
   | 'board'
@@ -35,7 +37,7 @@ export type Section =
 const sectionFromHash = (): Section => {
   const hash = window.location.hash.replace('#', '') as Section;
   if (hash.startsWith('briefings/')) return 'briefing-detail';
-  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'offers', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'offers', 'partnerships', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
   return valid.includes(hash) ? hash : 'home';
 };
 
@@ -79,6 +81,7 @@ function AppContent() {
       {section === 'games' && <Reserves language={language} />}
       {section === 'briefings' && <Briefings language={language} onNavigate={navigate} />}
       {section === 'offers' && <Offers language={language} onNavigate={navigate} />}
+      {section === 'partnerships' && <Partnerships language={language} />}
       {section === 'briefing-detail' && <BriefingDetail language={language} onNavigate={navigate} slug={briefingSlug} />}
       {section === 'dossier' && <Dossier language={language} />}
       {section === 'ranking' && <Leaderboard onNavigate={navigate} language={language} />}
