@@ -16,7 +16,7 @@ const commands: Array<{ icon: typeof Database; label: string; copy: string; sect
 
 const missionFlow: Array<{ label: string; title: string; verb: string; copy: string; section: Section; icon: typeof Database; visual: string; image: string }> = [
   { label: '01', title: 'Choose A Game', verb: 'Browse Games', copy: 'Choose one board game that fits the group: time, difficulty, theme, and player count.', section: 'games', icon: Database, visual: 'Game Choice', image: '/images/mission-route-pick-game.svg' },
-  { label: '02', title: 'Choose One English Focus', verb: 'Pick A Focus', copy: 'Give the table one gentle language aim: explain, ask, persuade, report, or reflect.', section: 'board', icon: Target, visual: 'English Focus', image: '/images/mission-route-english-job.svg' },
+  { label: '02', title: 'Use One Briefing Goal', verb: 'See English Goals', copy: 'Use the briefing card to choose one practical aim: predict, explain, ask, negotiate, or review.', section: 'briefings', icon: Target, visual: 'English Goal', image: '/images/mission-route-english-job.svg' },
   { label: '03', title: 'Play With Support', verb: 'Use A Conversation Card', copy: 'During play, use the prompt. The game gives everyone a reason to speak.', section: 'board', icon: Shield, visual: 'Supported Play', image: '/images/mission-route-live-challenge.svg' },
   { label: '04', title: 'Review Together', verb: 'Record Progress', copy: 'After play, notice what English appeared and choose one small thing for next time.', section: 'profile', icon: Trophy, visual: 'Session Review', image: '/images/mission-route-record-result.svg' },
 ];
@@ -25,6 +25,34 @@ type MissionLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Master';
 type LevelFilter = MissionLevel | 'All';
 
 const missionLevels: LevelFilter[] = ['All', 'Foundation', 'Intermediate', 'Advanced', 'Master'];
+
+const englishFocusGoals = [
+  {
+    title: 'Predict And React',
+    copy: 'Use when the game creates surprise, risk, betting, or changing plans.',
+    examples: ["I'm thinking...", "I'm changing my mind because...", 'That surprised me.'],
+  },
+  {
+    title: 'Explain A Choice',
+    copy: 'Use when a player places a tile, chooses a card, bids, blocks, or builds.',
+    examples: ["I'm choosing this because...", 'My reason is...', 'This helps me because...'],
+  },
+  {
+    title: 'Ask A Useful Question',
+    copy: 'Use when a player needs rules, advice, clarification, or table information.',
+    examples: ['Can I ask about...?', 'What happens if...?', 'Do you think I should...?'],
+  },
+  {
+    title: 'Negotiate Or Suggest',
+    copy: 'Use when the game includes trades, teamwork, shared plans, or persuasion.',
+    examples: ['Maybe we should...', 'This is fair because...', 'One option is...'],
+  },
+  {
+    title: 'Review What Happened',
+    copy: 'Use at the end of a turn or session to make the learning visible.',
+    examples: ['That worked because...', 'Next time I want to...', 'I learned the phrase...'],
+  },
+];
 
 const missionBuilder: Array<{
   title: string;
@@ -235,7 +263,7 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
                 <p className="mt-5 text-sm leading-7 text-[#6b5f54]">{t.flowCopy}</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button onClick={() => onNavigate('games')} className="rule-button rule-button-primary px-5 py-3"><Database size={14} /> {t.browseGames}</button>
-                  <a href="#session-builder" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">{t.chooseFocus}</a>
+                  <a href="#briefing-focus-goals" className="rounded border border-[#d78a2b] bg-white px-5 py-3 text-xs font-bold uppercase text-[#a9541f] shadow-sm hover:bg-[#fff2d8]">{t.chooseFocus}</a>
                 </div>
               </div>
 
@@ -352,6 +380,33 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
                 </button>
               );
             })}
+          </div>
+        </section>
+
+        <section id="briefing-focus-goals" className="mt-12">
+          <div className="mb-5 text-center">
+            <p className="eyebrow justify-center">Briefing Card Goals</p>
+            <h2 className="compact-title mt-2 text-3xl">Choose The English Job After You Pick The Game</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">A briefing card is the larger prep sheet for a game. Its English goal tells the table what kind of speaking to practise today.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            {englishFocusGoals.map((goal) => (
+              <article key={goal.title} className="reference-panel p-5">
+                <Target className="text-[#d87522]" size={23} />
+                <h3 className="font-display mt-3 text-xl tracking-wide text-[#3d332b]">{goal.title}</h3>
+                <p className="mt-2 text-xs leading-5 text-[#70665b]">{goal.copy}</p>
+                <div className="mt-4 space-y-2">
+                  {goal.examples.map((example) => (
+                    <p key={example} className="rounded border border-[#efd39d] bg-[#fffaf0] px-3 py-2 text-[10px] font-bold text-[#7a5a34]">{example}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="mt-5 flex justify-center">
+            <button onClick={() => onNavigate('briefings')} className="rule-button rule-button-primary px-5 py-3">
+              <BookOpen size={14} /> Open Briefing Cards
+            </button>
           </div>
         </section>
 

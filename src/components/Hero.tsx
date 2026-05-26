@@ -62,6 +62,18 @@ export function Hero({ onNavigate, language }: HeroProps) {
           </div>
 
           <aside className="relative z-10 mx-auto flex w-full max-w-sm flex-col justify-center gap-4">
+            <div className="relative overflow-hidden rounded-[1.4rem] border border-[#edbd64] bg-[#fff8ea] shadow-xl">
+              <div className="grid h-72 grid-cols-2 grid-rows-2 gap-1 p-2">
+                {['/images/collection/13.jpg', '/images/collection/68448.jpg', '/images/collection/219513.jpg', '/images/collection/30549.jpg'].map((src, index) => (
+                  <img key={src} src={src} alt="" className={`h-full w-full object-cover ${index === 0 ? 'rounded-tl-[1rem]' : index === 1 ? 'rounded-tr-[1rem]' : index === 2 ? 'rounded-bl-[1rem]' : 'rounded-br-[1rem]'}`} />
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2f251e]/55 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/50 bg-white/90 p-4 shadow-lg">
+                <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{language === 'ja' ? 'ゲームから会話へ' : 'Games Become Conversation'}</p>
+                <p className="mt-1 text-xs leading-5 text-[#62584f]">{language === 'ja' ? '選ぶ、話す、笑う、少し覚える。' : 'Choose, speak, laugh, and leave with one useful phrase.'}</p>
+              </div>
+            </div>
             <div className="soft-stat p-5">
               <Gamepad2 className="text-[#e58921]" size={32} />
               <p className="font-display mt-4 text-5xl leading-none text-[#c75a22]">{gameCount ?? '...'}</p>

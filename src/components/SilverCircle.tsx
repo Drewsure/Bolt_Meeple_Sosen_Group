@@ -58,7 +58,8 @@ const copy = {
       ['K, 68', 'I was nervous at first, but the Japanese support made it comfortable. I wanted to come again.'],
       ['T, 75', 'I was happy to tell my grandchild that I played a game in English. I also made new friends.'],
     ],
-    scheduleTitle: 'Schedule And Fees',
+    scheduleTitle: 'Silver Circle Schedule And Fees',
+    scheduleCardTitle: 'Silver Circle Schedule',
     schedule: '1st and 3rd Thursday, 2pm-4pm',
     schedulePlace: 'Nearby community hall, capacity 6',
     footerAbout: 'Silver Circle is a local participation program from the Meeple Sosen Group. It supports conversation, social connection, and joyful learning through English board games.',
@@ -112,7 +113,8 @@ const copy = {
       ['Kさん（68歳）', '最初は不安でしたが、日本語でサポートしてくれるので安心でした。帰る頃には、また来たいと思いました。'],
       ['Tさん（75歳）', '孫に「英語でゲームをしたよ」と話せるのが嬉しいです。新しい友人もできました。'],
     ],
-    scheduleTitle: '開催スケジュールと料金',
+    scheduleTitle: 'Silver Circle 開催スケジュールと料金',
+    scheduleCardTitle: 'Silver Circle Schedule',
     schedule: '第1・第3木曜日 午後2時〜4時',
     schedulePlace: 'ご近所コミュニティホール・定員6名',
     footerAbout: 'Silver Circle は、ミープル創戦グループによる地域参加プログラムです。英語のボードゲームを通じて、会話、つながり、楽しい学びを支えます。',
@@ -264,6 +266,7 @@ export function SilverCircle({ onNavigate, language }: { onNavigate: (section: S
       <section className="silver-section">
         <h2 className="silver-title text-center text-4xl">{local.scheduleTitle}</h2>
         <article className="silver-card mt-12 max-w-lg rounded-2xl p-7">
+          <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[#ef4164]">{local.scheduleCardTitle}</p>
           <Clock3 className="mr-5 inline text-[#f43b64]" />
           <strong className="text-xl">{local.schedule}</strong>
           <p className="ml-12 mt-2 text-[#756b6a]">{local.schedulePlace}</p>
