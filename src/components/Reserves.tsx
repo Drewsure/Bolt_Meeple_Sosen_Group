@@ -162,6 +162,16 @@ function normalizeTitle(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function matchesSearchQuery(game: Game, query: string) {
+  const normalizedQuery = normalizeTitle(query.trim());
+  if (!normalizedQuery) return true;
+
+  const normalizedTitle = normalizeTitle(game.title);
+  return normalizedTitle === normalizedQuery
+    || normalizedTitle.startsWith(normalizedQuery)
+    || normalizedTitle.includes(normalizedQuery);
+}
+
 function getBriefingForGame(game: Game) {
   const normalizedGameTitle = normalizeTitle(game.title);
   return briefings.find((briefing) => normalizedGameTitle.includes(normalizeTitle(briefing.gameTitle)));
@@ -200,7 +210,7 @@ export function Reserves({ language }: { language: Language }) {
   }, []);
 
   const filtered = useMemo(() => games.filter((game) => {
-    const searchMatches = game.title.toLowerCase().includes(query.trim().toLowerCase());
+    const searchMatches = matchesSearchQuery(game, query);
     const typeMatches = filters.type === 'all' || game.item_type === filters.type;
 
     return searchMatches
