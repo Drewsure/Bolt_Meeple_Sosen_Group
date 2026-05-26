@@ -22,6 +22,11 @@ export type Briefing = {
     someExperience: string[];
     experienced: string[];
   };
+  jpPhraseTiers: {
+    beginner: string[];
+    someExperience: string[];
+    experienced: string[];
+  };
   prompts: string[];
   jpPrompts: string[];
   silverFit: string;
@@ -49,6 +54,11 @@ export const briefings: Briefing[] = [
       someExperience: ["I'm thinking blue is winning.", "I'm watching red fall behind.", "I'm changing my mind now.", "I'm taking a safer bet."],
       experienced: ["I'm changing my mind because the race order is shifting.", "I'm choosing yellow because the odds are getting better.", "I'm not trusting blue after that roll.", "I'm taking a risk because the reward is bigger."],
     },
+    jpPhraseTiers: {
+      beginner: ['青を選んでいます。', '赤を見ています。', '青に賭けています。', '青が勝つと期待しています。', 'びっくりしています！'],
+      someExperience: ['青が勝っていると思っています。', '赤が遅れているのを見ています。', '今、考えを変えています。', 'より安全な賭けをしています。'],
+      experienced: ['レースの順番が変わっているので、考えを変えています。', 'オッズが良くなっているので、黄色を選んでいます。', 'その出目の後、もう青を信じていません。', 'リターンが大きいので、リスクを取っています。'],
+    },
     prompts: ['Which camel do you trust now?', 'What changed after that roll?', 'Was your bet safe or risky?'],
     jpPrompts: ['今、どのラクダを信じますか？', 'そのサイコロで何が変わりましたか？', 'その賭けは安全でしたか、リスクがありましたか？'],
     silverFit: 'Very strong. It is visual, funny, fast, and easy to support with Japanese.',
@@ -73,6 +83,11 @@ export const briefings: Briefing[] = [
       beginner: ["I'm taking blue.", "I'm choosing red.", "I'm filling this row.", "I'm avoiding waste.", "I'm building my wall."],
       someExperience: ["I'm taking this color because I need it.", "I'm finishing this row.", "I'm avoiding extra tiles.", "I'm improving my pattern."],
       experienced: ["I'm taking this color because it is completing my row.", "I'm blocking you while protecting my score.", "I'm avoiding waste, even though I'm scoring less now.", "I'm choosing the safer pattern for later points."],
+    },
+    jpPhraseTiers: {
+      beginner: ['青を取っています。', '赤を選んでいます。', 'この列を埋めています。', '無駄を避けています。', '自分の壁を作っています。'],
+      someExperience: ['必要なので、この色を取っています。', 'この列を完成させています。', '余分なタイルを避けています。', '模様を良くしています。'],
+      experienced: ['この列が完成するので、この色を取っています。', '自分の点を守りながら、あなたを止めています。', '今は点が少なくても、無駄を避けています。', '後の得点のために、安全な模様を選んでいます。'],
     },
     prompts: ['Which color do you need most?', 'What are you trying to avoid?', 'Did you help yourself or block someone?'],
     jpPrompts: ['一番必要な色は何ですか？', '何を避けようとしていますか？', '自分を助けましたか、それとも誰かを止めましたか？'],
@@ -99,6 +114,11 @@ export const briefings: Briefing[] = [
       someExperience: ["I'm placing this tile here.", "I'm connecting it to my road.", "I'm trying to finish this city.", "I'm blocking your farm."],
       experienced: ["I'm placing this tile here because it is giving me two scoring options.", "I'm connecting to my road while reducing your farm value.", "I'm trying to finish this city before someone blocks it.", "I'm keeping this area open for another tile."],
     },
+    jpPhraseTiers: {
+      beginner: ['これをここに置いています。', '自分の道を作っています。', '自分の都市を作っています。', 'このタイルをつなげています。', '点を取っています。'],
+      someExperience: ['このタイルをここに置いています。', '自分の道につなげています。', 'この都市を完成させようとしています。', 'あなたの草原を止めています。'],
+      experienced: ['得点の選択肢が二つできるので、このタイルをここに置いています。', '自分の道につなげながら、あなたの草原の価値を下げています。', '誰かに止められる前に、この都市を完成させようとしています。', '次のタイルのために、この場所を空けています。'],
+    },
     prompts: ['Why did you place it there?', 'What are you trying to finish?', 'Did you help yourself or block someone?'],
     jpPrompts: ['なぜそこに置きましたか？', '何を完成させようとしていますか？', '自分を助けましたか、誰かを止めましたか？'],
     silverFit: 'Good. Use fewer rules at first and focus on roads and cities.',
@@ -123,6 +143,11 @@ export const briefings: Briefing[] = [
       beginner: ["I'm taking tempura.", "I'm passing this.", "I'm waiting for one more.", "I'm keeping this card.", "I'm making sushi points."],
       someExperience: ["I'm passing this card.", "I'm looking for one more.", "I'm taking this for points.", "I'm guessing you want pudding."],
       experienced: ["I'm keeping this because it is working with my last card.", "I'm taking pudding because I think you want it.", "I'm saving this because it may score later.", "I'm passing this because it is not helping me now."],
+    },
+    jpPhraseTiers: {
+      beginner: ['天ぷらを取っています。', 'これを渡しています。', 'もう一枚を待っています。', 'このカードを残しています。', '寿司で点を作っています。'],
+      someExperience: ['このカードを渡しています。', 'もう一枚を探しています。', '点のためにこれを取っています。', 'あなたはプリンが欲しいと思っています。'],
+      experienced: ['前のカードと合うので、これを残しています。', 'あなたが欲しいと思うので、プリンを取っています。', '後で点になるかもしれないので、これを残しています。', '今は役に立たないので、これを渡しています。'],
     },
     prompts: ['What food do you want?', 'What card are you waiting for?', 'Can you predict another player?'],
     jpPrompts: ['どの食べ物が欲しいですか？', 'どのカードを待っていますか？', '他の人の狙いを予想できますか？'],
@@ -235,7 +260,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
                 <BriefingBlock icon={Brain} title={t.why} body={language === 'ja' ? briefing.jpWhy : briefing.why} />
                 <BriefingBlock icon={Sparkles} title={t.mission} body={language === 'ja' ? briefing.jpMission : briefing.mission} />
-                <PhraseTiers title={t.phrases} tiers={briefing.phraseTiers} language={language} compact />
+                <PhraseTiers title={t.phrases} tiers={language === 'ja' ? briefing.jpPhraseTiers : briefing.phraseTiers} language={language} compact />
                 <div className="grid gap-3 sm:grid-cols-3">
                   {(language === 'ja' ? briefing.jpPrompts : briefing.prompts).map((prompt) => (
                     <div key={prompt} className="rounded-xl border border-[#bde8c9] bg-[#f7fff8] p-4 text-xs leading-6 text-[#536456]">
@@ -329,7 +354,7 @@ export function BriefingDetail({ language, onNavigate, slug }: { language: Langu
 
           <aside className="space-y-5">
             <div className="reference-panel p-5">
-              <PhraseTiers title={t.phrases} tiers={briefing.phraseTiers} language={language} />
+              <PhraseTiers title={t.phrases} tiers={language === 'ja' ? briefing.jpPhraseTiers : briefing.phraseTiers} language={language} />
             </div>
             <div className="reference-panel border-[#ffbdce] bg-[#fff7fa] p-5">
               <h2 className="font-display text-2xl tracking-wide text-[#ef3d66]">{t.silver}</h2>
