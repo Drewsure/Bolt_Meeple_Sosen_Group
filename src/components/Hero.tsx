@@ -49,14 +49,14 @@ export function Hero({ onNavigate, language }: HeroProps) {
               <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-8 py-3">
                 <Sparkles size={13} /> {t.how} <ArrowRight size={13} />
               </button>
-              <button onClick={() => onNavigate('offers')} className="rule-button border-[#ff99b0] bg-[#fff5f8] px-8 py-3 text-[#ef3d66] hover:bg-[#ffeaf0]">
-                {language === 'ja' ? '参加・料金' : 'Join / Pricing'}
-              </button>
               <button onClick={() => onNavigate('games')} className="rule-button px-8 py-3">
                 {t.browse}
               </button>
               <button onClick={() => onNavigate('briefings')} className="rule-button px-8 py-3">
                 {language === 'ja' ? '週刊ブリーフィング' : 'Weekly Briefings'}
+              </button>
+              <button onClick={() => onNavigate('offers')} className="rule-button border-[#ff99b0] bg-[#fff5f8] px-8 py-3 text-[#ef3d66] hover:bg-[#ffeaf0]">
+                {language === 'ja' ? '参加・料金' : 'Join / Pricing'}
               </button>
             </div>
           </div>
