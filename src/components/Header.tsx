@@ -37,7 +37,7 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-[#efc779] bg-[#fffdfa]/95 backdrop-blur">
+    <header className="nav-glass fixed inset-x-0 top-0 z-40 border-b border-[#efc779]/80">
       <div className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between gap-4 px-5 md:px-8">
         <button onClick={() => select('home')} className="flex shrink-0 items-center gap-2 text-left">
           <Gamepad2 size={20} className="text-[#db771e]" />
@@ -48,7 +48,7 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
           </span>
         </button>
 
-        <nav className="hidden flex-1 items-center justify-end gap-3 md:flex">
+        <nav className="hidden flex-1 items-center justify-end gap-1.5 lg:flex xl:gap-3">
           {navigation.map(({ labelKey, label, section }) => {
             const isSilver = section === 'silver-circle';
             const isActive = activeSection === section;
@@ -57,10 +57,10 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
               <button
                 key={`${section}-${labelKey ?? navLabel}`}
                 onClick={() => select(section)}
-                className={`whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.06em] transition-colors xl:text-[12px] ${
+                className={`whitespace-nowrap rounded-full px-2.5 py-2 text-[11px] font-bold uppercase tracking-[0.06em] transition-all xl:text-[12px] ${
                   isSilver
-                    ? `rounded border border-[#ff99b0] bg-[#fff5f8] px-3 py-2 text-[#ef3d66] shadow-sm hover:bg-[#ffeaf0] ${isActive ? 'ring-1 ring-[#ef3d66]/30' : ''}`
-                    : isActive ? 'text-[#cf612d]' : 'text-[#514941] hover:text-[#cf612d]'
+                    ? `border border-[#ff99b0] bg-[#fff5f8] text-[#ef3d66] shadow-sm hover:bg-[#ffeaf0] ${isActive ? 'ring-1 ring-[#ef3d66]/30' : ''}`
+                    : isActive ? 'bg-[#fff4df] text-[#cf612d] shadow-sm' : 'text-[#514941] hover:bg-[#fff4df] hover:text-[#cf612d]'
                 }`}
               >
                 {navLabel}
@@ -69,16 +69,16 @@ export function Header({ currentSection, language, onNavigate, onToggleLanguage 
           })}
         </nav>
 
-        <button onClick={onToggleLanguage} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] md:inline-flex">
+        <button onClick={onToggleLanguage} className="absolute left-[112px] top-[38px] hidden items-center gap-2 rounded border border-[#e8a33e] px-3 py-1 text-[9px] font-bold text-[#d06720] lg:inline-flex">
           <Languages size={12} />
           {t.toggle}
         </button>
-        <button onClick={() => setOpen(!open)} className="text-[#cf612d] md:hidden" aria-label="Toggle navigation">
+        <button onClick={() => setOpen(!open)} className="text-[#cf612d] lg:hidden" aria-label="Toggle navigation">
           {open ? <X /> : <Menu />}
         </button>
       </div>
       {open && (
-        <nav className="grid gap-1 border-t border-[#efc779] bg-[#fffdf8] p-5 sm:grid-cols-2 md:hidden">
+        <nav className="grid gap-1 border-t border-[#efc779] bg-[#fffdf8] p-5 sm:grid-cols-2 lg:hidden">
           <button onClick={onToggleLanguage} className="border-b border-[#eadfce] px-2 py-3 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#d06720]">
             {t.toggle}
           </button>

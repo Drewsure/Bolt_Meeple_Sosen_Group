@@ -1,4 +1,4 @@
-import { ArrowRight, Brain, Gamepad2, Heart, Sparkles, TrendingUp, Users } from 'lucide-react';
+import { ArrowRight, Brain, Gamepad2, Heart, Sparkles, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Section } from '../App';
 import { getGames } from '../lib/games';
@@ -27,31 +27,61 @@ export function Hero({ onNavigate, language }: HeroProps) {
 
   return (
     <main className="page-shell relative overflow-hidden">
-      <span className="absolute left-[7%] top-40 h-2 w-2 rounded-full bg-[#eaa23e]" />
-      <span className="absolute right-[9%] top-72 h-4 w-4 rounded-full bg-[#edaf4c] blur-[1px]" />
-      <section className="container-shell flex flex-col items-center pb-9 pt-11 text-center">
-        <h1 className="compact-title">{t.title}</h1>
-        <Gamepad2 className="mt-5 text-[#e58921]" size={31} />
-        <p className="font-display mt-5 text-xl tracking-wide text-[#443d37]">{t.subtitle}</p>
-        <p className="mt-6 text-sm font-semibold text-[#c45a25]">{t.promise}</p>
-        <div className="mt-4 max-w-xl space-y-4 text-xs leading-6 text-[#675c50]">
-          <p>{t.body1}</p>
-          <p>{t.body2}</p>
-          <p>{t.body3}</p>
-        </div>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-8 py-3">
-            <Sparkles size={13} /> {t.how} <ArrowRight size={13} />
-          </button>
-          <button onClick={() => onNavigate('offers')} className="rounded border border-[#ff99b0] bg-[#fff5f8] px-8 py-3 text-xs font-bold uppercase text-[#ef3d66] shadow-sm hover:bg-[#ffeaf0]">
-            {language === 'ja' ? '参加・料金' : 'Join / Pricing'}
-          </button>
-          <button onClick={() => onNavigate('games')} className="rounded border border-[#e8a33e] bg-white px-8 py-3 text-xs font-bold uppercase text-[#d06720] shadow-sm hover:bg-[#fff6e6]">
-            {t.browse}
-          </button>
-          <button onClick={() => onNavigate('briefings')} className="rounded border border-[#e8a33e] bg-[#fffaf0] px-8 py-3 text-xs font-bold uppercase text-[#d06720] shadow-sm hover:bg-[#fff1d8]">
-            {language === 'ja' ? '週刊ブリーフィング' : 'Weekly Briefings'}
-          </button>
+      <span className="hero-orb left-[6%] top-36 h-3 w-3 bg-[#eaa23e]" />
+      <span className="hero-orb right-[10%] top-72 h-5 w-5 bg-[#edaf4c]" />
+      <span className="hero-orb left-[18%] top-[34rem] h-2 w-2 bg-[#ef6f43]" />
+
+      <section className="container-shell hero-stage pb-10 pt-12">
+        <div className="hero-card mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-[1fr_0.72fr] md:px-10 md:py-14 md:text-left">
+          <div className="relative z-10">
+            <p className="eyebrow justify-center md:justify-start">
+              {language === 'ja' ? '福岡・西区 英語ボードゲーム' : 'Fukuoka English Board Games'}
+            </p>
+            <h1 className="compact-title mt-4">{t.title}</h1>
+            <p className="font-display mt-5 text-2xl tracking-wide text-[#443d37]">{t.subtitle}</p>
+            <p className="mt-6 max-w-2xl text-sm font-semibold leading-7 text-[#c45a25]">{t.promise}</p>
+            <div className="mt-5 max-w-2xl space-y-4 text-sm leading-7 text-[#675c50]">
+              <p>{t.body1}</p>
+              <p>{t.body2}</p>
+              <p>{t.body3}</p>
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
+              <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-8 py-3">
+                <Sparkles size={13} /> {t.how} <ArrowRight size={13} />
+              </button>
+              <button onClick={() => onNavigate('offers')} className="rule-button border-[#ff99b0] bg-[#fff5f8] px-8 py-3 text-[#ef3d66] hover:bg-[#ffeaf0]">
+                {language === 'ja' ? '参加・料金' : 'Join / Pricing'}
+              </button>
+              <button onClick={() => onNavigate('games')} className="rule-button px-8 py-3">
+                {t.browse}
+              </button>
+              <button onClick={() => onNavigate('briefings')} className="rule-button px-8 py-3">
+                {language === 'ja' ? '週刊ブリーフィング' : 'Weekly Briefings'}
+              </button>
+            </div>
+          </div>
+
+          <aside className="relative z-10 mx-auto flex w-full max-w-sm flex-col justify-center gap-4">
+            <div className="soft-stat p-5">
+              <Gamepad2 className="text-[#e58921]" size={32} />
+              <p className="font-display mt-4 text-5xl leading-none text-[#c75a22]">{gameCount ?? '...'}</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-[#7b6b5b]">{common.games}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="soft-stat p-4">
+                <Brain className="text-[#2f7bc9]" size={23} />
+                <p className="mt-3 text-xs font-bold leading-5 text-[#3d332b]">{language === 'ja' ? '考えて話す' : 'Think + Speak'}</p>
+              </div>
+              <div className="soft-stat p-4">
+                <Heart className="text-[#ef3d66]" size={23} />
+                <p className="mt-3 text-xs font-bold leading-5 text-[#3d332b]">{language === 'ja' ? '安心の場' : 'Safe Table'}</p>
+              </div>
+            </div>
+            <div className="soft-stat p-5">
+              <p className="font-display text-2xl tracking-wide text-[#3d332b]">{t.simplePath}</p>
+              <p className="mt-2 text-xs leading-6 text-[#74685d]">{t.path}</p>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -61,7 +91,7 @@ export function Hero({ onNavigate, language }: HeroProps) {
             <Icon className="text-[#d56821]" size={28} />
             <span className="font-display absolute right-5 top-4 text-4xl text-[#f3d28b]">{number}</span>
             <h2 className="font-display mt-6 text-lg tracking-wide">{title}</h2>
-            <p className="mt-2 text-xs text-[#655c52]">{copy}</p>
+            <p className="mt-2 text-xs leading-6 text-[#655c52]">{copy}</p>
           </article>
         ))}
       </section>
@@ -86,10 +116,6 @@ export function Hero({ onNavigate, language }: HeroProps) {
           </div>
           <p className="px-8 py-12 text-center text-xs leading-6 text-[#7b7168]">{t.happensCopy}</p>
         </article>
-      </section>
-      <section className="reference-panel mx-auto mt-5 max-w-md overflow-hidden">
-        <div className="bg-[#e98b18] px-5 py-3 text-white"><TrendingUp className="mr-2 inline" size={14} /> <span className="font-display tracking-wide">{t.simplePath}</span></div>
-        <p className="px-8 py-9 text-center text-xs leading-6 text-[#948878]">{t.path}</p>
       </section>
     </main>
   );
