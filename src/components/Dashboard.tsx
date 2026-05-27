@@ -1,183 +1,154 @@
+import { Award, Crown, Lightbulb, Shield, Swords, Target, TrendingUp, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Trophy, Calendar, Target, TrendingUp, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase, Session } from '../lib/supabase';
-import { getTranslation } from '../lib/i18n';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
+import { loadSessionProgress } from '../lib/sessionProgress';
+import type { SessionProgressRecord } from '../lib/sessionProgress';
 
-export function Dashboard() {
-  const { profile, signOut, language } = useAuth();
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(true);
+const badges = [
+  { icon: Swords, name: 'Master Negotiator', detail: 'Submitted tips for Negotiation Challenges' },
+  { icon: TrendingUp, name: 'Industrial Tycoon', detail: 'Submitted tips for Trade & Economic Challenges' },
+  { icon: Swords, name: 'Strategic Commander', detail: 'Submitted tips for Leadership Challenges' },
+  { icon: Lightbulb, name: 'Linguistic Architect', detail: 'Submitted tips for Formal Writing Challenges' },
+  { icon: Users, name: 'Grand Diplomat', detail: 'Submitted tips for Diplomacy Challenges' },
+  { icon: Target, name: 'Silver Tongue', detail: 'Submitted tips with Persuasion focus' },
+  { icon: Shield, name: 'Guild Pioneer', detail: 'First tip ever submitted' },
+  { icon: Crown, name: 'Master Strategist', detail: 'Completed a Master-level challenge' },
+];
+
+const dashboardTranslations = {
+  en: {
+    stats: ['Challenges Done', 'Tips Submitted', 'Votes Earned', 'Badges Earned'],
+    ranks: ['Recruit', 'Strategist', 'Operative', 'Commander', 'Grand Master'],
+    nextRank: 'Next: Strategist (5 XP to go)',
+    earned: 'earned',
+    emptyProgress: 'Use How It Works to pick a focus, use a conversation card, and save one session note.',
+    conversationCard: 'Conversation Card',
+    badges,
+  },
+  ja: {
+    stats: ['完了したチャレンジ', '投稿したヒント', '獲得した票', '獲得バッジ'],
+    ranks: ['リクルート', 'ストラテジスト', 'オペレーター', 'コマンダー', 'グランドマスター'],
+    nextRank: '次: ストラテジスト（あと5 XP）',
+    earned: '獲得',
+    emptyProgress: '使い方ページでフォーカスを選び、会話カードを使い、セッション記録を一つ保存してください。',
+    conversationCard: '会話カード',
+    badges: [
+      { name: '交渉マスター', detail: '交渉チャレンジのヒントを投稿' },
+      { name: '産業戦略家', detail: '取引・経済チャレンジのヒントを投稿' },
+      { name: '戦略コマンダー', detail: 'リーダーシップチャレンジのヒントを投稿' },
+      { name: '言語設計者', detail: 'フォーマルライティングのヒントを投稿' },
+      { name: '外交名人', detail: '外交チャレンジのヒントを投稿' },
+      { name: '説得の達人', detail: '説得フォーカスのヒントを投稿' },
+      { name: 'ギルド開拓者', detail: '最初のヒントを投稿' },
+      { name: 'マスター戦略家', detail: 'マスターレベルのチャレンジを完了' },
+    ],
+  },
+} as const;
+
+export function Dashboard({ onJoin: _onJoin, language }: { onJoin: () => void; language: Language }) {
+  const { profile, user } = useAuth();
+  const [sessionRecords, setSessionRecords] = useState<SessionProgressRecord[]>([]);
+  const name = profile?.display_name || (user ? 'Guild Member' : 'Preview Member');
+  const email = user?.email || 'Sign in to view member details';
+  const t = ui[language].profile;
+  const common = ui[language].common;
+  const local = dashboardTranslations[language];
+  const sessionsCompleted = sessionRecords.length;
+  const uniqueGames = new Set(sessionRecords.map((record) => record.gameTitle)).size;
+  const usefulPhrases = sessionRecords.filter((record) => record.usefulPhrase.trim()).length;
+  const calculatedXp = sessionsCompleted * 10 + usefulPhrases * 5 + uniqueGames * 5;
+  const xp = Math.max(profile?.xp_points || 0, calculatedXp);
+  const nextRankTarget = xp >= 100 ? 200 : xp >= 50 ? 100 : 50;
+  const rankIndex = xp >= 200 ? 4 : xp >= 100 ? 3 : xp >= 50 ? 2 : xp >= 20 ? 1 : 0;
+  const progressPercent = Math.min(100, Math.round((xp / nextRankTarget) * 100));
+  const earnedBadgeCount = [
+    sessionsCompleted >= 1,
+    sessionsCompleted >= 3,
+    uniqueGames >= 3,
+    usefulPhrases >= 5,
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('suggest') || record.focusTitle.toLowerCase().includes('negotiate')),
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('explain')),
+    sessionRecords.some((record) => record.focusTitle.toLowerCase().includes('review')),
+    sessionsCompleted >= 10,
+  ].filter(Boolean).length;
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      if (!profile) return;
-
-      const { data, error } = await supabase
-        .from('sessions')
-        .select('*')
-        .eq('member_id', profile.id)
-        .order('session_date', { ascending: false })
-        .limit(5);
-
-      if (!error && data) {
-        setSessions(data as Session[]);
-      }
-      setLoading(false);
-    };
-
-    fetchSessions();
-  }, [profile]);
-
-  if (!profile) return null;
-
-  const rankProgress = (profile.xp_points % 1000) / 10;
-  const nextRank = getNextRank(profile.rank);
+    setSessionRecords(loadSessionProgress());
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-5xl font-bebas text-white tracking-widest mb-2">
-              {language === 'ja' ? 'コマンドセンター' : 'COMMAND CENTER'}
-            </h1>
-            <p className="text-slate-400">{language === 'ja' ? 'おかえりなさい、リード・ストラテジスト' : 'Welcome back, Lead Strategist'} {profile.display_name}</p>
-          </div>
-          <button
-            onClick={signOut}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700 text-slate-300 hover:border-amber-500 transition-all duration-300"
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="font-bebas tracking-wider">{language === 'ja' ? '終了' : 'EXIT'}</span>
-          </button>
+    <main className="page-shell bg-[radial-gradient(circle_at_center,#fff7e7,#fbf7ef)]">
+      <div className="mx-auto max-w-5xl px-5 py-10 md:px-8">
+        <h1 className="font-display text-3xl tracking-wide">{name}</h1>
+        <p className="mt-1 text-xs text-[#71675c]">{email}</p>
+        <span className="mt-2 inline-flex rounded border border-[#ebbd66] bg-[#fff4d5] px-2 py-1 text-[10px] font-bold text-[#d16a21]">{user ? 'Member' : 'Preview'}</span>
+        <div className="mt-9 grid gap-4 sm:grid-cols-4">
+          {[Swords, Lightbulb, TrendingUp, Target].map((Icon, index) => {
+            const label = local.stats[index];
+            const values = [sessionsCompleted, usefulPhrases, uniqueGames, earnedBadgeCount];
+            return (
+            <article key={label} className="reference-panel py-6 text-center"><Icon className="mx-auto text-[#d46a20]" size={21} /><p className="font-display mt-2 text-2xl">{values[index]}</p><p className="text-[10px] text-[#746b61]">{label}</p></article>
+            );
+          })}
         </div>
-
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="relative bg-slate-800/30 backdrop-blur-md border border-slate-700/50 p-6 rounded-lg overflow-hidden group hover:border-amber-500/50 transition-all duration-300">
-            <div className="scanline"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <Trophy className="w-8 h-8 text-amber-500" />
-                <span className="text-xs font-bebas text-slate-500 tracking-widest">{language === 'ja' ? 'ランク' : 'RANK'}</span>
-              </div>
-              <div className="text-3xl font-bebas text-white tracking-wide mb-2">
-                {profile.rank}
-              </div>
-              <div className="text-sm text-slate-400">
-                {profile.xp_points.toLocaleString()} XP
-              </div>
-            </div>
-          </div>
-
-          <div className="relative bg-slate-800/30 backdrop-blur-md border border-slate-700/50 p-6 rounded-lg overflow-hidden group hover:border-amber-500/50 transition-all duration-300">
-            <div className="scanline"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <Calendar className="w-8 h-8 text-amber-500" />
-                <span className="text-xs font-bebas text-slate-500 tracking-widest">{language === 'ja' ? 'セッション' : 'SESSIONS'}</span>
-              </div>
-              <div className="text-3xl font-bebas text-white tracking-wide mb-2">
-                {profile.total_sessions}
-              </div>
-              <div className="text-sm text-slate-400">{language === 'ja' ? '完了したシミュレーション' : 'Completed Simulations'}</div>
-            </div>
-          </div>
-
-          <div className="relative bg-slate-800/30 backdrop-blur-md border border-slate-700/50 p-6 rounded-lg overflow-hidden group hover:border-amber-500/50 transition-all duration-300">
-            <div className="scanline"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <Target className="w-8 h-8 text-amber-500" />
-                <span className="text-xs font-bebas text-slate-500 tracking-widest">{language === 'ja' ? 'ステータス' : 'STATUS'}</span>
-              </div>
-              <div className="text-3xl font-bebas text-white tracking-wide mb-2">{language === 'ja' ? 'アクティブ' : 'ACTIVE'}</div>
-              <div className="text-sm text-slate-400">{language === 'ja' ? '稼働中' : 'Operational'}</div>
-            </div>
-          </div>
+        <h2 className="font-display mt-10 text-2xl tracking-wide">{t.growth}</h2>
+        <section className="reference-panel mt-4 p-7">
+          <div className="flex justify-between"><div><p className="text-[10px] text-[#82766b]">{t.currentRank}</p><p className="font-display text-3xl text-[#d06122]">{local.ranks[rankIndex]}</p></div><div className="text-right"><p className="text-[10px] text-[#82766b]">{t.totalPoints}</p><p className="font-display text-3xl">{xp} XP</p></div></div>
+          <div className="mt-6 h-4 rounded-full border border-[#dedad4] bg-white"><div className="h-full rounded-full bg-[#d56a22]" style={{ width: `${progressPercent}%` }} /></div>
+          <p className="mt-3 text-right text-[10px] font-bold text-[#e07521]">{xp >= 200 ? 'Grand Master progress is active' : `${Math.max(nextRankTarget - xp, 0)} XP to next rank`}</p>
+          <div className="mt-5 grid grid-cols-5 gap-2 text-center font-display text-[10px] text-[#a29a91]">{local.ranks.map((rank, index) => <span key={rank} className={`border-t-4 pt-2 ${index <= rankIndex ? 'border-[#d56a22] text-[#554b42]' : 'border-[#dedad5]'}`}>{rank}</span>)}</div>
+        </section>
+        <div className="mt-10 flex justify-between"><h2 className="font-display text-2xl tracking-wide">{t.badges}</h2><span className="text-xs text-[#776e63]">{earnedBadgeCount} / 8 {local.earned}</span></div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-4">
+          {badges.map(({ icon: Icon }, index) => {
+            const earned = index < earnedBadgeCount;
+            return (
+              <article key={local.badges[index].name} className={`rounded-xl border p-5 text-center ${earned ? 'border-[#efc779] bg-[#fff7e7] text-[#d46a20]' : 'border-[#e1ded7] bg-[#f8f7f4] text-[#989997]'}`}><Icon className="mx-auto" size={30} /><h3 className="font-display mt-4 text-sm text-[#36312d]">{local.badges[index].name}</h3><p className="mt-2 text-[10px] leading-4">{local.badges[index].detail}</p></article>
+            );
+          })}
         </div>
-
-        <div className="bg-slate-800/30 backdrop-blur-md border border-slate-700/50 p-8 rounded-lg mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-2xl font-bebas text-white tracking-wide mb-1">
-                {language === 'ja' ? 'ランク進行' : 'RANK PROGRESSION'}
-              </h3>
-              <p className="text-sm text-slate-400">
-                {nextRank ? (language === 'ja' ? `次: ${nextRank}` : `Next: ${nextRank}`) : (language === 'ja' ? '最高ランク達成' : 'Maximum Rank Achieved')}
-              </p>
-            </div>
-            <TrendingUp className="w-8 h-8 text-amber-500" />
-          </div>
-
-          <div className="relative">
-            <div className="h-4 bg-slate-900/50 rounded-full overflow-hidden border border-slate-700">
-              <div
-                className="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-1000 relative overflow-hidden"
-                style={{ width: `${rankProgress}%` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-              </div>
-            </div>
-            <div className="flex justify-between mt-2 text-xs text-slate-500">
-              <span>0 XP</span>
-              <span className="text-amber-500 font-bebas">{rankProgress.toFixed(1)}%</span>
-              <span>1000 XP</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-slate-800/30 backdrop-blur-md border border-slate-700/50 p-8 rounded-lg">
-          <h3 className="text-2xl font-bebas text-white tracking-wide mb-6">
-            {language === 'ja' ? '最近のセッション' : 'RECENT SESSIONS'}
-          </h3>
-
-          {loading ? (
-            <div className="text-center text-slate-400 py-8">{language === 'ja' ? 'セッションを読み込み中...' : 'Loading sessions...'}</div>
-          ) : sessions.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-slate-400 mb-4">{language === 'ja' ? 'まだセッションが記録されていません' : 'No sessions recorded yet'}</p>
-              <button
-                className="px-8 py-3 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-900 font-bebas text-xl tracking-widest hover:scale-105 transition-transform"
-                style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-              >
-                {language === 'ja' ? '最初のセッションをスケジュール' : 'SCHEDULE FIRST SESSION'}
-              </button>
+        <h2 className="font-display mt-10 text-2xl tracking-wide">{common.profileProgress}</h2>
+        <section className="reference-panel mt-4 overflow-hidden">
+          {sessionRecords.length === 0 ? (
+            <div className="py-12 text-center">
+              <Award className="mx-auto text-[#f0c457]" size={42} />
+              <h3 className="font-display mt-4 text-lg text-[#71685e]">{common.noSessionNotes}</h3>
+              <p className="mt-2 text-xs text-[#92897f]">{local.emptyProgress}</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {sessions.map((session) => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-4 bg-slate-900/30 border border-slate-700/30 rounded-lg hover:border-amber-500/30 transition-all"
-                >
-                  <div>
-                    <div className="font-bebas text-lg text-white tracking-wide">
-                      {session.game_title}
+            <div className="divide-y divide-[#f3dfba]">
+              {sessionRecords.map((record) => (
+                <article key={record.id} className="p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-display text-xl tracking-wide text-[#bd5c24]">{record.gameTitle}</p>
+                      <p className="mt-1 text-xs text-[#776d62]">{new Date(record.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <div className="text-sm text-slate-400">
-                      {new Date(session.session_date).toLocaleDateString()}
+                    <span className="rounded-full border border-[#bde8c9] bg-[#f7fff8] px-3 py-1 text-[10px] font-bold uppercase text-[#2e7c44]">{record.focusTitle}</span>
+                  </div>
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    <div className="rounded border border-[#efd39d] bg-[#fffaf0] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#8a7563]">{local.conversationCard}</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.conversationCard}</p>
+                    </div>
+                    <div className="rounded border border-[#b9d2fb] bg-[#f7fbff] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#506d9a]">{common.usefulPhrase}</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.usefulPhrase}</p>
+                    </div>
+                    <div className="rounded border border-[#ead4fa] bg-[#fdf8ff] p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#75518e]">{common.nextTime}</p>
+                      <p className="mt-1 text-sm text-[#453b34]">{record.nextTime}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-amber-500 font-bebas text-xl">
-                      +{session.xp_earned} XP
-                    </div>
-                    <div className="text-xs text-slate-500 uppercase">{language === 'ja' && session.status === 'completed' ? '完了' : language === 'ja' && session.status === 'pending' ? '保留中' : session.status}</div>
-                  </div>
-                </div>
+                  <p className="mt-4 text-sm leading-6 text-[#62584f]">{record.whatHappened}</p>
+                </article>
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
-}
-
-function getNextRank(currentRank: string): string | null {
-  const ranks = ['Initiate', 'Regional Director', 'Vice Chairman', 'Chairman', 'Grand Master'];
-  const currentIndex = ranks.indexOf(currentRank);
-  return currentIndex < ranks.length - 1 ? ranks[currentIndex + 1] : null;
 }

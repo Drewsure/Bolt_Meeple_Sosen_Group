@@ -1,68 +1,106 @@
-import { useState, useEffect } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useEffect, useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { SituationRoom } from './components/SituationRoom';
-import { Armory } from './components/Armory';
 import { Reserves } from './components/Reserves';
 import { Dossier } from './components/Dossier';
 import { Leaderboard } from './components/Leaderboard';
-import { LOKVault } from './components/LOKVault';
 import { Dashboard } from './components/Dashboard';
+import { SilverCircle } from './components/SilverCircle';
+import { ImageAdmin } from './components/ImageAdmin';
 import { AuthModal } from './components/AuthModal';
+import { Board } from './components/Board';
+import { Seo } from './components/Seo';
+import { BriefingDetail, Briefings } from './components/Briefings';
+import { Offers } from './components/Offers';
+import { Partnerships } from './components/Partnerships';
+import { TablePlayDevice } from './components/TablePlayDevice';
+import type { Language } from './lib/i18n';
 
-type Section = 'home' | 'situation' | 'armory' | 'reserves' | 'dossier' | 'leaderboard' | 'lok' | 'dashboard';
+export type Section =
+  | 'home'
+  | 'situation'
+  | 'armory'
+  | 'games'
+  | 'briefings'
+  | 'offers'
+  | 'partnerships'
+  | 'play'
+  | 'briefing-detail'
+  | 'dossier'
+  | 'board'
+  | 'challenges'
+  | 'ranking'
+  | 'profile'
+  | 'silver-circle'
+  | 'admin-images';
+
+const sectionFromHash = (): Section => {
+  const hash = window.location.hash.replace('#', '');
+  const route = hash.split('?')[0] as Section;
+  if (route.startsWith('briefings/')) return 'briefing-detail';
+  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'offers', 'partnerships', 'play', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  return valid.includes(route) ? route : 'home';
+};
 
 function AppContent() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState<Section>('home');
-  const { user, loading } = useAuth();
+  const [section, setSection] = useState<Section>(sectionFromHash);
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = window.localStorage.getItem('msg-language');
+    return saved === 'ja' || saved === 'en' ? saved : 'en';
+  });
 
-  const handleNavigate = (section: Section) => {
-    setCurrentSection(section);
+  useEffect(() => {
+    const syncHash = () => setSection(sectionFromHash());
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
+
+  const navigate = (next: Section) => {
+    window.location.hash = next;
+    setSection(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleInitialize = () => {
-    if (user) {
-      setCurrentSection('dashboard');
-    } else {
-      setAuthModalOpen(true);
-    }
+  const toggleLanguage = () => {
+    setLanguage((current) => {
+      const next = current === 'en' ? 'ja' : 'en';
+      window.localStorage.setItem('msg-language', next);
+      return next;
+    });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white font-bebas text-3xl tracking-widest">INITIALIZING...</div>
-      </div>
-    );
-  }
+  const briefingSlug = window.location.hash.replace('#briefings/', '').split('?')[0];
 
   return (
     <div>
-      <Header onAuthClick={() => setAuthModalOpen(true)} onNavigate={handleNavigate} />
-
-      {currentSection === 'home' && <Hero onInitialize={handleInitialize} />}
-      {currentSection === 'situation' && <SituationRoom onInitialize={handleInitialize} />}
-      {currentSection === 'armory' && <Armory />}
-      {currentSection === 'reserves' && <Reserves />}
-      {currentSection === 'dossier' && <Dossier />}
-      {currentSection === 'leaderboard' && <Leaderboard />}
-      {currentSection === 'lok' && user && <LOKVault />}
-      {currentSection === 'dashboard' && user && <Dashboard />}
-
+      <Seo section={section} language={language} />
+      <Header onNavigate={navigate} currentSection={section} language={language} onToggleLanguage={toggleLanguage} />
+      {section === 'home' && <Hero onNavigate={navigate} language={language} />}
+      {section === 'situation' && <SituationRoom onNavigate={navigate} language={language} />}
+      {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} language={language} />}
+      {section === 'games' && <Reserves language={language} />}
+      {section === 'briefings' && <Briefings language={language} onNavigate={navigate} />}
+      {section === 'offers' && <Offers language={language} onNavigate={navigate} />}
+      {section === 'partnerships' && <Partnerships language={language} />}
+      {section === 'play' && <TablePlayDevice language={language} onNavigate={navigate} />}
+      {section === 'briefing-detail' && <BriefingDetail language={language} onNavigate={navigate} slug={briefingSlug} />}
+      {section === 'dossier' && <Dossier language={language} />}
+      {section === 'ranking' && <Leaderboard onNavigate={navigate} language={language} />}
+      {section === 'profile' && <Dashboard onJoin={() => setAuthModalOpen(true)} language={language} />}
+      {section === 'silver-circle' && <SilverCircle onNavigate={navigate} language={language} />}
+      {section === 'admin-images' && <ImageAdmin />}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
       <AppContent />
     </AuthProvider>
   );
 }
-
-export default App;

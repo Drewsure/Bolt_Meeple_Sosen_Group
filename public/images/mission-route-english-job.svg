@@ -1,0 +1,17 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" fill="#EEF6FF"/>
+  <circle cx="124" cy="432" r="120" fill="#4B86D9" fill-opacity=".15"/>
+  <circle cx="770" cy="88" r="156" fill="#ED941D" fill-opacity=".15"/>
+  <rect x="70" y="104" width="760" height="330" rx="42" fill="#FFFDF8" stroke="#4B86D9" stroke-width="4"/>
+  <rect x="132" y="174" width="270" height="188" rx="22" fill="#FFF4DD" stroke="#D8892A" stroke-width="4"/>
+  <path d="M164 224h204M164 268h152M164 312h184" stroke="#C95D24" stroke-width="12" stroke-linecap="round"/>
+  <path d="M456 268h164" stroke="#4B86D9" stroke-width="14" stroke-linecap="round"/>
+  <path d="M592 226l74 42-74 42" stroke="#4B86D9" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="682" y="178" width="84" height="84" rx="20" fill="#2F251E"/>
+  <path d="M706 222h36M724 204v36" stroke="#FFE3AD" stroke-width="8" stroke-linecap="round"/>
+  <rect x="682" y="286" width="84" height="84" rx="20" fill="#ED941D"/>
+  <path d="M706 328h36" stroke="#FFFDF8" stroke-width="8" stroke-linecap="round"/>
+  <text x="88" y="76" fill="#366EB4" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2">STEP 02</text>
+  <text x="392" y="76" fill="#2F251E" font-family="Arial, sans-serif" font-size="44" font-weight="900" letter-spacing="1">GIVE IT AN ENGLISH JOB</text>
+  <text x="132" y="408" fill="#5F6670" font-family="Arial, sans-serif" font-size="24" font-weight="700">Turn the game into one speaking objective: explain, persuade, negotiate, or report.</text>
+</svg>

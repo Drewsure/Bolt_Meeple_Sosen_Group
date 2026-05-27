@@ -1,0 +1,18 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" fill="#F2FFF4"/>
+  <circle cx="160" cy="110" r="130" fill="#49B866" fill-opacity=".16"/>
+  <circle cx="760" cy="390" r="150" fill="#ED941D" fill-opacity=".14"/>
+  <rect x="78" y="98" width="744" height="338" rx="46" fill="#FFFDF8" stroke="#49B866" stroke-width="4"/>
+  <path d="M148 350c44-80 112-120 202-120s158 40 202 120" stroke="#D8892A" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="238" cy="202" r="46" fill="#ED941D"/>
+  <circle cx="450" cy="184" r="46" fill="#4B86D9"/>
+  <circle cx="662" cy="202" r="46" fill="#49B866"/>
+  <path d="M238 248v56M450 230v74M662 248v56" stroke="#2F251E" stroke-width="12" stroke-linecap="round"/>
+  <rect x="298" y="292" width="304" height="70" rx="18" fill="#2F251E"/>
+  <path d="M330 327h240" stroke="#FFE3AD" stroke-width="12" stroke-linecap="round"/>
+  <path d="M586 327h20" stroke="#49D178" stroke-width="12" stroke-linecap="round"/>
+  <path d="M146 150l34 34 64-70" stroke="#49B866" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="90" y="72" fill="#2E7C44" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2">STEP 03</text>
+  <text x="428" y="72" fill="#2F251E" font-family="Arial, sans-serif" font-size="44" font-weight="900" letter-spacing="1">PLAY THE CHALLENGE</text>
+  <text x="132" y="408" fill="#536456" font-family="Arial, sans-serif" font-size="24" font-weight="700">The table pressure creates real speaking: choices, reasons, warnings, and deals.</text>
+</svg>

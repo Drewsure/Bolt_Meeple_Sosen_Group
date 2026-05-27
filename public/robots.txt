@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://drewsure.github.io/Bolt_Meeple_Sosen_Group/sitemap.xml
