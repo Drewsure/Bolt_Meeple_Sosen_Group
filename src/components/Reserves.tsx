@@ -177,10 +177,20 @@ function getBriefingForGame(game: Game) {
   return briefings.find((briefing) => normalizedGameTitle.includes(normalizeTitle(briefing.gameTitle)));
 }
 
+function queryFromHash() {
+  if (typeof window === 'undefined') return '';
+  const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+  return params.get('q') || '';
+}
+
+function gameCardKey(game: Game) {
+  return `${game.id}-${game.bgg_id ?? 'no-bgg'}-${game.title}`;
+}
+
 export function Reserves({ language }: { language: Language }) {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(queryFromHash);
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const t = ui[language].games;
@@ -196,17 +206,21 @@ export function Reserves({ language }: { language: Language }) {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
-    const requestedQuery = params.get('q');
-    if (requestedQuery) {
-      setQuery(requestedQuery);
-    }
-
     const loadGames = () => {
       getGames().then(setGames).finally(() => setLoading(false));
     };
     loadGames();
     return subscribeToPreviewGameUpdates(loadGames);
+  }, []);
+
+  useEffect(() => {
+    const syncHashQuery = () => {
+      if (window.location.hash.startsWith('#games')) {
+        setQuery(queryFromHash());
+      }
+    };
+    window.addEventListener('hashchange', syncHashQuery);
+    return () => window.removeEventListener('hashchange', syncHashQuery);
   }, []);
 
   const filtered = useMemo(() => games.filter((game) => {
@@ -277,7 +291,7 @@ export function Reserves({ language }: { language: Language }) {
           {filtered.map((game) => {
             const linkedBriefing = getBriefingForGame(game);
             return (
-            <button key={game.id} type="button" onClick={() => setSelectedGame(game)} className="tactical-card overflow-hidden text-left transition hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#e28a24]">
+            <button key={gameCardKey(game)} type="button" onClick={() => setSelectedGame(game)} className="tactical-card overflow-hidden text-left transition hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#e28a24]">
               <div className="relative h-32 bg-[#fff0ce]">
                 {game.cover_image_url ? <img src={game.cover_image_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center px-4 text-center font-display text-3xl text-[#ae6d3f]">{game.title}</div>}
                 <span className="pill pill-blue absolute left-2 top-2">{game.complexity_level || 'Beginner'}</span>
