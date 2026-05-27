@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Brain, CalendarDays, Download, MessageCircle, Search, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, Brain, CalendarDays, Download, MessageCircle, Printer, Search, Sparkles, Users } from 'lucide-react';
 import type { Section } from '../App';
 import type { Language } from '../lib/i18n';
 
@@ -17,6 +17,7 @@ export type Briefing = {
   jpWhy: string;
   mission: string;
   jpMission: string;
+  simpleRules: string[];
   phraseTiers: {
     beginner: string[];
     someExperience: string[];
@@ -49,6 +50,13 @@ export const briefings: Briefing[] = [
     jpWhy: '予想する、反応する、考えを変える理由が自然に生まれます。短い英語表現にとても向いています。',
     mission: 'Before placing a bet, say one prediction and one reason.',
     jpMission: '賭ける前に、予想と理由を一つずつ言う。',
+    simpleRules: [
+      'Camels race around the track.',
+      'On your turn, choose one action: roll a camel, place a desert/oasis tile, or take a betting ticket.',
+      'Camels can stack. If a camel moves, the camels on top move with it.',
+      'You score points for good race predictions.',
+      'The game ends when one camel crosses the finish line.',
+    ],
     phraseTiers: {
       beginner: ["I'm choosing blue.", "I'm watching red.", "I'm betting on blue.", "I'm hoping blue wins.", "I'm surprised!"],
       someExperience: ["I'm thinking blue is winning.", "I'm watching red fall behind.", "I'm changing my mind now.", "I'm taking a safer bet."],
@@ -79,6 +87,13 @@ export const briefings: Briefing[] = [
     jpWhy: '色、模様、無駄を避ける、簡単な作戦を説明する英語が自然に出てきます。',
     mission: 'Explain your tile choice using color, pattern, and one risk.',
     jpMission: '色、模様、リスクを使って、選んだ理由を説明する。',
+    simpleRules: [
+      'Choose tiles from one factory or from the middle.',
+      'Place all tiles of one color onto one pattern row.',
+      'Extra tiles go to the floor line and may lose points.',
+      'When a row is full, move one tile to your wall and score it.',
+      'The game ends when someone completes a horizontal row on their wall.',
+    ],
     phraseTiers: {
       beginner: ["I'm taking blue.", "I'm choosing red.", "I'm filling this row.", "I'm avoiding waste.", "I'm building my wall."],
       someExperience: ["I'm taking this color because I need it.", "I'm finishing this row.", "I'm avoiding extra tiles.", "I'm improving my pattern."],
@@ -109,6 +124,13 @@ export const briefings: Briefing[] = [
     jpWhy: 'タイルを置くたびに、場所、理由、つなげる、止める、完成させる表現が使えます。',
     mission: 'When placing a tile, say where it goes and why it helps.',
     jpMission: 'タイルを置く時に、どこに置くか、なぜ役に立つかを言う。',
+    simpleRules: [
+      'Draw one land tile and place it next to matching land.',
+      'Roads connect to roads, cities connect to cities, and fields connect to fields.',
+      'You may place one meeple on the tile you just placed.',
+      'Score points when a road, city, or monastery is completed.',
+      'The game ends when all tiles are placed.',
+    ],
     phraseTiers: {
       beginner: ["I'm placing this here.", "I'm making my road.", "I'm building my city.", "I'm connecting this tile.", "I'm getting points."],
       someExperience: ["I'm placing this tile here.", "I'm connecting it to my road.", "I'm trying to finish this city.", "I'm blocking your farm."],
@@ -139,6 +161,13 @@ export const briefings: Briefing[] = [
     jpWhy: '食べ物、好き嫌い、短い反応、予想の英語にぴったりです。',
     mission: 'Say what you want, what you pass, and one reason.',
     jpMission: '欲しいカード、渡すカード、理由を一つ言う。',
+    simpleRules: [
+      'Each player chooses one card from their hand.',
+      'Reveal the chosen cards at the same time.',
+      'Pass the remaining cards to the next player.',
+      'Collect sets and combinations to score points.',
+      'After three rounds, the highest score wins.',
+    ],
     phraseTiers: {
       beginner: ["I'm taking tempura.", "I'm passing this.", "I'm waiting for one more.", "I'm keeping this card.", "I'm making sushi points."],
       someExperience: ["I'm passing this card.", "I'm looking for one more.", "I'm taking this for points.", "I'm guessing you want pudding."],
@@ -175,6 +204,7 @@ const pageCopy = {
     mission: 'Table Mission',
     phrases: 'Useful Phrases',
     prompts: 'Conversation Prompts',
+    rules: 'Simple English Rules',
     silver: 'Silver Circle Fit',
     read: 'Open Briefing',
     cta: 'Use These In A Session',
@@ -197,6 +227,7 @@ const pageCopy = {
     mission: 'テーブルミッション',
     phrases: '使えるフレーズ',
     prompts: '会話プロンプト',
+    rules: 'Simple English Rules',
     silver: 'シルバーサークル適性',
     read: 'ブリーフィングを見る',
     cta: 'セッションで使う',
@@ -260,6 +291,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
                 <BriefingBlock icon={Brain} title={t.why} body={language === 'ja' ? briefing.jpWhy : briefing.why} />
                 <BriefingBlock icon={Sparkles} title={t.mission} body={language === 'ja' ? briefing.jpMission : briefing.mission} />
+                <SimpleRules title={t.rules} rules={briefing.simpleRules} compact />
                 <PhraseTiers title={t.phrases} tiers={language === 'ja' ? briefing.jpPhraseTiers : briefing.phraseTiers} language={language} compact />
                 <div className="grid gap-3 sm:grid-cols-3">
                   {(language === 'ja' ? briefing.jpPrompts : briefing.prompts).map((prompt) => (
@@ -301,6 +333,9 @@ export function BriefingDetail({ language, onNavigate: _onNavigate, slug }: { la
   const openPlay = () => {
     window.location.hash = `play?briefing=${encodeURIComponent(briefing.slug)}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const printBriefing = () => {
+    window.print();
   };
 
   return (
@@ -344,6 +379,7 @@ export function BriefingDetail({ language, onNavigate: _onNavigate, slug }: { la
             <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
             <BriefingBlock icon={Brain} title={t.why} body={language === 'ja' ? briefing.jpWhy : briefing.why} />
             <BriefingBlock icon={Sparkles} title={t.mission} body={language === 'ja' ? briefing.jpMission : briefing.mission} />
+            <SimpleRules title={t.rules} rules={briefing.simpleRules} />
             <div className="reference-panel p-5">
               <h2 className="font-display text-2xl tracking-wide text-[#bd5c24]">{t.prompts}</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-3">
@@ -378,6 +414,9 @@ export function BriefingDetail({ language, onNavigate: _onNavigate, slug }: { la
             <button onClick={openPlay} className="rule-button rule-button-primary w-full justify-center py-3">
               <ArrowRight size={14} /> {t.cta}
             </button>
+            <button onClick={printBriefing} className="rule-button w-full justify-center py-3">
+              <Printer size={14} /> Print Briefing
+            </button>
             <button onClick={openGame} className="rule-button w-full justify-center py-3">
               <Search size={14} /> {language === 'ja' ? 'ゲームカードを見る' : 'View Linked Game Card'}
             </button>
@@ -393,6 +432,22 @@ function BriefingBlock({ icon: Icon, title, body }: { icon: typeof BookOpen; tit
     <div className="rounded-xl border border-[#efd39d] bg-white p-4">
       <h3 className="flex items-center gap-2 font-display text-xl tracking-wide text-[#3d332b]"><Icon className="text-[#d87522]" size={17} />{title}</h3>
       <p className="mt-2 text-sm leading-7 text-[#62584f]">{body}</p>
+    </div>
+  );
+}
+
+function SimpleRules({ compact = false, rules, title }: { compact?: boolean; rules: string[]; title: string }) {
+  return (
+    <div className="rounded-xl border border-[#b9d2fb] bg-[#f7fbff] p-4">
+      <h3 className="flex items-center gap-2 font-display text-xl tracking-wide text-[#366eb4]"><BookOpen size={17} />{title}</h3>
+      <ol className={`mt-3 grid gap-2 ${compact ? '' : 'md:grid-cols-1'}`}>
+        {rules.map((rule, index) => (
+          <li key={rule} className="rounded-lg border border-[#d7e5fb] bg-white px-3 py-2 text-sm leading-6 text-[#4d5f75]">
+            <span className="mr-2 font-display text-[#366eb4]">{index + 1}</span>
+            {rule}
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

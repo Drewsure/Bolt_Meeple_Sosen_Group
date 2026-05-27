@@ -9,6 +9,13 @@ import { saveSessionProgressRecord } from '../lib/sessionProgress';
 import type { Game } from '../types/database';
 import { briefings } from './Briefings';
 
+const escapeHtml = (value: string) => value
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;');
+
 const normalizeTitle = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 const englishGoals = [
@@ -169,7 +176,81 @@ export function TablePlayDevice({ language, onNavigate }: { language: Language; 
   };
 
   const printTableDevice = () => {
-    window.print();
+    const printWindow = window.open('', '_blank', 'width=900,height=900');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+    const phrases = selectedLevelPhrases.map((phrase) => `<li>${escapeHtml(phrase)}</li>`).join('');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${escapeHtml(selectedGame?.title ?? 'Table Play Device')}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #2f251e; padding: 32px; line-height: 1.5; }
+            h1 { color: #bd5c24; font-size: 34px; margin-bottom: 4px; }
+            h2 { color: #3d332b; border-bottom: 1px solid #efc779; padding-bottom: 6px; }
+            .card { border: 1px solid #efc779; border-radius: 16px; padding: 18px; margin: 16px 0; }
+            .label { color: #d87522; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+            li { margin: 7px 0; }
+          </style>
+        </head>
+        <body>
+          <p class="label">Meeple Sosen Group</p>
+          <h1>Table Play Device</h1>
+          <div class="card"><p class="label">Game</p><h2>${escapeHtml(selectedGame?.title ?? selectedBriefing?.gameTitle ?? 'Table session')}</h2><p>${escapeHtml(selectedGame ? buildGameBrief(selectedGame) : selectedBriefing?.theme ?? '')}</p></div>
+          <div class="card"><p class="label">Briefing</p><h2>${escapeHtml(selectedBriefing?.title ?? 'Briefing Card')}</h2><p>${escapeHtml(selectedBriefing?.mission ?? '')}</p></div>
+          <div class="card"><p class="label">English Goal</p><h2>${escapeHtml(selectedGoal.title)}</h2><p>${escapeHtml(selectedGoal.copy)}</p></div>
+          <div class="card"><p class="label">Conversation Card</p><h2>${escapeHtml(selectedPrompt)}</h2><ul>${phrases}</ul></div>
+          <div class="card"><p class="label">Record Progress</p><p>Useful phrase: ______________________________</p><p>What happened: ______________________________</p><p>Next time: ______________________________</p></div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
+  const printBriefing = () => {
+    const printWindow = window.open('', '_blank', 'width=900,height=900');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+    const rules = (selectedBriefing?.simpleRules ?? []).map((rule, index) => `<li><strong>${index + 1}.</strong> ${escapeHtml(rule)}</li>`).join('');
+    const beginner = (selectedBriefing?.phraseTiers.beginner ?? []).map((phrase) => `<li>${escapeHtml(phrase)}</li>`).join('');
+    const someExperience = (selectedBriefing?.phraseTiers.someExperience ?? []).map((phrase) => `<li>${escapeHtml(phrase)}</li>`).join('');
+    const experienced = (selectedBriefing?.phraseTiers.experienced ?? []).map((phrase) => `<li>${escapeHtml(phrase)}</li>`).join('');
+    const prompts = conversationPrompts.map((prompt) => `<li>${escapeHtml(prompt)}</li>`).join('');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${escapeHtml(selectedBriefing?.title ?? 'Briefing Card')}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #2f251e; padding: 32px; line-height: 1.5; }
+            h1 { color: #bd5c24; font-size: 34px; margin-bottom: 4px; }
+            h2 { color: #3d332b; border-bottom: 1px solid #efc779; padding-bottom: 6px; }
+            .card { border: 1px solid #efc779; border-radius: 16px; padding: 18px; margin: 16px 0; break-inside: avoid; }
+            .label { color: #d87522; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+            li { margin: 7px 0; }
+          </style>
+        </head>
+        <body>
+          <p class="label">Meeple Sosen Group</p>
+          <h1>${escapeHtml(selectedBriefing?.title ?? 'Briefing Card')}</h1>
+          <div class="card"><p class="label">Theme</p><p>${escapeHtml(selectedBriefing?.theme ?? '')}</p></div>
+          <div class="card"><p class="label">Simple English Rules</p><ol>${rules}</ol></div>
+          <div class="card"><p class="label">Table Mission</p><p>${escapeHtml(selectedBriefing?.mission ?? '')}</p></div>
+          <div class="card"><p class="label">Beginner Phrases</p><ul>${beginner}</ul></div>
+          <div class="card"><p class="label">Some Experience Phrases</p><ul>${someExperience}</ul></div>
+          <div class="card"><p class="label">Experienced Phrases</p><ul>${experienced}</ul></div>
+          <div class="card"><p class="label">Conversation Prompts</p><ul>${prompts}</ul></div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
   };
 
   return (
@@ -364,6 +445,16 @@ export function TablePlayDevice({ language, onNavigate }: { language: Language; 
                     <p className="flex items-center gap-2 font-display text-xl tracking-wide text-[#366eb4]"><FileText size={18} /> Briefing Card</p>
                     <p className="mt-2 text-sm font-bold text-[#3d332b]">{selectedBriefing?.title ?? 'No briefing selected'}</p>
                     <p className="mt-2 text-xs leading-5 text-[#70665b]">{selectedBriefing?.mission ?? 'Use a generic conversation prompt until a dedicated briefing is created.'}</p>
+                    {selectedBriefing?.simpleRules?.length ? (
+                      <div className="mt-4 rounded-xl border border-[#d7e5fb] bg-white p-3">
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-[#366eb4]">Simple English Rules</p>
+                        <ol className="mt-2 space-y-1 text-xs leading-5 text-[#4d5f75]">
+                          {selectedBriefing.simpleRules.slice(0, 3).map((rule, index) => (
+                            <li key={rule}><span className="font-bold text-[#366eb4]">{index + 1}.</span> {rule}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    ) : null}
                   </section>
                   <section className="rounded-2xl border border-[#d8ead3] bg-[#f7fff4] p-5">
                     <p className="flex items-center gap-2 font-display text-xl tracking-wide text-[#2e7c44]"><Target size={18} /> English Goal</p>
@@ -450,9 +541,14 @@ export function TablePlayDevice({ language, onNavigate }: { language: Language; 
                     </label>
                   </div>
                   <div className="mt-5 flex flex-wrap gap-3">
-                    <button onClick={printTableDevice} className="rule-button px-5 py-3">
-                      <Printer size={14} /> Print Table Device
-                    </button>
+                    <div className="flex flex-wrap gap-3 rounded-2xl border border-[#efd39d] bg-[#fffaf0] p-2">
+                      <button onClick={printTableDevice} className="rule-button px-5 py-3">
+                        <Printer size={14} /> Print Table Device
+                      </button>
+                      <button onClick={printBriefing} className="rule-button px-5 py-3">
+                        <Printer size={14} /> Print Briefing
+                      </button>
+                    </div>
                     <button onClick={saveProgress} className="rule-button rule-button-primary px-5 py-3">
                       <Save size={14} /> Save To Progress
                     </button>
