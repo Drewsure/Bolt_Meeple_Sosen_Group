@@ -8,7 +8,7 @@ import type { Game } from '../types/database';
 import { GameIntake } from './GameIntake';
 import { ManualGameUpdate } from './ManualGameUpdate';
 
-const MOCK_ADMIN_CODE = 'preview-curator';
+const MOCK_ADMIN_CODES = ['MSG-ADMIN-2026', 'preview-curator'];
 
 export function ImageAdmin() {
   const { user } = useAuth();
@@ -36,7 +36,7 @@ export function ImageAdmin() {
 
   const unlock = (event: FormEvent) => {
     event.preventDefault();
-    if (code === MOCK_ADMIN_CODE) {
+    if (MOCK_ADMIN_CODES.includes(code.trim())) {
       setUnlocked(true);
       setMessage('');
     } else {
