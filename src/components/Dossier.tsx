@@ -1,110 +1,78 @@
-import { Award, BookOpen, Globe } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { getTranslation } from '../lib/i18n';
+import { Award, Compass, Lightbulb, Users } from 'lucide-react';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 
-export function Dossier() {
-  const { language } = useAuth();
+const copy = {
+  en: {
+    intro: 'Drew Smith is building a practical approach to language confidence: small tables, real decisions, useful phrases, and repeatable community sessions.',
+    doctrine: [
+      ['Philosophy', 'English is not only a subject to memorize. It is a tool for participation, friendship, negotiation, and everyday confidence.'],
+      ['Vision', 'Create welcoming tables where adults, retirees, parents, and strategists can practise English through shared play.'],
+      ['Method', 'The Sosen approach turns board games into gentle language missions: choose a game, use one focus, play, and reflect.'],
+    ],
+    standards: ['Authentic Mastery', 'Cognitive Precision', 'Community Confidence', 'Gentle Progress'],
+    quote: 'This is not about performing perfect English. It is about becoming comfortable enough to participate.',
+    footer: 'Start small. Speak once. Build from there.',
+  },
+  ja: {
+    intro: 'Drew Smith は、英語への自信を育てるために、小さなテーブル、実際の判断、使えるフレーズ、継続できる地域セッションを組み合わせています。',
+    doctrine: [
+      ['考え方', '英語は暗記する科目だけではありません。参加する、友人を作る、相談する、自信を持つための道具です。'],
+      ['ビジョン', '大人、退職後の方、保護者、戦略ゲームが好きな人が、安心して英語を練習できるテーブルを作ります。'],
+      ['方法', '創戦の方法は、ボードゲームをやさしい英語ミッションに変えます。ゲームを選び、一つのフォーカスで遊び、ふり返ります。'],
+    ],
+    standards: ['本物の習得', '考える力', '地域の安心感', '小さな成長'],
+    quote: '完璧な英語を見せる場所ではありません。参加できる安心感を育てる場所です。',
+    footer: '小さく始める。一度話す。そこから育てる。',
+  },
+} as const;
+
+export function Dossier({ language }: { language: Language }) {
+  const t = ui[language].dossier;
+  const local = copy[language];
+  const icons = [Lightbulb, Compass, Users];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-32 pb-24">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-6xl md:text-7xl font-bebas text-white mb-4 tracking-wide">
-            {language === 'ja' ? 'ドッシェ' : 'THE DOSSIER'}
-          </h1>
-          <p className="text-amber-500 font-bebas text-lg tracking-widest">
-            {language === 'ja' ? 'MEEPLE SOSEN GROUP の創設者' : 'FOUNDER OF THE MEEPLE SOSEN GROUP'}
-          </p>
-        </div>
-
-        <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 p-12 rounded-lg mb-12">
-          <div className="text-center mb-12">
-            <div className="w-32 h-32 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-4xl font-bebas text-slate-900">DS</span>
-            </div>
-            <h2 className="text-4xl font-bebas text-white tracking-wide mb-2">DREW SMITH</h2>
-            <p className="text-amber-500 font-bebas tracking-widest text-sm">L1 FOUNDER STANDARD</p>
+    <main className="page-shell">
+      <div className="tactical-banner h-32" />
+      <div className="mx-auto max-w-3xl px-5 pb-16">
+        <header className="-mt-10 text-center">
+          <h1 className="compact-title">{t.title}</h1>
+          <p className="mt-3 text-xs uppercase tracking-wide text-[#655b51]">{t.subtitle}</p>
+        </header>
+        <section className="reference-panel mt-10 p-7">
+          <div className="flex items-center gap-5">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ea8a16] font-display text-2xl text-white">DS</span>
+            <div><h2 className="font-display text-2xl">Drew Smith</h2><span className="rounded bg-[#fff0bc] px-2 py-1 text-[9px] font-bold text-[#bd6c17]">FOUNDER</span></div>
           </div>
-
-          <p className="text-slate-300 leading-relaxed mb-6 text-center text-lg">
-            {language === 'ja' ? 'ドリュー・スミスは、言語習得への革新的なアプローチの建築家です。従来の英語教育の「薄いスープ」方法論を拒否し、代わりにエリート・ボードゲームの戦略的深さを言語精密性にチャネルします。' : 'Drew Smith is the architect of a revolutionary approach to language mastery—one that rejects the "thin soup" methodology of traditional English education and instead channels the strategic depth of elite board gaming into linguistic precision.'}
-          </p>
+          <p className="mt-6 text-xs leading-6 text-[#61574d]">{local.intro}</p>
+        </section>
+        <div className="mt-6 space-y-5">
+          {local.doctrine.map(([title, body], index) => {
+            const Icon = icons[index];
+            return (
+              <section key={title}>
+                <h2 className={`mb-2 flex items-center gap-2 font-display text-xl ${['text-[#eb8e1d]', 'text-[#3989ec]', 'text-[#24ac68]'][index]}`}><Icon size={18} />{title}</h2>
+                <p className={`rounded-lg border bg-white/70 p-5 text-xs leading-6 text-[#61574d] ${['border-[#efc779]', 'border-[#b4d5fe]', 'border-[#9fe1bb]'][index]}`}>{body}</p>
+              </section>
+            );
+          })}
         </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-8 rounded-lg">
-            <Award className="w-12 h-12 text-amber-500 mb-4" />
-            <h3 className="text-2xl font-bebas text-white mb-3 tracking-wide">{language === 'ja' ? '哲学' : 'PHILOSOPHY'}</h3>
-            <p className="text-slate-300 leading-relaxed">
-              {language === 'ja' ? '英語は暗記する対象ではありません。実際の交渉、国際ビジネス、知的戦闘で配備する戦略的な武器です。' : 'English is not a subject to memorize. It is a strategic weapon to deploy in real-world negotiations, international business, and intellectual combat.'}
-            </p>
-          </div>
-
-          <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-8 rounded-lg">
-            <Globe className="w-12 h-12 text-amber-500 mb-4" />
-            <h3 className="text-2xl font-bebas text-white mb-3 tracking-wide">{language === 'ja' ? 'ビジョン' : 'VISION'}</h3>
-            <p className="text-slate-300 leading-relaxed">
-              {language === 'ja' ? '経営者、退職者、戦略家が集まって、競争戦略と認知的深さのレンズを通じて言語をマスターするエリートギルドを作成します。' : 'Create an elite Guild where executives, retirees, and strategists gather to master language through the lens of competitive strategy and cognitive depth.'}
-            </p>
-          </div>
-
-          <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-8 rounded-lg">
-            <BookOpen className="w-12 h-12 text-amber-500 mb-4" />
-            <h3 className="text-2xl font-bebas text-white mb-3 tracking-wide">{language === 'ja' ? '方法論' : 'METHOD'}</h3>
-            <p className="text-slate-300 leading-relaxed">
-              {language === 'ja' ? '「創戦」アプローチ：ボードゲームを通じた戦略的創造。言語、戦略、認知がすべてのセッションで収束します。' : 'The "Sosen" approach: Strategic Creation through board gaming. Language, strategy, and cognition converge in every session.'}
-            </p>
-          </div>
+        <h2 className="mt-8 text-center font-display text-2xl text-[#b65923]">{t.standard}</h2>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {local.standards.map((title, index) => (
+            <article key={title} className={`rounded border p-4 text-xs ${['border-[#efc779]', 'border-[#aed1ff]', 'border-[#dfc3fd]', 'border-[#a6e4c1]'][index]}`}>
+              <strong className="block font-display text-base">{title}</strong>
+              {language === 'ja' ? '練習を、安心して使える会話に変えます。' : 'Practice becomes calm, usable table communication.'}
+            </article>
+          ))}
         </div>
-
-        <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 p-12 rounded-lg mb-12">
-          <h3 className="text-3xl font-bebas text-white mb-6 tracking-wide">{language === 'ja' ? 'L1 創設者標準' : 'THE L1 FOUNDER STANDARD'}</h3>
-
-          <p className="text-slate-300 leading-relaxed mb-6">
-            {language === 'ja' ? '"L1" は言語と戦略統合の最高レベルを表します。これは以下へのコミットメントです：' : '"L1" represents the highest level of linguistic and strategic integration. It is a commitment to:'}
-          </p>
-
-          <ul className="space-y-4 mb-8">
-            <li className="flex items-start gap-4">
-              <span className="text-amber-500 font-bebas text-xl">✦</span>
-              <span className="text-slate-300">
-                <strong>{language === 'ja' ? '真正な習得：' : 'Authentic Mastery:'}</strong> {language === 'ja' ? '教えられたすべてのフレーズは、実際の戦略的ゲームと国際的背景で戦闘テストされます。' : 'Every phrase taught is battle-tested in real strategic games and international contexts.'}
-              </span>
-            </li>
-            <li className="flex items-start gap-4">
-              <span className="text-amber-500 font-bebas text-xl">✦</span>
-              <span className="text-slate-300">
-                <strong>{language === 'ja' ? '認知精度：' : 'Cognitive Precision:'}</strong> {language === 'ja' ? '私たちの方法は、ボードゲームメカニクスの認知負荷を活用して、言語を最も深いレベルで刻印します。' : 'Our methods leverage the cognitive load of board game mechanics to imprint language at the deepest level.'}
-              </span>
-            </li>
-            <li className="flex items-start gap-4">
-              <span className="text-amber-500 font-bebas text-xl">✦</span>
-              <span className="text-slate-300">
-                <strong>{language === 'ja' ? '競争上の卓越性：' : 'Competitive Excellence:'}</strong> {language === 'ja' ? 'メンバーは成績のためではなく、言語支配と戦略的勝利のために競争します。' : 'Members compete not for grades, but for linguistic dominance and strategic victory.'}
-              </span>
-            </li>
-            <li className="flex items-start gap-4">
-              <span className="text-amber-500 font-bebas text-xl">✦</span>
-              <span className="text-slate-300">
-                <strong>{language === 'ja' ? 'エリートコミュニティ：' : 'Elite Community:'}</strong> {language === 'ja' ? 'マスターに献身している人だけが招待されます。ギルドは最高の基準を維持しています。' : 'Only those committed to mastery are invited. The Guild maintains the highest standards.'}
-              </span>
-            </li>
-          </ul>
-
-          <p className="text-slate-300 leading-relaxed italic">
-            {language === 'ja' ? '"これは教育ではありません。これは変換です。あなたはより良く英語を話すだけではありません。戦略的に考え、正確に交渉し、国際的などの部屋でも尊敬を集めます。"' : '"This is not education. This is transformation. You will not just speak English better. You will think strategically, negotiate with precision, and command respect in any international room."'}
-          </p>
-          <p className="text-amber-500 font-bebas text-right mt-4">— {language === 'ja' ? 'ドリュー・スミス、創設者' : 'Drew Smith, Founder'}</p>
-        </div>
-
-        <div className="bg-gradient-to-r from-amber-900/20 to-amber-800/20 border border-amber-700/40 p-8 rounded-lg">
-          <p className="text-slate-300 leading-relaxed mb-4">
-            {language === 'ja' ? 'Meeple Sosen Group は、創設者が言語学習が退屈で、切断され、または効果的ではなかった場合がなければならないことを受け入れることを拒否したため、存在します。' : 'The Meeple Sosen Group exists because the founder refused to accept that language learning had to be boring, disconnected, or ineffective.'}
-          </p>
-          <p className="text-amber-500 font-bebas tracking-widest">
-            {language === 'ja' ? 'あなたの勝利を著者します。ギルドに参加してください。' : 'Author your victory. Join the Guild.'}
-          </p>
-        </div>
+        <blockquote className="mt-6 rounded-lg border border-[#f1bd57] bg-[#fff4d6] p-6 text-sm italic leading-7 text-[#554a42]">
+          {local.quote}
+          <footer className="mt-3 text-xs font-bold text-[#bf5c23]">- Drew Smith</footer>
+        </blockquote>
+        <p className="mt-7 text-center font-display text-lg text-[#c86122]"><Award className="mr-2 inline" size={17} /> {local.footer}</p>
       </div>
-    </div>
+    </main>
   );
 }

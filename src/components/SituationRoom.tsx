@@ -1,117 +1,84 @@
-import { Shield, Brain, Zap, Target } from 'lucide-react';
-import { getTranslation } from '../lib/i18n';
-import { useAuth } from '../contexts/AuthContext';
+import { ArrowRight, Brain, HeartHandshake, MessageCircle, Users, Zap } from 'lucide-react';
+import type { Section } from '../App';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 
-interface SituationRoomProps {
-  onInitialize: () => void;
-}
+const copy = {
+  en: {
+    opening: 'This is the background idea: English becomes easier when people have a real reason to use it together.',
+    problemCopy: 'Many lessons ask people to study language without context. That can feel thin, lonely, and hard to keep doing.',
+    solutionCopy: 'Meeple Sosen creates a supported table. The game supplies the situation; the group supplies patience; the conversation becomes useful.',
+    ctaTitle: 'Ready to see the table flow?',
+    ctaCopy: 'Start with the simple process: choose a game, choose one focus, play, and review.',
+    cta: 'See How It Works',
+    pillars: [
+      ['Cognitive Depth', 'Games ask people to plan, compare, remember, and explain.'],
+      ['Useful Language', 'Each session focuses on one practical English action.'],
+      ['Gentle Stakes', 'The game creates energy without turning the room into a test.'],
+      ['Community', 'People return because the table feels human, useful, and safe.'],
+    ],
+  },
+  ja: {
+    opening: 'このページは背景の説明です。英語は、一緒に使う理由があると、ずっと始めやすくなります。',
+    problemCopy: '多くの英語レッスンは、文脈のない勉強になりがちです。薄く感じたり、孤独だったり、続けにくいことがあります。',
+    solutionCopy: 'ミープル創戦は、サポートのあるテーブルを作ります。ゲームが状況を作り、グループが安心感を作り、会話が実用的になります。',
+    ctaTitle: 'テーブルの流れを見てみますか？',
+    ctaCopy: 'ゲームを選ぶ、一つのフォーカスを選ぶ、遊ぶ、ふり返る。まずはシンプルな流れからです。',
+    cta: '使い方を見る',
+    pillars: [
+      ['考える深さ', 'ゲームは計画、比較、記憶、説明を自然に使わせてくれます。'],
+      ['使える英語', '毎回、一つの実用的な英語行動に集中します。'],
+      ['やさしい緊張感', 'テストにせず、ゲームがほどよい集中を作ります。'],
+      ['コミュニティ', '人が戻ってくるのは、テーブルが人間的で、役に立ち、安心できるからです。'],
+    ],
+  },
+} as const;
 
-export function SituationRoom({ onInitialize }: SituationRoomProps) {
-  const { language } = useAuth();
+export function SituationRoom({ onNavigate, language }: { onNavigate: (section: Section) => void; language: Language }) {
+  const t = ui[language].situation;
+  const local = copy[language];
+  const icons = [Brain, MessageCircle, Zap, Users];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-32">
-      <div className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="mb-20 text-center">
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <div className="absolute inset-0 bg-amber-500 blur-3xl opacity-30"></div>
-              <Shield className="relative w-32 h-32 text-amber-500" strokeWidth={1.5} />
-            </div>
+    <main className="page-shell">
+      <header className="tactical-banner py-9 text-center">
+        <h1 className="compact-title">{t.title}</h1>
+        <p className="font-display mt-3 text-sm tracking-wider text-[#b35622]">{t.subtitle}</p>
+      </header>
+      <div className="mx-auto max-w-3xl space-y-5 px-5 py-10">
+        <div className="reference-panel p-7 text-sm leading-7 text-[#5e554b]">{local.opening}</div>
+        <section>
+          <h2 className="font-display text-2xl text-[#f07067]">{t.problem}</h2>
+          <div className="mt-3 rounded-lg border border-[#ffb9bf] bg-white/70 p-6 text-sm leading-7 text-[#5e554b]">
+            <p>{local.problemCopy}</p>
           </div>
-
-          <h1 className="text-7xl md:text-8xl font-bebas tracking-wider text-white mb-6 drop-shadow-2xl">
-            {language === 'ja' ? 'シチュエーションルーム' : 'THE SITUATION ROOM'}
-          </h1>
-          <p className="text-2xl font-bebas text-amber-500 tracking-widest mb-8">
-            {language === 'ja' ? 'SOSEN コマンドセンターへようこそ' : 'WELCOME TO THE SOSEN COMMAND CENTER'}
-          </p>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            {language === 'ja' ? 'あなたはここに来たのはクラスを受けるためではありません。戦略的なエコシステムを指揮するため、英語があなたの競争上の武器となる場所です。' : 'You are not here to take a class. You are here to command a strategic ecosystem where English becomes your competitive weapon.'}
-          </p>
+        </section>
+        <section>
+          <h2 className="font-display text-2xl text-[#35bd78]">{t.solution}</h2>
+          <div className="mt-3 rounded-lg border border-[#8cdeb3] bg-white/70 p-6 text-sm leading-7 text-[#5e554b]">
+            <p>{local.solutionCopy}</p>
+          </div>
+        </section>
+        <h2 className="pt-2 text-center font-display text-2xl text-[#bd5823]">{t.pillars}</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {local.pillars.map(([title, body], index) => {
+            const Icon = icons[index];
+            return (
+              <article key={title} className={`rounded-lg border bg-white/70 p-5 ${['border-[#d1b8fd]', 'border-[#a9d3fc]', 'border-[#ffb9bf]', 'border-[#9de1bc]'][index]}`}>
+                <Icon size={24} className={['text-[#814be8]', 'text-[#3987ed]', 'text-[#ef4d56]', 'text-[#20a461]'][index]} />
+                <h3 className="font-display mt-4 text-lg tracking-wide">{title}</h3>
+                <p className="mt-2 text-xs leading-6 text-[#655c52]">{body}</p>
+              </article>
+            );
+          })}
         </div>
-
-        <div className="grid md:grid-cols-2 gap-12 mb-20">
-          <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 p-8 rounded-lg">
-            <h3 className="text-3xl font-bebas text-amber-500 mb-4 tracking-wide">
-              {language === 'ja' ? '問題：「薄いスープ」' : 'THE PROBLEM: "THIN SOUP"'}
-            </h3>
-            <p className="text-slate-300 leading-relaxed">
-              {language === 'ja' ? '従来の英語学校は言語学習をスープボウルを満たすようなものと考えています—希薄で、賭けがなく、現実世界の応用と切り離されています。' : 'Traditional English schools treat language learning like filling a soup bowl—diluted, without stakes, disconnected from real-world application.'}
-            </p>
-            <p className="text-slate-300 leading-relaxed mt-4">
-              {language === 'ja' ? '意思決定の重みに欠けています。交渉の緊張。言語精密性を通じて達成された戦略的勝利の満足度。' : 'They lack the weight of decision-making. The tension of negotiation. The satisfaction of strategic victory achieved through linguistic precision.'}
-            </p>
-            <p className="text-slate-400 text-sm italic mt-6">
-              {language === 'ja' ? 'この薄いスープにうんざりしていませんか？' : 'Are you tired of the thin soup?'}
-            </p>
-          </div>
-
-          <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 p-8 rounded-lg">
-            <h3 className="text-3xl font-bebas text-amber-500 mb-4 tracking-wide">
-              {language === 'ja' ? 'ソリューション：「創戦」（SOSEN）' : 'THE SOLUTION: "SOSEN" (創戦)'}
-            </h3>
-            <p className="text-slate-300 leading-relaxed">
-              {language === 'ja' ? '戦略的創造。世界で最も洗練されたボードゲームを、経営者、退職者、戦略家のために設計された高レベルの英語カリキュラムと組み合わせます。' : 'Strategic Creation. We combine the world\'s most sophisticated board games with a high-level English curriculum designed for executives, retirees, and strategists.'}
-            </p>
-            <p className="text-slate-300 leading-relaxed mt-4">
-              {language === 'ja' ? 'すべての交渉。すべてのオークション。すべての同盟。完全に英語で行われます。実際のゲームメカニクスが賭けを決定します。' : 'Every negotiation. Every auction. Every alliance. Conducted entirely in English. With real game mechanics determining the stakes.'}
-            </p>
-            <p className="text-amber-500 font-bebas tracking-wide mt-6">
-              {language === 'ja' ? 'あなたの勝利には重みがあります。あなたの言葉には力があります。' : 'Your victory has weight. Your words have power.'}
-            </p>
-          </div>
-        </div>
-
-        <div className="mb-20">
-          <h2 className="text-4xl font-bebas text-center text-white mb-12 tracking-wide">
-            {language === 'ja' ? '習得の4つの柱' : 'THE PILLARS OF MASTERY'}
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg hover:border-amber-500/50 transition-all">
-              <Brain className="w-12 h-12 text-amber-500 mb-4" />
-              <h4 className="font-bebas text-white tracking-wide mb-3">{language === 'ja' ? '認知的深さ' : 'COGNITIVE DEPTH'}</h4>
-              <p className="text-sm text-slate-400">{language === 'ja' ? 'ユーロゲームメカニクスは、実際の交渉を反映した戦略的思考を要求します。' : 'Euro-game mechanics demand strategic thinking that mirrors real negotiation.'}</p>
-            </div>
-
-            <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg hover:border-amber-500/50 transition-all">
-              <Zap className="w-12 h-12 text-amber-500 mb-4" />
-              <h4 className="font-bebas text-white tracking-wide mb-3">{language === 'ja' ? '言語配備' : 'LINGUISTIC DEPLOYMENT'}</h4>
-              <p className="text-sm text-slate-400">{language === 'ja' ? '話された英語フレーズはすべてあなたの勝利条件に影響します。' : 'Every English phrase spoken influences your victory condition.'}</p>
-            </div>
-
-            <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg hover:border-amber-500/50 transition-all">
-              <Target className="w-12 h-12 text-amber-500 mb-4" />
-              <h4 className="font-bebas text-white tracking-wide mb-3">{language === 'ja' ? '戦略的賭け' : 'STRATEGIC STAKES'}</h4>
-              <p className="text-sm text-slate-400">{language === 'ja' ? '精密さを通じて勝つ。躊躇を通じて負ける。ゲームは実行を要求します。' : 'Win through precision. Lose through hesitation. The game demands execution.'}</p>
-            </div>
-
-            <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg hover:border-amber-500/50 transition-all">
-              <Shield className="w-12 h-12 text-amber-500 mb-4" />
-              <h4 className="font-bebas text-white tracking-wide mb-3">{language === 'ja' ? 'エリートコミュニティ' : 'ELITE COMMUNITY'}</h4>
-              <p className="text-sm text-slate-400">{language === 'ja' ? 'fellow strategistsと競争します。ランク内を上昇させます。ギルドに参加してください。' : 'Compete with fellow strategists. Rise through the ranks. Join the Guild.'}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-amber-900/30 to-amber-800/20 border border-amber-700/40 p-12 rounded-lg text-center">
-          <h3 className="text-4xl font-bebas text-white mb-4 tracking-wide">
-            {language === 'ja' ? 'あなたの勝利を著者する準備はできていますか？' : 'READY TO AUTHOR YOUR VICTORY?'}
-          </h3>
-          <p className="text-slate-300 mb-8 text-lg">
-            {language === 'ja' ? 'シミュレーションを初期化します。ギルドに参加してください。戦略的な未来を指揮してください。' : 'Initialize your simulation. Join the Guild. Command your strategic future.'}
-          </p>
-          <button
-            onClick={onInitialize}
-            className="group relative px-12 py-4 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-900 font-bebas text-2xl tracking-widest overflow-hidden transition-all duration-300 hover:scale-105"
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-300 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-            <span className="relative z-10">{language === 'ja' ? 'シミュレーション初期化' : 'INITIALIZE SIMULATION'}</span>
-          </button>
+        <div className="rounded-lg border border-[#f2a51b] bg-[#fff8e6] p-8 text-center">
+          <HeartHandshake className="mx-auto text-[#e2821d]" size={30} />
+          <h2 className="font-display mt-3 text-2xl">{local.ctaTitle}</h2>
+          <p className="mt-2 text-xs text-[#766b60]">{local.ctaCopy}</p>
+          <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary mt-6">{local.cta} <ArrowRight size={13} /></button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

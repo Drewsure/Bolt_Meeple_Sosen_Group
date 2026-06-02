@@ -1,0 +1,15 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#FFF6E6"/>
+  <circle cx="160" cy="124" r="170" fill="#ED941D" fill-opacity=".18"/>
+  <circle cx="1030" cy="520" r="230" fill="#F4A9BC" fill-opacity=".22"/>
+  <rect x="82" y="88" width="1036" height="454" rx="42" fill="#FFFDF8" stroke="#EFC779" stroke-width="6"/>
+  <path d="M148 183h180M148 242h126M148 301h210" stroke="#D87522" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="850" cy="230" r="58" fill="#ED941D"/>
+  <circle cx="970" cy="230" r="58" fill="#49B866"/>
+  <circle cx="910" cy="344" r="58" fill="#4B86D9"/>
+  <path d="M826 230h48M850 206v48M946 230h48M970 206v48M886 344h48M910 320v48" stroke="#FFFDF8" stroke-width="12" stroke-linecap="round"/>
+  <text x="148" y="378" fill="#2F251E" font-family="Arial, sans-serif" font-size="68" font-weight="900">English Through</text>
+  <text x="148" y="456" fill="#C95D24" font-family="Arial, sans-serif" font-size="72" font-weight="900">Board Games</text>
+  <text x="152" y="510" fill="#6B5F54" font-family="Arial, sans-serif" font-size="30" font-weight="700">A friendly table in Nishi-ku, Fukuoka</text>
+  <text x="148" y="146" fill="#A9541F" font-family="Arial, sans-serif" font-size="34" font-weight="900" letter-spacing="2">MEEPLE SOSEN GROUP</text>
+</svg>

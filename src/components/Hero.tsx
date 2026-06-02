@@ -1,147 +1,134 @@
-import { Swords, Sparkles } from 'lucide-react';
+import { ArrowRight, Brain, Gamepad2, Heart, Sparkles, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { getTranslation } from '../lib/i18n';
+import type { Section } from '../App';
+import { getGames } from '../lib/games';
+import type { Language } from '../lib/i18n';
+import { ui } from '../lib/i18n';
 
 interface HeroProps {
-  onInitialize: () => void;
+  onNavigate: (section: Section) => void;
+  language: Language;
 }
 
-export function Hero({ onInitialize }: HeroProps) {
-  const { language } = useAuth();
-  const [balls, setBalls] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
+export function Hero({ onNavigate, language }: HeroProps) {
+  const [gameCount, setGameCount] = useState<number | null>(null);
+  const t = ui[language].home;
+  const common = ui[language].common;
 
   useEffect(() => {
-    const newBalls = Array.from({ length: 15 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-    }));
-    setBalls(newBalls);
-
-    const interval = setInterval(() => {
-      setBalls(prev =>
-        prev.map(ball => ({
-          ...ball,
-          y: (ball.y + Math.random() * 0.5) % 100,
-        }))
-      );
-    }, 50);
-
-    return () => clearInterval(interval);
+    getGames().then((games) => setGameCount(games.length));
   }, []);
 
+  const benefits = [
+    { icon: Brain, number: '01', title: t.benefit1, copy: t.benefit1Copy },
+    { icon: Heart, number: '02', title: t.benefit2, copy: t.benefit2Copy },
+    { icon: Users, number: '03', title: `${gameCount ?? '...'} ${common.games}`, copy: t.benefit3Copy },
+  ];
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+    <main className="page-shell relative overflow-hidden">
+      <span className="hero-orb left-[6%] top-36 h-3 w-3 bg-[#eaa23e]" />
+      <span className="hero-orb right-[10%] top-72 h-5 w-5 bg-[#edaf4c]" />
+      <span className="hero-orb left-[18%] top-[34rem] h-2 w-2 bg-[#ef6f43]" />
 
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-600 rounded-full mix-blend-screen filter blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-3xl"></div>
-      </div>
-
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZGJmNmUiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0YzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMC0xMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAtMTBjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00eiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
-
-      {balls.map(ball => (
-        <div
-          key={ball.id}
-          className="absolute rounded-full bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg"
-          style={{
-            left: `${ball.x}%`,
-            top: `${ball.y}%`,
-            width: `${ball.size * 8}px`,
-            height: `${ball.size * 8}px`,
-            opacity: 0.6,
-            animation: `float-${ball.id} 20s infinite ease-in-out`,
-          }}
-        >
-          <style>{`
-            @keyframes float-${ball.id} {
-              0%, 100% { transform: translateY(0px) translateX(0px); }
-              25% { transform: translateY(-20px) translateX(10px); }
-              50% { transform: translateY(20px) translateX(-10px); }
-              75% { transform: translateY(-10px) translateX(20px); }
-            }
-          `}</style>
-        </div>
-      ))}
-
-      <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
-        <div className="mb-12 flex justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-red-500 to-amber-500 blur-3xl opacity-60 animate-pulse"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 blur-2xl opacity-40"></div>
-            <Swords className="relative w-28 h-28 text-amber-300 drop-shadow-2xl" strokeWidth={1.5} />
+      <section className="container-shell hero-stage pb-10 pt-12">
+        <div className="hero-card mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-[1fr_0.72fr] md:px-10 md:py-14 md:text-left">
+          <div className="relative z-10">
+            <p className="eyebrow justify-center md:justify-start">
+              {language === 'ja' ? '福岡・西区 英語ボードゲーム' : 'Fukuoka English Board Games'}
+            </p>
+            <h1 className="compact-title mt-4">{t.title}</h1>
+            <p className="font-display mt-5 text-2xl tracking-wide text-[#443d37]">{t.subtitle}</p>
+            <p className="mt-6 max-w-2xl text-sm font-semibold leading-7 text-[#c45a25]">{t.promise}</p>
+            <div className="mt-5 max-w-2xl space-y-4 text-sm leading-7 text-[#675c50]">
+              <p>{t.body1}</p>
+              <p>{t.body2}</p>
+              <p>{t.body3}</p>
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
+              <button onClick={() => onNavigate('board')} className="rule-button rule-button-primary px-8 py-3">
+                <Sparkles size={13} /> {t.how} <ArrowRight size={13} />
+              </button>
+              <button onClick={() => onNavigate('games')} className="rule-button px-8 py-3">
+                {t.browse}
+              </button>
+              <button onClick={() => onNavigate('briefings')} className="rule-button px-8 py-3">
+                {language === 'ja' ? '週刊ブリーフィング' : 'Weekly Briefings'}
+              </button>
+              <button onClick={() => onNavigate('offers')} className="rule-button border-[#ff99b0] bg-[#fff5f8] px-8 py-3 text-[#ef3d66] hover:bg-[#ffeaf0]">
+                {language === 'ja' ? '参加・料金' : 'Join / Pricing'}
+              </button>
+            </div>
           </div>
+
+          <aside className="relative z-10 mx-auto flex w-full max-w-sm flex-col justify-center gap-4">
+            <div className="relative overflow-hidden rounded-[1.4rem] border border-[#edbd64] bg-[#fff8ea] shadow-xl">
+              <div className="grid h-72 grid-cols-2 grid-rows-2 gap-1 p-2">
+                {['/images/collection/13.jpg', '/images/collection/68448.jpg', '/images/collection/219513.jpg', '/images/collection/30549.jpg'].map((src, index) => (
+                  <img key={src} src={src} alt="" className={`h-full w-full object-cover ${index === 0 ? 'rounded-tl-[1rem]' : index === 1 ? 'rounded-tr-[1rem]' : index === 2 ? 'rounded-bl-[1rem]' : 'rounded-br-[1rem]'}`} />
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2f251e]/55 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/50 bg-white/90 p-4 shadow-lg">
+                <p className="font-display text-2xl tracking-wide text-[#bd5c24]">{language === 'ja' ? 'ゲームから会話へ' : 'Games Become Conversation'}</p>
+                <p className="mt-1 text-xs leading-5 text-[#62584f]">{language === 'ja' ? '選ぶ、話す、笑う、少し覚える。' : 'Choose, speak, laugh, and leave with one useful phrase.'}</p>
+              </div>
+            </div>
+            <div className="soft-stat p-5">
+              <Gamepad2 className="text-[#e58921]" size={32} />
+              <p className="font-display mt-4 text-5xl leading-none text-[#c75a22]">{gameCount ?? '...'}</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-[#7b6b5b]">{common.games}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="soft-stat p-4">
+                <Brain className="text-[#2f7bc9]" size={23} />
+                <p className="mt-3 text-xs font-bold leading-5 text-[#3d332b]">{language === 'ja' ? '考えて話す' : 'Think + Speak'}</p>
+              </div>
+              <div className="soft-stat p-4">
+                <Heart className="text-[#ef3d66]" size={23} />
+                <p className="mt-3 text-xs font-bold leading-5 text-[#3d332b]">{language === 'ja' ? '安心の場' : 'Safe Table'}</p>
+              </div>
+            </div>
+            <div className="soft-stat p-5">
+              <p className="font-display text-2xl tracking-wide text-[#3d332b]">{t.simplePath}</p>
+              <p className="mt-2 text-xs leading-6 text-[#74685d]">{t.path}</p>
+            </div>
+          </aside>
         </div>
+      </section>
 
-        <div className="mb-8 flex justify-center gap-4">
-          <Sparkles className="w-8 h-8 text-amber-400 animate-spin" />
-          <Sparkles className="w-8 h-8 text-amber-400 animate-spin" style={{ animationDelay: '0.3s' }} />
-          <Sparkles className="w-8 h-8 text-amber-400 animate-spin" style={{ animationDelay: '0.6s' }} />
-        </div>
+      <section className="container-shell grid gap-4 md:grid-cols-3">
+        {benefits.map(({ icon: Icon, number, title, copy }) => (
+          <article key={number} className="reference-panel relative p-6">
+            <Icon className="text-[#d56821]" size={28} />
+            <span className="font-display absolute right-5 top-4 text-4xl text-[#f3d28b]">{number}</span>
+            <h2 className="font-display mt-6 text-lg tracking-wide">{title}</h2>
+            <p className="mt-2 text-xs leading-6 text-[#655c52]">{copy}</p>
+          </article>
+        ))}
+      </section>
 
-        <h1 className="text-7xl md:text-9xl font-bebas tracking-wider text-white mb-4 drop-shadow-2xl leading-tight">
-          <span className="bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 text-transparent bg-clip-text">
-            {language === 'ja' ? 'THE ULTIMATE' : 'ENGLISH IS'}
-          </span>
-          <br />
-          <span className="text-white">{language === 'ja' ? 'STRATEGY GAME' : 'THE ULTIMATE'}</span>
-          <br />
-          <span className="bg-gradient-to-r from-red-400 to-amber-400 text-transparent bg-clip-text">
-            {language === 'ja' ? 'IS CALLING' : 'STRATEGY GAME'}
-          </span>
-        </h1>
-
-        <p className="text-2xl md:text-3xl text-amber-200 mb-16 max-w-3xl mx-auto font-light tracking-wide">
-          {language === 'ja' ? '戦略的支配の準備はできていますか？' : 'Are you ready to'} <span className="font-bebas text-amber-300">{language === 'ja' ? 'あなたの勝利を発揮する' : 'AUTHOR YOUR VICTORY'}</span>{language === 'en' ? '?' : ''}
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-          <button
-            onClick={onInitialize}
-            className="group relative px-16 py-5 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-900 font-bebas text-2xl tracking-widest overflow-hidden transition-all duration-300 hover:scale-110 shadow-2xl hover:shadow-amber-500/50"
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-yellow-200 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-            <span className="relative z-10">ENTER THE GAME</span>
-          </button>
-
-          <div className="relative px-12 py-5 bg-gradient-to-r from-slate-800 to-slate-700 border-2 border-amber-500 text-amber-300 font-bebas text-xl tracking-widest overflow-hidden shadow-2xl"
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}>
-            <span className="relative z-10">VIEW RESERVES</span>
+      <section className="container-shell mt-10 grid max-w-3xl gap-4 md:grid-cols-2">
+        <article className="reference-panel overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#f1d8a5] px-5 py-3">
+            <p className="font-display text-base tracking-wide text-[#9c4b22]">{t.firstTable}</p>
+            <button onClick={() => onNavigate('board')} className="text-[10px] font-bold text-[#c86123]">{t.seeFlow}</button>
           </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mb-8">
-          <div className="text-center backdrop-blur-md bg-slate-800/30 p-6 rounded-lg border border-amber-500/30 hover:border-amber-500 transition-all">
-            <div className="text-5xl font-bebas text-amber-400 mb-2">291</div>
-            <div className="text-amber-200 font-light tracking-wide">Strategic Assets</div>
+          {[t.warmup, t.supportedTurns, t.reviewWords].map((title, index) => (
+            <div key={title} className="flex items-center gap-3 border-b border-[#f3e2c2] px-5 py-3 text-xs last:border-0">
+              <span className={`pill ${index === 1 ? 'pill-green' : 'pill-blue'}`}>{index === 1 ? t.play : t.support}</span>
+              <span className="font-bold">{title}</span>
+            </div>
+          ))}
+        </article>
+        <article className="reference-panel min-h-52">
+          <div className="flex items-center justify-between border-b border-[#f1d8a5] px-5 py-3">
+            <p className="font-display text-base tracking-wide text-[#9c4b22]">{t.happens}</p>
+            <span className="text-[10px] font-bold text-[#37ac66]">LIVE</span>
           </div>
-          <div className="text-center backdrop-blur-md bg-slate-800/30 p-6 rounded-lg border border-amber-500/30 hover:border-amber-500 transition-all">
-            <div className="text-5xl font-bebas text-amber-400 mb-2">∞</div>
-            <div className="text-amber-200 font-light tracking-wide">Depths Explored</div>
-          </div>
-          <div className="text-center backdrop-blur-md bg-slate-800/30 p-6 rounded-lg border border-amber-500/30 hover:border-amber-500 transition-all">
-            <div className="text-5xl font-bebas text-amber-400 mb-2">L1</div>
-            <div className="text-amber-200 font-light tracking-wide">Founder Club</div>
-          </div>
-        </div>
-
-        <div className="text-slate-400 text-sm font-light tracking-widest">
-          ✦ PREMIUM MEMBER SOCIETY ✦
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
-
-      <style>{`
-        @keyframes shimmer {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
-    </section>
+          <p className="px-8 py-12 text-center text-xs leading-6 text-[#7b7168]">{t.happensCopy}</p>
+        </article>
+      </section>
+    </main>
   );
 }

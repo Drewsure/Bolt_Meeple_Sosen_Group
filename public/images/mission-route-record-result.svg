@@ -1,0 +1,14 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" fill="#FFF1E9"/>
+  <circle cx="120" cy="410" r="136" fill="#C95D24" fill-opacity=".13"/>
+  <circle cx="782" cy="100" r="128" fill="#4B86D9" fill-opacity=".13"/>
+  <rect x="96" y="94" width="708" height="342" rx="42" fill="#FFFDF8" stroke="#C95D24" stroke-width="4"/>
+  <rect x="150" y="154" width="350" height="226" rx="22" fill="#FFF8EA" stroke="#EFC779" stroke-width="4"/>
+  <path d="M190 206h228M190 254h260M190 302h184" stroke="#A95B2B" stroke-width="12" stroke-linecap="round"/>
+  <rect x="560" y="162" width="164" height="164" rx="28" fill="#2F251E"/>
+  <path d="M606 240l30 30 58-78" stroke="#49D178" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M558 370h170" stroke="#ED941D" stroke-width="12" stroke-linecap="round"/>
+  <text x="112" y="72" fill="#C95D24" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2">STEP 04</text>
+  <text x="430" y="72" fill="#2F251E" font-family="Arial, sans-serif" font-size="44" font-weight="900" letter-spacing="1">LOG THE RESULT</text>
+  <text x="138" y="410" fill="#6B5F54" font-family="Arial, sans-serif" font-size="24" font-weight="700">Capture what happened, what English appeared, and what to practise next.</text>
+</svg>
