@@ -16,10 +16,15 @@ import { BriefingDetail, Briefings } from './components/Briefings';
 import { Offers } from './components/Offers';
 import { Partnerships } from './components/Partnerships';
 import { TablePlayDevice } from './components/TablePlayDevice';
+import { TTGJSaaS } from './components/TTGJSaaS';
+import { TTGJCatalogAdmin } from './components/TTGJCatalogAdmin';
+import { TTGJOwnerCockpit } from './components/TTGJOwnerCockpit';
+import { TTGJStaffPortal } from './components/TTGJStaffPortal';
 import type { Language } from './lib/i18n';
 
 export type Section =
   | 'home'
+  | 'ttgj'
   | 'situation'
   | 'armory'
   | 'games'
@@ -34,13 +39,16 @@ export type Section =
   | 'ranking'
   | 'profile'
   | 'silver-circle'
-  | 'admin-images';
+  | 'admin-images'
+  | 'ttgj-admin'
+  | 'ttgj-owner'
+  | 'ttgj-staff';
 
 const sectionFromHash = (): Section => {
   const hash = window.location.hash.replace('#', '');
   const route = hash.split('?')[0] as Section;
   if (route.startsWith('briefings/')) return 'briefing-detail';
-  const valid: Section[] = ['home', 'situation', 'armory', 'games', 'briefings', 'offers', 'partnerships', 'play', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images'];
+  const valid: Section[] = ['home', 'ttgj', 'situation', 'armory', 'games', 'briefings', 'offers', 'partnerships', 'play', 'dossier', 'board', 'challenges', 'ranking', 'profile', 'silver-circle', 'admin-images', 'ttgj-admin', 'ttgj-owner', 'ttgj-staff'];
   return valid.includes(route) ? route : 'home';
 };
 
@@ -77,8 +85,12 @@ function AppContent() {
   return (
     <div>
       <Seo section={section} language={language} />
-      <Header onNavigate={navigate} currentSection={section} language={language} onToggleLanguage={toggleLanguage} />
+      {section !== 'ttgj' && section !== 'ttgj-admin' && section !== 'ttgj-owner' && section !== 'ttgj-staff' && <Header onNavigate={navigate} currentSection={section} language={language} onToggleLanguage={toggleLanguage} />}
       {section === 'home' && <Hero onNavigate={navigate} language={language} />}
+      {section === 'ttgj' && <TTGJSaaS language={language} onToggleLanguage={toggleLanguage} />}
+      {section === 'ttgj-admin' && <TTGJCatalogAdmin />}
+      {section === 'ttgj-owner' && <TTGJOwnerCockpit />}
+      {section === 'ttgj-staff' && <TTGJStaffPortal />}
       {section === 'situation' && <SituationRoom onNavigate={navigate} language={language} />}
       {(section === 'armory' || section === 'board' || section === 'challenges') && <Board onNavigate={navigate} language={language} />}
       {section === 'games' && <Reserves language={language} />}

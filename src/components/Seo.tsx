@@ -11,6 +11,11 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     description: 'A small, friendly English-through-board-games table in Nishi-ku, Fukuoka. Beginners welcome, Japanese support available, no tests and no board game experience needed.',
     keywords: 'English board games Fukuoka, English conversation Fukuoka, board game English class, Nishi-ku English, beginner English Japan',
   },
+  ttgj: {
+    title: 'TableTop Games Japan | Board Game Discovery And Partner SaaS',
+    description: 'An English-first participation platform for Japan board game cafes, stores, events, groups, and partner listings with beginner-friendly onboarding signals.',
+    keywords: 'TableTop Games Japan, board game cafes Japan, Japan board game events, board game cafe SaaS, English friendly board games Japan',
+  },
   situation: {
     title: 'Why Board Games Help English Conversation | Meeple Sosen Group',
     description: 'Learn how board games create natural reasons to speak English through choices, questions, planning, and reflection.',
@@ -85,6 +90,21 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
     title: 'Image Maintenance | Meeple Sosen Group',
     description: 'Private maintenance tools for game image repair and library updates.',
     keywords: 'admin, image maintenance',
+  },
+  'ttgj-admin': {
+    title: 'TTGJ Content Desk | TableTop Games Japan',
+    description: 'Private content management tools for the TableTop Games Japan public directory.',
+    keywords: 'admin, TTGJ content management',
+  },
+  'ttgj-owner': {
+    title: 'Claim Your Venue | TableTop Games Japan',
+    description: 'Claim and improve a TableTop Games Japan cafe, shop, or play-space listing and connect its playable games to the TTGJ directory.',
+    keywords: 'claim board game cafe Japan, board game cafe listing, TTGJ owner dashboard',
+  },
+  'ttgj-staff': {
+    title: 'TTGJ Staff Portal | TableTop Games Japan',
+    description: 'Private operations preview for TableTop Games Japan verification queues, content systems, and automation readiness.',
+    keywords: 'TTGJ staff portal, operations, content verification',
   },
 };
 

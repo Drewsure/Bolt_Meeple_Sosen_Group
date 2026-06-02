@@ -14,6 +14,7 @@ interface HeaderProps {
 type NavItem = { labelKey?: keyof typeof ui.en.nav; label?: { en: string; ja: string }; section: Section };
 
 const primaryNavigation: NavItem[] = [
+  { label: { en: 'TTGJ SaaS', ja: 'TTGJ SaaS' }, section: 'ttgj' },
   { labelKey: 'home', section: 'home' },
   { labelKey: 'silver', section: 'silver-circle' },
   { labelKey: 'board', section: 'board' },
