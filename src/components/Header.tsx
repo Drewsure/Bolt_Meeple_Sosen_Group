@@ -14,7 +14,6 @@ interface HeaderProps {
 type NavItem = { labelKey?: keyof typeof ui.en.nav; label?: { en: string; ja: string }; section: Section };
 
 const primaryNavigation: NavItem[] = [
-  { label: { en: 'TTGJ SaaS', ja: 'TTGJ SaaS' }, section: 'ttgj' },
   { labelKey: 'home', section: 'home' },
   { labelKey: 'silver', section: 'silver-circle' },
   { labelKey: 'board', section: 'board' },
@@ -24,6 +23,7 @@ const primaryNavigation: NavItem[] = [
 
 const secondaryNavigation: NavItem[] = [
   { label: { en: 'Table Play', ja: 'Table Play' }, section: 'play' },
+  { label: { en: 'TTGJ SaaS', ja: 'TTGJ SaaS' }, section: 'ttgj' },
   { label: { en: 'Join / Pricing', ja: '参加・料金' }, section: 'offers' },
   { label: { en: 'Partners', ja: '提携' }, section: 'partnerships' },
   { labelKey: 'dossier', section: 'dossier' },
