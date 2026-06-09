@@ -416,7 +416,8 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <p className="eyebrow">{local.sessionBuilder}</p>
-                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">{local.sessionBuilderTitle}</h2>
+                  <h2 className="font-display mt-2 text-4xl tracking-wide text-[#bd5c24]">{t.workspaceTitle}</h2>
+                  <p className="mt-2 text-sm font-bold uppercase tracking-[0.16em] text-[#c86123]">{local.sessionBuilderTitle}</p>
                   <p className="mt-2 max-w-2xl text-xs leading-5 text-[#746b60]">{local.sessionBuilderCopy}</p>
                 </div>
                 <button onClick={() => onNavigate('games')} className="rule-button px-4 py-2">
@@ -437,6 +438,15 @@ export function Board({ onNavigate, language }: { onNavigate: (section: Section)
                   >
                     {level}
                   </button>
+                ))}
+              </div>
+
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {[[t.pickFocus, t.pickFocusCopy], [t.useCard, t.useCardCopy], [t.recordProgress, t.recordProgressCopy]].map(([title, copy]) => (
+                  <div key={title} className="rounded-xl border border-[#efd39d] bg-[#fffaf0] p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#c86123]">{title}</p>
+                    <p className="mt-2 text-xs leading-5 text-[#70665b]">{copy}</p>
+                  </div>
                 ))}
               </div>
 
