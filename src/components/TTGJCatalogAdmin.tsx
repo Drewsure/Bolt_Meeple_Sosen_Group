@@ -1,5 +1,5 @@
 import { Database, LogIn, Plus, RefreshCw, Save, ShieldCheck, Trash2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { isSupabaseConfigured } from '../lib/supabase';
 import {
@@ -37,7 +37,7 @@ export function TTGJCatalogAdmin() {
   const canEdit = role === 'admin' || role === 'catalog_editor';
   const visibleEntries = useMemo(() => entries.filter((entry) => entry.kind === kind), [entries, kind]);
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     if (!canEdit) return;
     setBusy(true);
     try {
@@ -48,11 +48,11 @@ export function TTGJCatalogAdmin() {
     } finally {
       setBusy(false);
     }
-  };
+  }, [canEdit]);
 
   useEffect(() => {
     if (canEdit) void refresh();
-  }, [canEdit]);
+  }, [canEdit, refresh]);
 
   const startNew = (nextKind = kind) => {
     setKind(nextKind);

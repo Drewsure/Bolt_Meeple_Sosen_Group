@@ -47,7 +47,7 @@ const dashboardTranslations = {
   },
 } as const;
 
-export function Dashboard({ onJoin: _onJoin, language }: { onJoin: () => void; language: Language }) {
+export function Dashboard({ language }: { onJoin: () => void; language: Language }) {
   const { profile, user } = useAuth();
   const [sessionRecords, setSessionRecords] = useState<SessionProgressRecord[]>([]);
   const name = profile?.display_name || (user ? 'Guild Member' : 'Preview Member');

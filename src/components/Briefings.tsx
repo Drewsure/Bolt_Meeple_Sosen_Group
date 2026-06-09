@@ -323,7 +323,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
   );
 }
 
-export function BriefingDetail({ language, onNavigate: _onNavigate, slug }: { language: Language; onNavigate: (section: Section) => void; slug: string }) {
+export function BriefingDetail({ language, slug }: { language: Language; onNavigate: (section: Section) => void; slug: string }) {
   const t = pageCopy[language];
   const briefing = briefings.find((item) => item.slug === slug) ?? briefings[0];
   const title = language === 'ja' ? briefing.jpTitle : briefing.title;

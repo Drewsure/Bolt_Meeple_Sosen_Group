@@ -51,6 +51,8 @@ export function ManualGameUpdate({ games, onUpdated, onDeleted, focusTitle, onFo
   );
   const stagedPreview = useMemo(
     () => selectedGame ? getPreviewGameUpdate(selectedGame.id) : null,
+    // Preview updates arrive through a small external store, so the version is the refresh signal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedGame, previewVersion],
   );
 
