@@ -135,7 +135,7 @@ export const ui = {
       totalPoints: 'Total Points',
     },
     silver: {
-      title: 'English Games. Brain Training. Real Companionship.',
+      title: 'English Games. Gentle Thinking. Real Companionship.',
       subtitle: 'A soft community table for seniors in Nishi-ku, Fukuoka.',
       cta: 'Apply For A Free Trial',
       details: 'Learn More',

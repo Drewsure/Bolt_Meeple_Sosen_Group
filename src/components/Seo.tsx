@@ -83,8 +83,8 @@ const pageMeta: Record<Section, { title: string; description: string; keywords: 
   },
   'silver-circle': {
     title: 'Silver Circle | English Board Games For Seniors In Fukuoka',
-    description: 'A soft Japanese community program for seniors in Nishi-ku, Fukuoka using English board games for conversation, brain stimulation, and social participation.',
-    keywords: 'シルバーサークル, 福岡市西区 高齢者 英語, senior board games Fukuoka, brain health community, English games seniors Japan',
+    description: 'A soft Japanese community program for seniors in Nishi-ku, Fukuoka using English board games for conversation, gentle cognitive activity, and social participation.',
+    keywords: 'シルバーサークル, 福岡市西区 高齢者 英語, senior board games Fukuoka, senior community activity, English games seniors Japan',
   },
   'admin-images': {
     title: 'Image Maintenance | Meeple Sosen Group',

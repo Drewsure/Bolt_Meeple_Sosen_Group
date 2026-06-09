@@ -12,9 +12,9 @@ const copy = {
   en: {
     badge: 'Free English game trial now open',
     location: 'Nishi-ku, Fukuoka - local English board game club',
-    body: 'Gather at a nearby community table, enjoy simple board games in English, and connect with real people. Japanese support is available, and beginners are welcome.',
+    body: 'Gather at a nearby community table in Nishi-ku, Fukuoka, enjoy simple board games in English, and connect with real people. Japanese support is available, and beginners are welcome.',
     proof1: 'GB English games + Japanese support',
-    proof2: 'Helps prevent isolation through participation',
+    proof2: 'Supports social connection through participation',
     proof3: 'Small groups in walking distance',
     pain: [
       ['The days feel too similar', 'It can be hard to find a reason to go out when routine becomes quiet.'],
@@ -22,10 +22,11 @@ const copy = {
       ['There are fewer people to talk with', 'A small, welcoming place can make conversation easier.'],
       ['English has always interested you', 'Now you can try again through play, not homework.'],
     ],
-    evidenceLead: 'English + analog games can become double brain training.',
-    evidenceBody: 'Research suggests that bilingual activity, social participation, and cognitively engaging games may support cognitive reserve, confidence, and wellbeing. Silver Circle is not medical care; it is a friendly community activity.',
+    evidenceLead: 'English + analog games can become a gentle social routine.',
+    evidenceBody: 'Research suggests that bilingual activity, social participation, and enjoyable games may support confidence, routine, and social connection. Silver Circle is not medical care and does not diagnose, prevent, or treat medical conditions.',
+    evidenceMedicalNote: 'This is not medical care. It is a gentle community activity for conversation and participation.',
     evidenceCards: [
-      ['Bilingual use', 'Second-language use is associated with cognitive reserve in several studies.'],
+      ['Bilingual use', 'Second-language use can give people a fresh way to listen, notice, and respond together.'],
       ['Board games', 'Board games can support planning, memory, turn-taking, and social connection.'],
       ['Small groups', 'A predictable, friendly table lowers the emotional barrier to participation.'],
       ['Conversation', 'Simple phrases such as "My turn" and "Good move" can become natural quickly.'],
@@ -79,6 +80,7 @@ const copy = {
     ],
     evidenceLead: '英語×アナログゲームは、二重の脳トレになります。',
     evidenceBody: '研究では、第二言語の使用、社会参加、認知的に関わる遊びが、認知予備能・自信・ウェルビーイングを支える可能性が示されています。Silver Circle は医療行為ではなく、地域参加と楽しい学びを支える活動です。',
+    evidenceMedicalNote: '医療行為ではありません。地域の会話と参加を支えるやさしい活動です。',
     evidenceCards: [
       ['第二言語', '第二言語を使う活動は、認知予備能と関係する可能性があります。'],
       ['ボードゲーム', '計画、記憶、順番、交流を同時に使う活動です。'],
@@ -189,6 +191,7 @@ export function SilverCircle({ onNavigate, language }: { onNavigate: (section: S
           <ShieldCheck className="mx-auto text-[#2abaae]" size={40} />
           <h2 className="silver-title mt-5 text-5xl">{local.evidenceLead}</h2>
           <p className="mx-auto mt-7 max-w-3xl text-lg leading-9 text-[#544947]">{local.evidenceBody}</p>
+          <p className="mt-4 text-sm font-bold text-[#7a4b54]">{local.evidenceMedicalNote}</p>
         </div>
       </section>
 

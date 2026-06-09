@@ -40,6 +40,13 @@ export function Hero({ onNavigate, language }: HeroProps) {
             <h1 className="compact-title mt-4">{t.title}</h1>
             <p className="font-display mt-5 text-2xl tracking-wide text-[#443d37]">{t.subtitle}</p>
             <p className="mt-6 max-w-2xl text-sm font-semibold leading-7 text-[#c45a25]">{t.promise}</p>
+            <div className="mt-4 flex max-w-2xl flex-wrap justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8d4a28] md:justify-start">
+              {['Nishi-ku, Fukuoka', 'Japanese support available', 'No tests', 'No pressure'].map((item) => (
+                <span key={item} className="rounded-full border border-[#f1d8a5] bg-[#fff7eb] px-3 py-2">
+                  {item}
+                </span>
+              ))}
+            </div>
             <div className="mt-5 max-w-2xl space-y-4 text-sm leading-7 text-[#675c50]">
               <p>{t.body1}</p>
               <p>{t.body2}</p>
