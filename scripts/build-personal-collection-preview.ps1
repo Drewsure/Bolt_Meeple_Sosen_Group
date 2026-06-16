@@ -170,7 +170,15 @@ $coverOverrides = @{
   '255262' = 'Agricola All Creatures Big and Small *'
   '8203' = "Hey, That's My Fish*"
   '353152' = 'Framework *'
+  '230802' = 'Azul Mini*'
 }
+$titleOverrides = @{
+  '255262' = 'Agricola: All Creatures Big and Small - The Big Box'
+  '336718' = 'Clover Bouquet'
+  '8203' = "Hey, That's My Fish!"
+  '353152' = 'Framework'
+}
+$excludedObjectIds = @('164847', '2961')
 
 $assetDirectory = Join-Path $OutputRoot 'images\collection'
 $dataDirectory = Join-Path $OutputRoot 'data'
@@ -180,6 +188,10 @@ Get-ChildItem -LiteralPath $assetDirectory -Filter '*.jpg' -File -ErrorAction Si
 $games = New-Object Collections.Generic.List[object]
 $matched = 0
 foreach ($row in $rows) {
+  if ($excludedObjectIds -contains $row.objectid) {
+    continue
+  }
+
   $titleKey = Normalize-Title $row.objectname
   $coverUrl = $null
   $matchedImage = if ($coverOverrides.ContainsKey($row.objectid)) {
@@ -205,12 +217,13 @@ foreach ($row in $rows) {
   $complexity = Get-Complexity $weight
   $rank = Convert-ToInteger $row.rank
   $languageDependence = if ([string]::IsNullOrWhiteSpace($row.bgglanguagedependence)) { $null } else { $row.bgglanguagedependence }
+  $displayTitle = if ($titleOverrides.ContainsKey($row.objectid)) { $titleOverrides[$row.objectid] } else { $row.objectname }
 
   $games.Add([ordered]@{
     id = 'collection-' + $row.objectid
     bgg_id = Convert-ToInteger $row.objectid
-    title = $row.objectname
-    original_name = $row.objectname
+    title = $displayTitle
+    original_name = $displayTitle
     bgg_average = Convert-ToNumber $row.average
     average_rating = Convert-ToNumber $row.average
     weight = $weight
@@ -228,9 +241,85 @@ foreach ($row in $rows) {
     item_type = $itemType
     complexity_level = $complexity
     player_count = if ($null -ne $minPlayers -and $null -ne $maxPlayers) { "$minPlayers-$maxPlayers" } else { $null }
-    description = New-GameDescription $row.objectname $itemType $complexity $minPlayers $maxPlayers $duration $rank $languageDependence
+    description = New-GameDescription $displayTitle $itemType $complexity $minPlayers $maxPlayers $duration $rank $languageDependence
     is_featured = $games.Count -lt 3
     is_silver_circle = $itemType -eq 'standalone' -and $weight -gt 0 -and $weight -lt 2.3 -and $duration -le 45
+    created_at = ''
+    updated_at = ''
+  })
+}
+
+$manualGames = @(
+  @{
+    Id = 'manual-azul-board-game'
+    Title = 'Azul'
+    ImagePattern = 'Azul (2018).png'
+    CoverFile = 'azul-board-game.jpg'
+    MinPlayers = 2
+    MaxPlayers = 4
+    Duration = 45
+    MinPlaytime = 30
+    MaxPlaytime = 45
+    Year = 2017
+    Weight = 1.774
+    Rank = 99
+    Description = 'Azul is an abstract tile-drafting game about decorating a palace wall with patterned Portuguese tiles, creating useful table talk about colors, placement, patterns, and choices.'
+  },
+  @{
+    Id = 'manual-roller-coaster-challenge'
+    Title = 'Roller Coaster Challenge'
+    ImagePattern = 'Roller Coaster Challenge.jpg'
+    CoverFile = 'roller-coaster-challenge.jpg'
+    MinPlayers = 1
+    MaxPlayers = 1
+    Duration = 20
+    MinPlaytime = 15
+    MaxPlaytime = 30
+    Year = 2017
+    Weight = 1.2
+    Rank = $null
+    Description = 'Roller Coaster Challenge is a solo logic puzzle about building a working coaster track, making it useful for simple English around position, direction, height, and problem solving.'
+  }
+)
+
+foreach ($manual in $manualGames) {
+  if ($games | Where-Object { $_.id -eq $manual.Id -or $_.title -eq $manual.Title } | Select-Object -First 1) {
+    continue
+  }
+
+  $coverUrl = $null
+  $matchedImage = $images | Where-Object { $_.Name -eq $manual.ImagePattern } | Select-Object -First 1
+  if ($null -ne $matchedImage) {
+    $matched += 1
+    Write-Thumbnail $matchedImage.FullName (Join-Path $assetDirectory $manual.CoverFile)
+    $coverUrl = '/images/collection/' + $manual.CoverFile
+  }
+
+  $games.Add([ordered]@{
+    id = $manual.Id
+    bgg_id = $null
+    title = $manual.Title
+    original_name = $manual.Title
+    bgg_average = $null
+    average_rating = $null
+    weight = $manual.Weight
+    bgg_rank = $manual.Rank
+    min_players = $manual.MinPlayers
+    max_players = $manual.MaxPlayers
+    duration_minutes = $manual.Duration
+    min_playtime_minutes = $manual.MinPlaytime
+    max_playtime_minutes = $manual.MaxPlaytime
+    year_published = $manual.Year
+    language_dependence = 'No necessary in-game text'
+    image_id = $null
+    cover_image_url = $coverUrl
+    source_collection = 'manual-preview'
+    item_type = 'standalone'
+    complexity_level = Get-Complexity $manual.Weight
+    player_count = "$($manual.MinPlayers)-$($manual.MaxPlayers)"
+    description = $manual.Description
+    is_featured = $false
+    is_silver_circle = $true
     created_at = ''
     updated_at = ''
   })
