@@ -180,7 +180,7 @@ $titleOverrides = @{
   '8203' = "Hey, That's My Fish!"
   '353152' = 'Framework'
 }
-$excludedObjectIds = @('164847', '2961')
+$excludedObjectIds = @()
 
 $assetDirectory = Join-Path $OutputRoot 'images\collection'
 $dataDirectory = Join-Path $OutputRoot 'data'
