@@ -168,7 +168,7 @@ export function SilverCircle({ onNavigate, language }: { onNavigate: (section: S
           </div>
           <div className="relative">
             <img src="/images/silver-circle-hero.webp" alt="" className="h-[490px] w-full rounded-[1.5rem] object-cover shadow-lg" />
-            <span className="silver-card absolute -left-5 bottom-[-18px] rounded-2xl px-6 py-4 text-sm"><Brain className="mr-2 inline text-[#f33d67]" size={20} />{language === 'ja' ? '会話と脳の健康を' : 'Conversation and brain health'}<br /><b className="ml-7 text-lg">{language === 'ja' ? '楽しく支える' : 'supported gently'}</b></span>
+            <span className="silver-card absolute -left-5 bottom-[-18px] rounded-2xl px-6 py-4 text-sm"><Brain className="mr-2 inline text-[#f33d67]" size={20} />{language === 'ja' ? '会話とやさしい思考を' : 'Conversation and gentle thinking'}<br /><b className="ml-7 text-lg">{language === 'ja' ? '楽しく支える' : 'supported gently'}</b></span>
             <span className="silver-card absolute -right-5 top-[-20px] rounded-2xl px-5 py-4 text-sm">{language === 'ja' ? '毎回の笑顔' : 'Smiles each session'}<br /><b className="text-[#eb9b18]">★★★★★</b></span>
           </div>
         </div>

@@ -162,9 +162,9 @@ const challengeDeck = [
 const boardTranslations = {
   en: {
     missionFlow,
-    sessionBuilder: 'Session Builder',
-    sessionBuilderTitle: 'Game + English Focus + Conversation Card',
-    sessionBuilderCopy: 'Pick a level, choose a game, and give the table one small English focus. The aim is confidence, not performance.',
+    sessionBuilder: 'Session Workspace',
+    sessionBuilderTitle: 'Pick A Focus + Conversation Cards',
+    sessionBuilderCopy: 'Choose a game, pick one English focus, use a conversation card, and Record Progress together. The aim is confidence, not performance.',
     activeSession: 'Active Session Card',
     tableFocus: 'Table Focus',
     conversationCard: 'Conversation Card',
