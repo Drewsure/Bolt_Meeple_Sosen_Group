@@ -171,6 +171,8 @@ $coverOverrides = @{
   '8203' = "Hey, That's My Fish*"
   '353152' = 'Framework *'
   '230802' = 'Azul Mini*'
+  '112963' = 'Karuta (1600) - Kamakura Karuta.jpg'
+  '138745' = 'Survive - Dolphins and Dive Dice Mini-Expansion (2013).jpg'
 }
 $titleOverrides = @{
   '255262' = 'Agricola: All Creatures Big and Small - The Big Box'
@@ -279,6 +281,22 @@ $manualGames = @(
     Weight = 1.2
     Rank = $null
     Description = 'Roller Coaster Challenge is a solo logic puzzle about building a working coaster track, making it useful for simple English around position, direction, height, and problem solving.'
+  },
+  @{
+    Id = 'collection-130907'
+    BggId = 130907
+    Title = 'Jungle Brunch'
+    ImagePattern = 'Jungle Brunch (2012).jpg'
+    CoverFile = '130907.jpg'
+    MinPlayers = 2
+    MaxPlayers = 5
+    Duration = 20
+    MinPlaytime = 20
+    MaxPlaytime = 20
+    Year = 2012
+    Weight = 1.5
+    Rank = 15623
+    Description = 'Jungle Brunch is a quick family card game about choosing animals and gathering food, creating useful English around animals, food, comparison, prediction, and simple choices.'
   }
 )
 
@@ -297,7 +315,7 @@ foreach ($manual in $manualGames) {
 
   $games.Add([ordered]@{
     id = $manual.Id
-    bgg_id = $null
+    bgg_id = if ($manual.ContainsKey('BggId')) { $manual.BggId } else { $null }
     title = $manual.Title
     original_name = $manual.Title
     bgg_average = $null
