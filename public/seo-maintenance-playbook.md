@@ -19,6 +19,8 @@ Run this every week, and do a deeper rewrite pass once per month.
    - Japanese support available
    - no tests, no pressure
 6. Check `public/llms.txt` for answer-engine accuracy.
+7. Publish one dated bilingual game briefing from the owned collection. Include simple rules, three phrase levels, Japanese support, a table mission, conversation prompts, and a medically safe Silver Circle fit note.
+8. Confirm `npm run seo:audit` reports the newest briefing as no more than eight days old.
 
 ## Monthly Process
 

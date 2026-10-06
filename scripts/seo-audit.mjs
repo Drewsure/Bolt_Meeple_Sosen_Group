@@ -62,6 +62,19 @@ addCheck('How It Works supports session workflow', boardMissing.length === 0, bo
 const silverMissing = includesAll('src/components/SilverCircle.tsx', ['福岡', '無料体験', '医療行為ではありません', '日本語サポート']);
 addCheck('Silver Circle keeps local Japanese trust terms', silverMissing.length === 0, silverMissing.length ? `Missing: ${silverMissing.join(', ')}` : 'Silver Circle keeps local, soft, safe terms.', 'Restore local Japanese trust language and medical disclaimer.');
 
+const briefings = read('src/components/Briefings.tsx');
+const briefingDates = [...briefings.matchAll(/publishedOn:\s*'(\d{4}-\d{2}-\d{2})'/g)].map((match) => match[1]);
+const latestBriefingDate = briefingDates.sort().at(-1);
+const briefingAgeDays = latestBriefingDate
+  ? Math.floor((Date.now() - new Date(`${latestBriefingDate}T00:00:00Z`).getTime()) / 86_400_000)
+  : Number.POSITIVE_INFINITY;
+addCheck(
+  'Weekly game briefing is current',
+  briefingDates.length >= 5 && briefingAgeDays <= 8,
+  latestBriefingDate ? `${briefingDates.length} dated briefings; latest publication: ${latestBriefingDate} (${briefingAgeDays} days ago).` : 'No dated briefings found.',
+  'Publish one new bilingual game briefing from the owned collection and set publishedOn to today.',
+);
+
 const passed = checks.filter((check) => check.passed).length;
 const failed = checks.length - passed;
 const status = failed === 0 ? 'PASS' : 'NEEDS ATTENTION';
@@ -90,6 +103,7 @@ const report = [
   `- Did any Silver Circle copy drift toward medical certainty?`,
   `- Are there new reviews, photos, events, or games that should be added?`,
   `- Are answer-engine facts in llms.txt still accurate?`,
+  `- Was one dated bilingual game briefing published in the last eight days?`,
   ``,
 ].join('\n');
 

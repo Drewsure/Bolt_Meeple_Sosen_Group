@@ -2,7 +2,7 @@
 
 Date: 2026-10-06
 Status: PASS
-Score: 19/19
+Score: 20/20
 
 ## Checks
 
@@ -101,6 +101,11 @@ Session workflow terms are present.
 Silver Circle keeps local, soft, safe terms.
 
 
+### PASS - Weekly game briefing is current
+
+5 dated briefings; latest publication: 2026-10-06 (0 days ago).
+
+
 ## Weekly Maintenance Questions
 
 - Is the homepage still saying the clearest public offer?
@@ -108,3 +113,4 @@ Silver Circle keeps local, soft, safe terms.
 - Did any Silver Circle copy drift toward medical certainty?
 - Are there new reviews, photos, events, or games that should be added?
 - Are answer-engine facts in llms.txt still accurate?
+- Was one dated bilingual game briefing published in the last eight days?

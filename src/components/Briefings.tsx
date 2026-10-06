@@ -4,6 +4,7 @@ import type { Language } from '../lib/i18n';
 
 export type Briefing = {
   slug: string;
+  publishedOn: string;
   gameTitle: string;
   title: string;
   jpTitle: string;
@@ -37,6 +38,7 @@ export type Briefing = {
 export const briefings: Briefing[] = [
   {
     slug: 'camel-up-english-briefing-card',
+    publishedOn: '2026-05-26',
     gameTitle: 'Camel Up',
     title: 'Camel Up English Briefing Card',
     jpTitle: 'キャメルアップ 英語ブリーフィングカード',
@@ -75,6 +77,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'azul-english-briefing-card',
+    publishedOn: '2026-05-26',
     gameTitle: 'Azul',
     title: 'Azul English Briefing Card',
     jpTitle: 'アズール 英語ブリーフィングカード',
@@ -113,6 +116,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'carcassonne-english-briefing-card',
+    publishedOn: '2026-05-26',
     gameTitle: 'Carcassonne',
     title: 'Carcassonne English Briefing Card',
     jpTitle: 'カルカソンヌ 英語ブリーフィングカード',
@@ -151,6 +155,7 @@ export const briefings: Briefing[] = [
   },
   {
     slug: 'sushi-go-english-briefing-card',
+    publishedOn: '2026-05-26',
     gameTitle: 'Sushi Go!',
     title: 'Sushi Go! English Briefing Card',
     jpTitle: 'すしゴー 英語ブリーフィングカード',
@@ -187,6 +192,45 @@ export const briefings: Briefing[] = [
     silverFit: 'Good as a short warm-up, but the passing can feel fast. Slow mode is recommended.',
     jpSilverFit: '短いウォームアップに良いです。ただし少し速いので、ゆっくりモードがおすすめです。',
   },
+  {
+    slug: 'bananagrams-english-briefing-card',
+    publishedOn: '2026-10-06',
+    gameTitle: 'Bananagrams',
+    title: 'Bananagrams English Briefing Card',
+    jpTitle: 'バナナグラム 英語ブリーフィングカード',
+    audience: 'Word-game beginners, families, quick warm-up tables',
+    jpAudience: 'ワードゲーム初心者、家族、短いウォームアップ向け',
+    level: 'Beginner friendly with spelling support',
+    jpLevel: 'スペルサポート付き初心者向け',
+    theme: 'Players build and rebuild their own connected word grids with letter tiles in a quick, flexible race.',
+    jpTheme: '文字タイルを使って、自分の単語グリッドをすばやく作り直していくゲームです。',
+    why: 'Short words make vocabulary visible, while rebuilding creates natural chances to ask for spelling, meaning, and suggestions.',
+    jpWhy: '短い単語で語彙が見えやすく、作り直す時にスペル、意味、ヒントを自然に聞けます。',
+    mission: 'Before adding a new word, say it aloud and use it in one short sentence.',
+    jpMission: '新しい単語を置く前に声に出し、短い文で一度使う。',
+    simpleRules: [
+      'Take the same number of letter tiles as the other players.',
+      'Turn over your tiles and make connected words.',
+      'You can change your word grid whenever you need to.',
+      'When you use every tile, call for everyone to take one more.',
+      'If one tile is difficult, exchange it and take extra tiles.',
+      'The first player to use every tile near the end wins.',
+    ],
+    phraseTiers: {
+      beginner: ["I'm making a word.", "How do you spell that?", "What does this mean?", "I need one letter.", "Can you help me?"],
+      someExperience: ["I'm changing this word.", "This letter works in two words.", "I need a word with E.", "Can you check my spelling?"],
+      experienced: ["I'm rebuilding this corner because the letters do not connect.", "This word gives me more space for another word.", "I can explain this word in a short sentence.", "I'm exchanging this tile because it limits my choices."],
+    },
+    jpPhraseTiers: {
+      beginner: ['単語を作っています。', 'どう綴りますか？', 'これはどういう意味ですか？', '文字が一つ必要です。', '手伝ってもらえますか？'],
+      someExperience: ['この単語を変えています。', 'この文字は二つの単語に使えます。', 'Eを使う単語が必要です。', 'スペルを確認してもらえますか？'],
+      experienced: ['文字がつながらないので、この角を作り直しています。', 'この単語を置くと、次の単語のスペースが増えます。', 'この単語を短い文で説明できます。', '選択肢が少なくなるので、このタイルを交換します。'],
+    },
+    prompts: ['Which word are you most proud of?', 'Which letter is difficult to use?', 'Can you explain one word without translating it?'],
+    jpPrompts: ['一番気に入っている単語はどれですか？', '使いにくい文字はどれですか？', '一つの単語を日本語に訳さず説明できますか？'],
+    silverFit: 'Good with relaxed timing, larger-print letter support, and permission to ask for spelling help.',
+    jpSilverFit: '時間をゆっくり取り、大きな文字の補助とスペルを聞ける環境があれば楽しみやすいです。',
+  },
 ];
 
 const pageCopy = {
@@ -202,6 +246,7 @@ const pageCopy = {
     ],
     cadence: 'Recommended publishing rhythm',
     cadenceCopy: 'Release one briefing every week, then collect four into a monthly guide such as “Best Beginner Board Games For English Conversation In Fukuoka.”',
+    published: 'Published',
     audience: 'Best For',
     theme: 'Theme Brief',
     why: 'Why It Works For English',
@@ -225,6 +270,7 @@ const pageCopy = {
     ],
     cadence: 'おすすめ公開リズム',
     cadenceCopy: '毎週一つ公開し、月末に「福岡で英会話に使いやすい初心者向けボードゲーム」のようなまとめ記事にします。',
+    published: '公開日',
     audience: 'おすすめ対象',
     theme: 'テーマ説明',
     why: '英語に向いている理由',
@@ -290,6 +336,7 @@ export function Briefings({ language, onNavigate }: { language: Language; onNavi
                 <p className="eyebrow">{language === 'ja' ? briefing.jpLevel : briefing.level}</p>
                 <h2 className="font-display mt-2 text-3xl tracking-wide text-[#bd5c24]">{language === 'ja' ? briefing.jpTitle : briefing.title}</h2>
                 <p className="mt-2 text-xs text-[#766b60]"><Users className="mr-1 inline" size={13} />{language === 'ja' ? briefing.jpAudience : briefing.audience}</p>
+                <p className="mt-2 text-xs text-[#766b60]"><CalendarDays className="mr-1 inline" size={13} />{t.published}: {briefing.publishedOn}</p>
               </div>
               <div className="space-y-4 p-5">
                 <BriefingBlock icon={BookOpen} title={t.theme} body={language === 'ja' ? briefing.jpTheme : briefing.theme} />
@@ -367,8 +414,8 @@ export function BriefingDetail({ language, slug }: { language: Language; onNavig
             </div>
             <div className="border-b border-[#efd39d] p-5 text-center md:border-b-0 md:border-r">
               <CalendarDays className="mx-auto text-[#d87522]" size={24} />
-              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">{language === 'ja' ? '公開リズム' : 'Publishing Use'}</p>
-              <p className="mt-2 text-sm leading-6 text-[#62584f]">{language === 'ja' ? '毎週記事のサンプル' : 'Example weekly article'}</p>
+              <p className="mt-3 text-[10px] font-bold uppercase text-[#8a7563]">{t.published}</p>
+              <p className="mt-2 text-sm leading-6 text-[#62584f]">{briefing.publishedOn}</p>
             </div>
             <div className="p-5 text-center">
               <BookOpen className="mx-auto text-[#d87522]" size={24} />
