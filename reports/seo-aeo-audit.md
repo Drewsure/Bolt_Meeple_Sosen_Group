@@ -103,7 +103,7 @@ Silver Circle keeps local, soft, safe terms.
 
 ### PASS - Weekly game briefing is current
 
-5 dated briefings; latest publication: 2026-10-06 (0 days ago).
+6 dated briefings; latest publication: 2026-10-06 (0 days ago).
 
 
 ## Weekly Maintenance Questions
